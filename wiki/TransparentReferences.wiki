@@ -1,4 +1,4 @@
-#summary Details about the TransparentReferences
+#summary Details of the TransparentReferences feature
 
 = !TransparentReferences =
 
