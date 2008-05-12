@@ -2,6 +2,8 @@
 
 = !TransparentReferences =
 
+For details, see http://www.projectdarkstar.com/index.php?option=com_smf&Itemid=99999999&topic=329.0
+
 == TODO ==
 
   * Annotations for marking !ManagedObjects for update. http://www.projectdarkstar.com/index.php?option=com_smf&Itemid=99999999&topic=288.msg2426#msg2426
