@@ -41,7 +41,7 @@
     <scm>
         <connection>scm:svn:https://darkstar-exp.googlecode.com/svn/branches/darkstar-vanilla</connection>
         <developerConnection>scm:svn:https://darkstar-exp.googlecode.com/svn/branches/darkstar-vanilla</developerConnection>
-        <url>http://code.google.com/p/darkstar-exp/source/browse</url>
+        <url>http://code.google.com/p/darkstar-exp/source/browse/branches/darkstar-vanilla</url>
     </scm>
 
     <distributionManagement>
