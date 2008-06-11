@@ -42,6 +42,7 @@
                 <configuration>
                     <finalName>darkstar-exp-client-${version}</finalName>
                     <appendAssemblyId>false</appendAssemblyId>
+                    <attach>false</attach>
                     <descriptors>
                         <descriptor>src/main/assembly/dist.xml</descriptor>
                     </descriptors>
