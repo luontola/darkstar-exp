@@ -10,6 +10,7 @@
     <dependencySets>
 
         <!-- Bootloader-->
+        <!--
         <dependencySet>
             <includes>
                 <include>com.projectdarkstar:bootloader</include>
@@ -17,12 +18,12 @@
             <outputDirectory>/</outputDirectory>
             <outputFileNameMapping>bootloader.jar</outputFileNameMapping>
         </dependencySet>
-
+        -->
         <!-- Libraries -->
         <dependencySet>
             <excludes>
                 <exclude>berkeleydb:bdb-natives</exclude>
-                <exclude>com.projectdarkstar:bootloader</exclude>
+                <!--<exclude>com.projectdarkstar:bootloader</exclude>-->
                 <exclude>com.projectdarkstar:darkstar-server-tutorial</exclude>
             </excludes>
             <outputDirectory>lib</outputDirectory>
