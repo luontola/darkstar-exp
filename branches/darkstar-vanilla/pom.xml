@@ -1,11 +1,10 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.projectdarkstar</groupId>
     <artifactId>darkstar</artifactId>
-    <version>0.9.6-SNAPSHOT</version>
+    <version>0.9.6</version>
     <packaging>pom</packaging>
 
     <name>Project Darkstar</name>
@@ -39,9 +38,9 @@
     </contributors>
 
     <scm>
-        <connection>scm:svn:https://darkstar-exp.googlecode.com/svn/branches/darkstar-vanilla</connection>
-        <developerConnection>scm:svn:https://darkstar-exp.googlecode.com/svn/branches/darkstar-vanilla</developerConnection>
-        <url>http://code.google.com/p/darkstar-exp/source/browse/branches/darkstar-vanilla</url>
+        <connection>scm:svn:https://darkstar-exp.googlecode.com/svn/tags/darkstar-vanilla-0.9.6</connection>
+        <developerConnection>scm:svn:https://darkstar-exp.googlecode.com/svn/tags/darkstar-vanilla-0.9.6</developerConnection>
+        <url>http://code.google.com/p/darkstar-exp/source/browse/tags/darkstar-vanilla-0.9.6</url>
     </scm>
 
     <distributionManagement>
