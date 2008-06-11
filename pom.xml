@@ -2,9 +2,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.projectdarkstar</groupId>
-    <artifactId>darkstar</artifactId>
-    <version>0.9.6</version>
+    <groupId>net.orfjackal.darkstar-exp</groupId>
+    <artifactId>darkstar-exp</artifactId>
+    <version>0.9.6_0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Project Darkstar</name>
@@ -83,31 +83,31 @@
         <dependencies>
 
             <dependency>
-                <groupId>com.projectdarkstar</groupId>
+                <groupId>net.orfjackal.darkstar-exp</groupId>
                 <artifactId>darkstar-client</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.projectdarkstar</groupId>
+                <groupId>net.orfjackal.darkstar-exp</groupId>
                 <artifactId>darkstar-client-tutorial</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.projectdarkstar</groupId>
+                <groupId>net.orfjackal.darkstar-exp</groupId>
                 <artifactId>darkstar-server</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.projectdarkstar</groupId>
+                <groupId>net.orfjackal.darkstar-exp</groupId>
                 <artifactId>darkstar-server-tutorial</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.projectdarkstar</groupId>
+                <groupId>net.orfjackal.darkstar-exp</groupId>
                 <artifactId>darkstar-shared</artifactId>
                 <version>${project.version}</version>
             </dependency>

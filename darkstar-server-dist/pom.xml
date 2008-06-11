@@ -3,9 +3,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.projectdarkstar</groupId>
-        <artifactId>darkstar</artifactId>
-        <version>0.9.6</version>
+        <groupId>net.orfjackal.darkstar-exp</groupId>
+        <artifactId>darkstar-exp</artifactId>
+        <version>0.9.6_0-SNAPSHOT</version>
     </parent>
 
     <artifactId>darkstar-server-dist</artifactId>
@@ -16,12 +16,12 @@
     <dependencies>
 
         <dependency>
-            <groupId>com.projectdarkstar</groupId>
+            <groupId>net.orfjackal.darkstar-exp</groupId>
             <artifactId>darkstar-server</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.projectdarkstar</groupId>
+            <groupId>net.orfjackal.darkstar-exp</groupId>
             <artifactId>darkstar-server-tutorial</artifactId>
         </dependency>
 
@@ -38,7 +38,7 @@
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
-                    <finalName>darkstar-server-${version}</finalName>
+                    <finalName>darkstar-exp-server-${version}</finalName>
                     <appendAssemblyId>false</appendAssemblyId>
                     <descriptors>
                         <descriptor>src/main/assembly/dist.xml</descriptor>

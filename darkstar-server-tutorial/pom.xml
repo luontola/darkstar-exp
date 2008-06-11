@@ -3,9 +3,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.projectdarkstar</groupId>
-        <artifactId>darkstar</artifactId>
-        <version>0.9.6</version>
+        <groupId>net.orfjackal.darkstar-exp</groupId>
+        <artifactId>darkstar-exp</artifactId>
+        <version>0.9.6_0-SNAPSHOT</version>
     </parent>
 
     <artifactId>darkstar-server-tutorial</artifactId>
@@ -16,7 +16,7 @@
     <dependencies>
 
         <dependency>
-            <groupId>com.projectdarkstar</groupId>
+            <groupId>net.orfjackal.darkstar-exp</groupId>
             <artifactId>darkstar-server</artifactId>
         </dependency>
 

@@ -13,7 +13,7 @@
         <dependencySet>
             <excludes>
                 <exclude>berkeleydb:bdb-natives</exclude>
-                <exclude>com.projectdarkstar:darkstar-server-tutorial</exclude>
+                <exclude>net.orfjackal.darkstar-exp:darkstar-server-tutorial</exclude>
             </excludes>
             <outputDirectory>lib</outputDirectory>
         </dependencySet>
@@ -31,7 +31,7 @@
         <!-- Tutorials -->
         <dependencySet>
             <includes>
-                <include>com.projectdarkstar:darkstar-server-tutorial</include>
+                <include>net.orfjackal.darkstar-exp:darkstar-server-tutorial</include>
             </includes>
             <outputDirectory>tutorial</outputDirectory>
         </dependencySet>
