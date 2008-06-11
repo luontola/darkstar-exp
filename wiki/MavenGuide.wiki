@@ -1,4 +1,5 @@
 #summary How to use Darkstar in a Maven project.
+#labels Featured
 
 = Vanilla Darkstar =
 
