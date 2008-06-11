@@ -23,12 +23,6 @@
         </license>
     </licenses>
 
-    <scm>
-        <connection>scm:svn:https://darkstar-exp.googlecode.com/svn/branches/darkstar-vanilla</connection>
-        <developerConnection>scm:svn:https://darkstar-exp.googlecode.com/svn/branches/darkstar-vanilla</developerConnection>
-        <url>http://code.google.com/p/darkstar-exp/source/browse</url>
-    </scm>
-
     <!-- TODO: enter developers -->
     <developers>
         <developer>
@@ -43,6 +37,19 @@
             </roles>
         </contributor>
     </contributors>
+
+    <scm>
+        <connection>scm:svn:https://darkstar-exp.googlecode.com/svn/branches/darkstar-vanilla</connection>
+        <developerConnection>scm:svn:https://darkstar-exp.googlecode.com/svn/branches/darkstar-vanilla</developerConnection>
+        <url>http://code.google.com/p/darkstar-exp/source/browse</url>
+    </scm>
+
+    <repositories>
+        <repository>
+            <id>orfjackal</id>
+            <url>http://repo.orfjackal.net/maven2/</url>
+        </repository>
+    </repositories>
 
     <modules>
         <module>darkstar-analysis</module>
@@ -99,7 +106,6 @@
                 <version>${project.version}</version>
             </dependency>
 
-            <!-- TODO: put BDB and its natives into an official repository -->
             <dependency>
                 <groupId>berkeleydb</groupId>
                 <artifactId>bdb</artifactId>
