@@ -7,9 +7,9 @@
     <version>0.9.6_0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>Project Darkstar</name>
-    <url>http://www.projectdarkstar.com/</url>
-    <inceptionYear>2007</inceptionYear>
+    <name>Darkstar EXP</name>
+    <url>http://code.google.com/p/darkstar-exp/</url>
+    <inceptionYear>2008</inceptionYear>
 
     <licenses>
         <license>
@@ -22,25 +22,22 @@
         </license>
     </licenses>
 
-    <!-- TODO: enter developers -->
     <developers>
         <developer>
-            <name>...</name>
-        </developer>
-    </developers>
-    <contributors>
-        <contributor>
+            <id>esko.luontola</id>
             <name>Esko Luontola</name>
+            <url>http://www.orfjackal.net/</url>
             <roles>
+                <role>Darkstar EXP project owner</role>
                 <role>Maven project descriptors</role>
             </roles>
-        </contributor>
-    </contributors>
+        </developer>
+    </developers>
 
     <scm>
-        <connection>scm:svn:https://darkstar-exp.googlecode.com/svn/tags/darkstar-vanilla-0.9.6_1</connection>
-        <developerConnection>scm:svn:https://darkstar-exp.googlecode.com/svn/tags/darkstar-vanilla-0.9.6_1</developerConnection>
-        <url>http://code.google.com/p/darkstar-exp/source/browse/tags/darkstar-vanilla-0.9.6_1</url>
+        <connection>scm:svn:https://darkstar-exp.googlecode.com/svn/trunk</connection>
+        <developerConnection>scm:svn:https://darkstar-exp.googlecode.com/svn/trunk</developerConnection>
+        <url>http://code.google.com/p/darkstar-exp/source/browse/tags/trunk</url>
     </scm>
 
     <distributionManagement>
