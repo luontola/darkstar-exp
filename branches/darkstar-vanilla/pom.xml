@@ -177,6 +177,7 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <inherited>false</inherited>
                 <configuration>
+                    <attach>false</attach>
                     <descriptors>
                         <descriptor>src/main/assembly/src.xml</descriptor>
                     </descriptors>
