@@ -1,0 +1,99 @@
+<assembly xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/assembly-1.1.0-SNAPSHOT.xsd">
+
+    <id>dist</id>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <includeBaseDirectory>true</includeBaseDirectory>
+
+    <dependencySets>
+
+        <!-- Bootloader-->
+        <dependencySet>
+            <includes>
+                <include>com.projectdarkstar:bootloader</include>
+            </includes>
+            <outputDirectory>/</outputDirectory>
+            <outputFileNameMapping>bootloader.jar</outputFileNameMapping>
+        </dependencySet>
+
+        <!-- Libraries -->
+        <dependencySet>
+            <excludes>
+                <exclude>berkeleydb:bdb-natives</exclude>
+                <exclude>com.projectdarkstar:bootloader</exclude>
+                <exclude>com.projectdarkstar:darkstar-server-tutorial</exclude>
+            </excludes>
+            <outputDirectory>lib</outputDirectory>
+        </dependencySet>
+
+        <!-- Berkeley DB natives -->
+        <dependencySet>
+            <includes>
+                <include>berkeleydb:bdb-natives</include>
+            </includes>
+            <outputDirectory>lib</outputDirectory>
+            <outputFileNameMapping>bdb</outputFileNameMapping>
+            <unpack>true</unpack>
+        </dependencySet>
+
+        <!-- Tutorials -->
+        <dependencySet>
+            <includes>
+                <include>com.projectdarkstar:darkstar-server-tutorial</include>
+            </includes>
+            <outputDirectory>tutorial</outputDirectory>
+        </dependencySet>
+
+    </dependencySets>
+
+    <fileSets>
+
+        <!-- Startup files -->
+        <fileSet>
+            <outputDirectory>/</outputDirectory>
+            <directory>../darkstar-server/src/main/config</directory>
+        </fileSet>
+
+        <!-- Documentation -->
+        <fileSet>
+            <outputDirectory>/</outputDirectory>
+            <directory>..</directory>
+            <includes>
+                <include>*.txt</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <outputDirectory>/</outputDirectory>
+            <directory>../darkstar-server</directory>
+            <includes>
+                <include>*.txt</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <!-- TODO: not yet working -->
+            <outputDirectory>doc/darkstar-server-api</outputDirectory>
+            <directory>../darkstar-server/target/site/apidocs</directory>
+        </fileSet>
+
+        <!-- Tutorials -->
+        <fileSet>
+            <outputDirectory>tutorial/src</outputDirectory>
+            <directory>../darkstar-server-tutorial/src/main/java</directory>
+        </fileSet>
+        <fileSet>
+            <outputDirectory>tutorial</outputDirectory>
+            <directory>../darkstar-server-tutorial/src/main/config</directory>
+        </fileSet>
+        <fileSet>
+            <outputDirectory>tutorial</outputDirectory>
+            <directory>../darkstar-server-tutorial/src/main/docs</directory>
+            <includes>
+                <include>*.pdf</include>
+            </includes>
+        </fileSet>
+
+    </fileSets>
+
+</assembly>
