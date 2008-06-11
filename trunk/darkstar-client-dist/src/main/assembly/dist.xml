@@ -12,7 +12,7 @@
         <!-- Libraries -->
         <dependencySet>
             <excludes>
-                <exclude>com.projectdarkstar:darkstar-client-tutorial</exclude>
+                <exclude>net.orfjackal.darkstar-exp:darkstar-client-tutorial</exclude>
             </excludes>
             <outputDirectory>lib</outputDirectory>
         </dependencySet>
@@ -20,7 +20,7 @@
         <!-- Tutorials -->
         <dependencySet>
             <includes>
-                <include>com.projectdarkstar:darkstar-client-tutorial</include>
+                <include>net.orfjackal.darkstar-exp:darkstar-client-tutorial</include>
             </includes>
             <outputDirectory>tutorial</outputDirectory>
         </dependencySet>
