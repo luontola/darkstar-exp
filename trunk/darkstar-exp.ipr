@@ -270,11 +270,11 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/darkstar-analysis/darkstar-analysis.iml" filepath="$PROJECT_DIR$/darkstar-analysis/darkstar-analysis.iml" group="Project Darkstar" />
       <module fileurl="file://$PROJECT_DIR$/darkstar-client/darkstar-client.iml" filepath="$PROJECT_DIR$/darkstar-client/darkstar-client.iml" group="Project Darkstar" />
-      <module fileurl="file://$PROJECT_DIR$/darkstar-client-dist/darkstar-client-dist.iml" filepath="$PROJECT_DIR$/darkstar-client-dist/darkstar-client-dist.iml" group="Project Darkstar" />
       <module fileurl="file://$PROJECT_DIR$/darkstar-client-tutorial/darkstar-client-tutorial.iml" filepath="$PROJECT_DIR$/darkstar-client-tutorial/darkstar-client-tutorial.iml" group="Project Darkstar" />
       <module fileurl="file://$PROJECT_DIR$/darkstar-exp.iml" filepath="$PROJECT_DIR$/darkstar-exp.iml" group="Darkstar EXP" />
+      <module fileurl="file://$PROJECT_DIR$/darkstar-exp-client-dist/darkstar-exp-client-dist.iml" filepath="$PROJECT_DIR$/darkstar-exp-client-dist/darkstar-exp-client-dist.iml" group="Darkstar EXP" />
+      <module fileurl="file://$PROJECT_DIR$/darkstar-exp-server-dist/darkstar-exp-server-dist.iml" filepath="$PROJECT_DIR$/darkstar-exp-server-dist/darkstar-exp-server-dist.iml" group="Darkstar EXP" />
       <module fileurl="file://$PROJECT_DIR$/darkstar-server/darkstar-server.iml" filepath="$PROJECT_DIR$/darkstar-server/darkstar-server.iml" group="Project Darkstar" />
-      <module fileurl="file://$PROJECT_DIR$/darkstar-server-dist/darkstar-server-dist.iml" filepath="$PROJECT_DIR$/darkstar-server-dist/darkstar-server-dist.iml" group="Project Darkstar" />
       <module fileurl="file://$PROJECT_DIR$/darkstar-server-tutorial/darkstar-server-tutorial.iml" filepath="$PROJECT_DIR$/darkstar-server-tutorial/darkstar-server-tutorial.iml" group="Project Darkstar" />
       <module fileurl="file://$PROJECT_DIR$/darkstar-shared/darkstar-shared.iml" filepath="$PROJECT_DIR$/darkstar-shared/darkstar-shared.iml" group="Project Darkstar" />
     </modules>
