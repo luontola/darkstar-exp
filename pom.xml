@@ -12,6 +12,12 @@
     <inceptionYear>2008</inceptionYear>
 
     <licenses>
+        <!--
+        License of code derived from Project Darkstar:
+          * In general, client-side modules use the BSD License all other modules use GPLv2.
+        License of Darkstar EXP's new code:
+          * License may vary from module to module.
+        -->
         <license>
             <name>GNU General Public License v2</name>
             <url>http://www.opensource.org/licenses/gpl-2.0.php</url>
