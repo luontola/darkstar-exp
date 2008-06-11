@@ -24,7 +24,8 @@
 
       svn update
       mvn clean
-      mvn release:prepare
+     (mvn -Dtag=darkstar-vanilla -Dmaven.test.skip=true -DdryRun=true release:prepare)
+      mvn -Dtag=darkstar-vanilla -Dmaven.test.skip=true release:prepare
       mvn release:clean
 
    (Version number conventions: 1.2.3-SNAPSHOT -> 1.2.3 -> 1.2.4-SNAPSHOT)
