@@ -63,10 +63,10 @@
     <modules>
         <module>darkstar-analysis</module>
         <module>darkstar-client</module>
-        <module>darkstar-client-dist</module>
         <module>darkstar-client-tutorial</module>
+        <module>darkstar-exp-client-dist</module>
+        <module>darkstar-exp-server-dist</module>
         <module>darkstar-server</module>
-        <module>darkstar-server-dist</module>
         <module>darkstar-server-tutorial</module>
         <module>darkstar-shared</module>
     </modules>

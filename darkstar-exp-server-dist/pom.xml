@@ -8,15 +8,15 @@
         <version>0.9.6_0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>darkstar-client-dist</artifactId>
+    <artifactId>darkstar-exp-server-dist</artifactId>
     <packaging>pom</packaging>
 
-    <name>darkstar-client-dist</name>
+    <name>darkstar-exp-server-dist</name>
 
     <licenses>
         <license>
-            <name>BSD License</name>
-            <url>http://www.opensource.org/licenses/bsd-license.php</url>
+            <name>GNU General Public License v2</name>
+            <url>http://www.opensource.org/licenses/gpl-2.0.php</url>
         </license>
     </licenses>
 
@@ -24,12 +24,17 @@
 
         <dependency>
             <groupId>net.orfjackal.darkstar-exp</groupId>
-            <artifactId>darkstar-client</artifactId>
+            <artifactId>darkstar-server</artifactId>
         </dependency>
 
         <dependency>
             <groupId>net.orfjackal.darkstar-exp</groupId>
-            <artifactId>darkstar-client-tutorial</artifactId>
+            <artifactId>darkstar-server-tutorial</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>berkeleydb</groupId>
+            <artifactId>bdb-natives</artifactId>
         </dependency>
 
     </dependencies>
@@ -40,7 +45,7 @@
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
-                    <finalName>darkstar-exp-client-${version}</finalName>
+                    <finalName>darkstar-exp-server-${version}</finalName>
                     <appendAssemblyId>false</appendAssemblyId>
                     <descriptors>
                         <descriptor>src/main/assembly/dist.xml</descriptor>
