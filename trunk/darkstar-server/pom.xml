@@ -13,6 +13,13 @@
 
     <name>darkstar-server</name>
 
+    <licenses>
+        <license>
+            <name>GNU General Public License v2</name>
+            <url>http://www.opensource.org/licenses/gpl-2.0.php</url>
+        </license>
+    </licenses>
+
     <properties>
         <!--<bdb.lib.dir>${basedir}/../bdb-4.5.20</bdb.lib.dir>-->
         <!--<test.bdb.env>com.sun.sgs.impl.service.data.store.db.je.JeEnvironment</test.bdb.env>-->
@@ -79,6 +86,7 @@
                             <value>${test.bdb.env}</value>
                         </property>
                         <property>
+                            <!-- HACK: It would be best to download the library from a repository automatically -->
                             <!-- Expect the 'libdb_java45' library to be in the root of this module -->
                             <name>java.library.path</name>
                             <value>.</value>
@@ -102,8 +110,8 @@
                         <configuration>
                             <tasks>
                                 <!-- Prepare temp dir for running tests -->
-                                <delete dir="${basedir}/target/temp" />
-                                <mkdir dir="${basedir}/target/temp" />
+                                <delete dir="${basedir}/target/temp"/>
+                                <mkdir dir="${basedir}/target/temp"/>
                             </tasks>
                         </configuration>
                         <goals>
@@ -119,14 +127,14 @@
     <reporting>
         <plugins>
 
-<!--
+            <!--
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
                     <subpackages>com.sun.sgs.app:com.sun.sgs.protocol.simple</subpackages>
                 </configuration>
             </plugin>
--->
+            -->
 
         </plugins>
     </reporting>
