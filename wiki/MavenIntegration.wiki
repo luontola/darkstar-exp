@@ -3,7 +3,7 @@
 
 = Vanilla Darkstar =
 
-In order to use the vanilla version of Project Darkstar, add the following lines to your [http://maven.apache.org/ Maven] project's POM file:
+To use the vanilla version of Project Darkstar within a [http://maven.apache.org/ Maven] project, add the following lines to your POM file:
 
 {{{
     <repositories>
