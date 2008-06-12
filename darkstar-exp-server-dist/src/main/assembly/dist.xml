@@ -49,7 +49,7 @@
                 <include>berkeleydb:bdb-natives</include>
             </includes>
             <outputDirectory>lib</outputDirectory>
-            <outputFileNameMapping>bdb</outputFileNameMapping>
+            <!--<outputFileNameMapping>bdb</outputFileNameMapping>-->
             <unpack>true</unpack>
         </dependencySet>
 
@@ -63,12 +63,22 @@
 
     </dependencySets>
 
+    <files>
+
+        <!-- Startup files / Project Darkstar -->
+        <file>
+            <source>../darkstar-server/src/main/config/sgs-logging.properties</source>
+            <destName>darkstar-logging.properties</destName>
+        </file>
+
+    </files>
+
     <fileSets>
 
-        <!-- Startup files -->
+        <!-- Startup files / Darkstar EXP -->
         <fileSet>
             <outputDirectory>/</outputDirectory>
-            <directory>../darkstar-server/src/main/config</directory>
+            <directory>src/main/config</directory>
         </fileSet>
 
         <!-- Documentation -->
