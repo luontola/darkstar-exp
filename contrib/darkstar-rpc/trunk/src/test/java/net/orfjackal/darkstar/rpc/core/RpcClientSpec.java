@@ -158,7 +158,7 @@ public class RpcClientSpec extends Specification<Object> {
             return null;
         }
 
-        public void aRequestWillbeSentToTheServer() {
+        public void aRequestWillBeSentToTheServer() {
             Request rq = Request.fromBytes(server.messages.get(0));
             specify(rq.requestId, should.equal(1L));
             specify(rq.serviceId, should.equal(123L));
