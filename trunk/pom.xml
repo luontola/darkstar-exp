@@ -43,7 +43,7 @@
     <scm>
         <connection>scm:svn:http://darkstar-exp.googlecode.com/svn/trunk</connection>
         <developerConnection>scm:svn:https://darkstar-exp.googlecode.com/svn/trunk</developerConnection>
-        <url>http://code.google.com/p/darkstar-exp/source/browse/tags/trunk</url>
+        <url>http://code.google.com/p/darkstar-exp/source/browse/trunk</url>
     </scm>
 
     <distributionManagement>
