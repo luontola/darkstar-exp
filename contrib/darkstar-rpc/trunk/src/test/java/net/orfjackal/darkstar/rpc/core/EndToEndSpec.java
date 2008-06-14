@@ -124,9 +124,7 @@ public class EndToEndSpec extends Specification<Object> {
     }
 }
 
-// TODO: [ServiceReference] allow returning services as return values
-// TODO: [ServiceGateway] return an initial proxy object to the client, with which the rest of the proxies can be accessed
-// TODO: [ServiceGateway] generic query system for available services: list all, list by type
+// TODO: [ServiceGateway] wrap the creation and use of a ServiceProvider
 // TODO: [ServiceGateway] callbacks, two-way method calls
 
 /*
