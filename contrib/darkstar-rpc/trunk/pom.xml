@@ -3,27 +3,43 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>net.orfjackal.darkstar</groupId>
+    <groupId>net.orfjackal.darkstar-contrib</groupId>
     <artifactId>darkstar-rpc</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Darkstar RPC</name>
     <description>RPC library for Project Darkstar clients</description>
-    <url>http://www.orfjackal.net</url>
+    <url>http://code.google.com/p/darkstar-exp/</url>
     <inceptionYear>2008</inceptionYear>
+
+    <licenses>
+        <license>
+            <name>BSD License</name>
+            <url>http://www.opensource.org/licenses/bsd-license.php</url>
+        </license>
+    </licenses>
 
     <developers>
         <developer>
-            <id>orfjackal</id>
+            <id>esko.luontola</id>
             <name>Esko Luontola</name>
+            <url>http://www.orfjackal.net/</url>
         </developer>
     </developers>
 
     <scm>
-        <connection>scm:svn:svn://tux/orfjackal/darkstar-rpc/trunk</connection>
-        <developerConnection>scm:svn:svn://tux/orfjackal/darkstar-rpc/trunk</developerConnection>
+        <connection>scm:svn:http://darkstar-exp.googlecode.com/svn/contrib/darkstar-rpc/trunk</connection>
+        <developerConnection>scm:svn:https://darkstar-exp.googlecode.com/svn/contrib/darkstar-rpc/trunk</developerConnection>
+        <url>http://code.google.com/p/darkstar-exp/source/browse/contrib/darkstar-rpc/trunk</url>
     </scm>
+
+    <distributionManagement>
+        <repository>
+            <id>orfjackal</id>
+            <url>file://H:/repo.orfjackal.net/maven2</url>
+        </repository>
+    </distributionManagement>
 
     <repositories>
         <repository>
@@ -32,14 +48,14 @@
         </repository>
         <repository>
             <id>laughing-panda</id>
-            <url>http://www.laughingpanda.org/maven2/</url>
+            <url>http://www.laughingpanda.org/maven2</url>
         </repository>
     </repositories>
 
     <pluginRepositories>
         <pluginRepository>
             <id>laughing-panda</id>
-            <url>http://www.laughingpanda.org/maven2/</url>
+            <url>http://www.laughingpanda.org/maven2</url>
         </pluginRepository>
     </pluginRepositories>
 
@@ -79,18 +95,17 @@
 
     <build>
         <plugins>
+
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.5</source>
+                    <target>1.5</target>
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
 
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
                 <configuration>
                     <encoding>UTF-8</encoding>
@@ -98,12 +113,31 @@
             </plugin>
 
             <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.3</version>
+                <configuration>
+                    <includes>
+                        <include>**/*Spec.java</include>
+                    </includes>
+                    <systemProperties>
+                        <property>
+                            <name>jdave.tools.specdox.format</name>
+                            <value>txt</value>
+                        </property>
+                        <property>
+                            <name>jdave.tools.specdox.dir</name>
+                            <value>target/jdave</value>
+                        </property>
+                    </systemProperties>
+                </configuration>
+            </plugin>
+
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
+                <inherited>false</inherited>
                 <configuration>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
+                    <attach>false</attach>
                     <descriptors>
                         <descriptor>src/main/assembly/src.xml</descriptor>
                     </descriptors>
@@ -120,56 +154,19 @@
             </plugin>
 
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>cobertura-maven-plugin</artifactId>
-                <version>2.0</version>
+                <artifactId>maven-source-plugin</artifactId>
                 <executions>
                     <execution>
+                        <id>attach-sources</id>
+                        <phase>verify</phase>
                         <goals>
-                            <goal>clean</goal>
+                            <goal>jar</goal>
                         </goals>
                     </execution>
                 </executions>
             </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.3</version>
-                <configuration>
-                    <includes>
-                        <include>**/*Spec.java</include>
-                    </includes>
-                    <systemProperties>
-                        <property>
-                            <name>jdave.tools.specdox.format</name>
-                            <value>xml txt</value>
-                        </property>
-                        <property>
-                            <name>jdave.tools.specdox.dir</name>
-                            <value>target/jdave</value>
-                        </property>
-                    </systemProperties>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
-
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>cobertura-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.jdave</groupId>
-                <artifactId>jdave-report-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jxr-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </reporting>
 
 </project>
