@@ -98,9 +98,9 @@ public class ServiceProviderSpec extends Specification<Object> {
     }
 
 
-    private interface Foo {
+    public interface Foo {
     }
 
-    private interface Bar {
+    public interface Bar {
     }
 }
