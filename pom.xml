@@ -8,6 +8,7 @@
     <packaging>pom</packaging>
 
     <name>Darkstar EXP</name>
+    <description>Experimental branch of Project Darkstar for testing new features</description>
     <url>http://code.google.com/p/darkstar-exp/</url>
     <inceptionYear>2008</inceptionYear>
 
