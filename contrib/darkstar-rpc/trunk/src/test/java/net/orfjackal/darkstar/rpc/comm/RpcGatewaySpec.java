@@ -27,12 +27,16 @@ package net.orfjackal.darkstar.rpc.comm;
 import jdave.Specification;
 import jdave.junit4.JDaveRunner;
 import net.orfjackal.darkstar.rpc.MockNetwork;
+import net.orfjackal.darkstar.rpc.ServiceHelper;
 import net.orfjackal.darkstar.rpc.ServiceReference;
 import org.jmock.Expectations;
 import org.junit.runner.RunWith;
 
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * @author Esko Luontola
@@ -111,18 +115,24 @@ public class RpcGatewaySpec extends Specification<Object> {
             specify(barsOnSlave.size(), should.equal(0));
         }
 
-        public void allowsCallingRemoteServicesOnServer() throws Exception {
+        public void slaveCanCallServicesOnMaster() throws Exception {
             checking(new Expectations() {{
                 one(fooOnMaster).serviceMethod();
-//                one(fooOnMaster).hello("ping?"); will(returnValue(ServiceHelper.wrap("pong!")));
             }});
             Set<Foo> foos = slaveGateway.remoteFindByType(Foo.class);
             Foo foo = foos.iterator().next();
             foo.serviceMethod();
-//            Future<String> f = foo.hello("ping?");
-//            String s = f.get(100, TimeUnit.MILLISECONDS);
-//            specify(s, should.equal("pong!"));
             shutdownNetwork();
+        }
+
+        public void slaveGetsResponsesFromMaster() throws ExecutionException, TimeoutException, InterruptedException {
+            checking(new Expectations() {{
+                one(fooOnMaster).hello("ping?"); will(returnValue(ServiceHelper.wrap("pong!")));
+            }});
+            Set<Foo> foos = slaveGateway.remoteFindByType(Foo.class);
+            Foo foo = foos.iterator().next();
+            Future<String> future = foo.hello("ping?");
+            specify(future.get(100, TimeUnit.MILLISECONDS), should.equal("pong!"));
         }
     }
 
