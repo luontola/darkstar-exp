@@ -43,12 +43,10 @@ public class ChannelAdapter implements ChannelListener {
     private static final Logger log = Logger.getLogger(ChannelAdapter.class.getName());
 
     // server-to-client requests
-    private final MessageSender requestSender;
     private MessageReciever responseReciever;
 
     // client-to-server requests
     private MessageReciever requestReciever;
-    private final MessageSender responseSender;
 
     private final RpcGateway gateway;
     private Channel channel;
@@ -58,9 +56,7 @@ public class ChannelAdapter implements ChannelListener {
     }
 
     public ChannelAdapter(long timeout) {
-        requestSender = new MyRequestSender();
-        responseSender = new MyResponseSender();
-        gateway = new RpcGateway(requestSender, responseSender, timeout);
+        gateway = new RpcGateway(new MyRequestSender(), new MyResponseSender(), timeout);
     }
 
     public void setChannel(Channel channel) {

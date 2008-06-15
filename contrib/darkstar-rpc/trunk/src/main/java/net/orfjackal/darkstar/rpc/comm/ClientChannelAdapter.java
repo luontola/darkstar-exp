@@ -42,39 +42,35 @@ public class ClientChannelAdapter implements ClientChannelListener {
     private static final Logger log = Logger.getLogger(ClientChannelAdapter.class.getName());
 
     // client-to-server requests
-    private final MessageSender requestSender;
     private MessageReciever responseReciever;
 
     // server-to-client requests
     private MessageReciever requestReciever;
-    private final MessageSender responseSender;
 
     private final RpcGateway gateway;
-    private ClientChannel clientChannel;
+    private ClientChannel channel;
 
     public ClientChannelAdapter() {
         this(1000);
     }
 
     public ClientChannelAdapter(int timeout) {
-        requestSender = new MyRequestSender();
-        responseSender = new MyResponseSender();
-        gateway = new RpcGateway(requestSender, responseSender, timeout);
+        gateway = new RpcGateway(new MyRequestSender(), new MyResponseSender(), timeout);
     }
 
     public RpcGateway getGateway() {
         return gateway;
     }
 
-    public ClientChannelListener joinedChannel(ClientChannel channel) {  // TODO: make contstructor parameter
-        assert this.clientChannel == null;
-        this.clientChannel = channel;
+    public ClientChannelListener joinedChannel(ClientChannel channel) {
+        assert this.channel == null;
+        this.channel = channel;
         return this;
     }
 
     public void leftChannel(ClientChannel channel) {
-        assert this.clientChannel == channel;
-        this.clientChannel = null;
+        assert this.channel == channel;
+        this.channel = null;
     }
 
     public void receivedMessage(ClientChannel channel, ByteBuffer message) {
@@ -95,7 +91,7 @@ public class ClientChannelAdapter implements ClientChannelListener {
             buf.put(RpcGateway.REQUEST_TO_MASTER);
             buf.put(message);
             buf.flip();
-            clientChannel.send(buf);
+            channel.send(buf);
         }
 
         public void setCallback(MessageReciever callback) {
@@ -110,7 +106,7 @@ public class ClientChannelAdapter implements ClientChannelListener {
             buf.put(RpcGateway.RESPONSE_FROM_SLAVE);
             buf.put(message);
             buf.flip();
-            clientChannel.send(buf);
+            channel.send(buf);
         }
 
         public void setCallback(MessageReciever callback) {

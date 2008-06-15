@@ -44,47 +44,45 @@ public class DarkstarIntegrationSpec extends Specification<Object> {
 
     public class WhenThereIsAChannelForRpcBetweenOneClient {
 
-        private ChannelAdapter adapterOnServer;
         private MockChannel mockChannel;
-        private ServerSessionListener serverSessionListenerOnClient;
-        private ClientChannelAdapter adapterOnClient;
-
         private RpcGateway gatewayOnServer;
         private RpcGateway gatewayOnClient;
 
         public Object create() {
 
             // initialization on server
-            adapterOnServer = new ChannelAdapter(100);
+            ChannelAdapter adapterOnServer = new ChannelAdapter(100);
             gatewayOnServer = adapterOnServer.getGateway();
             mockChannel = new MockChannel(adapterOnServer);
             adapterOnServer.setChannel(mockChannel.getChannel());
 
             // initialization on client
-            adapterOnClient = new ClientChannelAdapter(100);
+            final ClientChannelAdapter adapterOnClient = new ClientChannelAdapter(100);
             gatewayOnClient = adapterOnClient.getGateway();
-            serverSessionListenerOnClient = new NullServerSessionListener() {
+            ServerSessionListener client = new NullServerSessionListener() {
                 public ClientChannelListener joinedChannel(ClientChannel channel) {
                     return adapterOnClient.joinedChannel(channel);
                 }
             };
 
             // server makes the client join the channel
-            mockChannel.joinChannel(serverSessionListenerOnClient);
+            mockChannel.joinChannel(client);
 
             return null;
+        }
+
+        public void destroy() {
+            mockChannel.shutdown();
         }
 
         public void clientCanUseServicesOnServer() {
             Set<?> services = gatewayOnClient.remoteFindAll();
             specify(services.size(), should.equal(1));
-            mockChannel.shutdownAndWait();
         }
 
         public void serverCanUseServicesOnClient() {
             Set<?> services = gatewayOnServer.remoteFindAll();
             specify(services.size(), should.equal(1));
-            mockChannel.shutdownAndWait();
         }
     }
 
