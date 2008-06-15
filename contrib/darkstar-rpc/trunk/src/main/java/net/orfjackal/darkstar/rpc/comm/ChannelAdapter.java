@@ -32,6 +32,7 @@ import net.orfjackal.darkstar.rpc.MessageSender;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.logging.Logger;
 
 /**
  * @author Esko Luontola
@@ -39,7 +40,7 @@ import java.nio.ByteBuffer;
  */
 public class ChannelAdapter implements ChannelListener {
 
-    private final long timeout;
+    private static final Logger log = Logger.getLogger(ChannelAdapter.class.getName());
 
     private final MessageSender requestSender;
     private MessageReciever responseReciever;
@@ -55,10 +56,9 @@ public class ChannelAdapter implements ChannelListener {
     }
 
     public ChannelAdapter(long timeout) {
-        this.timeout = timeout;
         requestSender = new MyRequestSender();
         responseSender = new MyResponseSender();
-        gateway = new RpcGateway(requestSender, responseSender, this.timeout);
+        gateway = new RpcGateway(requestSender, responseSender, timeout);
     }
 
     public void setChannel(Channel channel) {
@@ -74,8 +74,10 @@ public class ChannelAdapter implements ChannelListener {
         byte header = message.get();
         if (header == RpcGateway.REQUEST_TO_MASTER) {
             requestReciever.receivedMessage(ByteBufferUtils.asByteArray(message));
+        } else if (header == RpcGateway.RESPONSE_FROM_SLAVE) {
+            responseReciever.receivedMessage(ByteBufferUtils.asByteArray(message));
         } else {
-            System.err.println("UNKNOWN HEADER: " + header);
+            log.warning("Unexpected header " + header + " on channel " + channel + " from sender " + sender);
         }
     }
 
@@ -83,8 +85,11 @@ public class ChannelAdapter implements ChannelListener {
 
         public void send(byte[] message) throws IOException {
             System.out.println("ChannelAdapter$MyRequestSender.send");
-//            channel.send(null, ByteBuffer.wrap(message));
-            // TODO
+            ByteBuffer buf = ByteBuffer.allocateDirect(message.length + 1);
+            buf.put(RpcGateway.REQUEST_TO_SLAVE);
+            buf.put(message);
+            buf.flip();
+            channel.send(null, buf);
         }
 
         public void setCallback(MessageReciever callback) {

@@ -107,7 +107,7 @@ public class DarkstarIntegrationSpec extends Specification<Object> {
             mockChannel = new MockChannel(channelListenerOnServer);
             adapterOnServer.setChannel(mockChannel.getChannel());
 
-            adapterOnClient = new ClientChannelAdapter();
+            adapterOnClient = new ClientChannelAdapter(1000);
             gatewayOnClient = adapterOnClient.getGateway();
             serverSessionListenerOnClient = new NullServerSessionListener() {
                 public ClientChannelListener joinedChannel(ClientChannel channel) {
@@ -126,11 +126,11 @@ public class DarkstarIntegrationSpec extends Specification<Object> {
             mockChannel.shutdownAndWait();
         }
 
-//        public void serverCanQueryServicesOnClient() {
-//            Set<?> services = gatewayOnServer.remoteFindAll();
-//            specify(services.size(), should.equal(1));
-//            mockChannel.shutdownAndWait();
-//        }
+        public void serverCanQueryServicesOnClient() {
+            Set<?> services = gatewayOnServer.remoteFindAll();
+            specify(services.size(), should.equal(1));
+            mockChannel.shutdownAndWait();
+        }
     }
 
 

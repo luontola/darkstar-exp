@@ -31,12 +31,15 @@ import net.orfjackal.darkstar.rpc.MessageSender;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.logging.Logger;
 
 /**
  * @author Esko Luontola
  * @since 15.6.2008
  */
 public class ClientChannelAdapter implements ClientChannelListener {
+
+    private static final Logger log = Logger.getLogger(ClientChannelAdapter.class.getName());
 
     private final MessageSender requestSender;
     private MessageReciever requestReciever;
@@ -46,11 +49,14 @@ public class ClientChannelAdapter implements ClientChannelListener {
     private ClientChannel clientChannel;
 
     public ClientChannelAdapter() {
-        requestSender = new MyRequestSender();
-        responseSender = new MyResponseSender();
-        gateway = new RpcGateway(requestSender, responseSender, 1000);
+        this(1000);
     }
 
+    public ClientChannelAdapter(int timeout) {
+        requestSender = new MyRequestSender();
+        responseSender = new MyResponseSender();
+        gateway = new RpcGateway(requestSender, responseSender, timeout);
+    }
 
     public ClientChannelListener joinedChannel(ClientChannel channel) {
         assert this.clientChannel == null;
@@ -68,8 +74,10 @@ public class ClientChannelAdapter implements ClientChannelListener {
         byte header = message.get();
         if (header == RpcGateway.RESPONSE_FROM_MASTER) {
             responseReciever.receivedMessage(ByteBufferUtils.asByteArray(message));
+        } else if (header == RpcGateway.REQUEST_TO_SLAVE) {
+            requestReciever.receivedMessage(ByteBufferUtils.asByteArray(message));
         } else {
-            System.err.println("UNKNOWN HEADER: " + header);
+            log.warning("Unexpected header " + header + " on channel " + channel);
         }
     }
 
@@ -97,7 +105,11 @@ public class ClientChannelAdapter implements ClientChannelListener {
 
         public void send(byte[] message) throws IOException {
             System.out.println("ClientChannelAdapter$MyResponseSender.send");
-            // TODO
+            ByteBuffer buf = ByteBuffer.allocateDirect(message.length + 1);
+            buf.put(RpcGateway.RESPONSE_FROM_SLAVE);
+            buf.put(message);
+            buf.flip();
+            clientChannel.send(buf);
         }
 
         public void setCallback(MessageReciever callback) {
