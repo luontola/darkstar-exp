@@ -25,6 +25,7 @@
 package net.orfjackal.darkstar.rpc.comm;
 
 import com.sun.sgs.app.Channel;
+import com.sun.sgs.app.ChannelListener;
 import com.sun.sgs.app.ChannelManager;
 import com.sun.sgs.app.Delivery;
 import com.sun.sgs.client.ClientChannel;
@@ -32,6 +33,7 @@ import com.sun.sgs.client.ClientChannelListener;
 import com.sun.sgs.client.ServerSessionListener;
 import jdave.Specification;
 import jdave.junit4.JDaveRunner;
+import org.jmock.Expectations;
 import org.junit.runner.RunWith;
 
 import java.nio.ByteBuffer;
@@ -48,7 +50,12 @@ public class DarkstarIntegrationSpec extends Specification<Object> {
         private ChannelAdapter adapter;
 
         public Object create() {
-            ChannelManager channelManager = mock(ChannelManager.class);
+            final ChannelManager channelManager = mock(ChannelManager.class);
+            final Channel mockChannel = mock(Channel.class);
+            checking(new Expectations() {{
+                one(channelManager).createChannel("RpcChannel", with(aNonNull(ChannelListener.class)), with(any(Delivery.class)));
+                    will(returnValue(mockChannel));
+            }});
 
             Channel channel = channelManager.createChannel("RpcChannel", adapter.getChannelListener(), Delivery.UNORDERED_RELIABLE);
             adapter.setChannel(channel);
