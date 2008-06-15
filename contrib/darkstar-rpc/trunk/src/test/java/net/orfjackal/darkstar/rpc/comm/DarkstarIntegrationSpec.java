@@ -24,10 +24,6 @@
 
 package net.orfjackal.darkstar.rpc.comm;
 
-import com.sun.sgs.app.Channel;
-import com.sun.sgs.app.ChannelListener;
-import com.sun.sgs.app.ClientSession;
-import com.sun.sgs.app.Delivery;
 import com.sun.sgs.client.ClientChannel;
 import com.sun.sgs.client.ClientChannelListener;
 import com.sun.sgs.client.ServerSessionListener;
@@ -37,9 +33,6 @@ import net.orfjackal.darkstar.rpc.MockChannel;
 import org.junit.runner.RunWith;
 
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -49,46 +42,10 @@ import java.util.Set;
 @RunWith(JDaveRunner.class)
 public class DarkstarIntegrationSpec extends Specification<Object> {
 
-/*
-    public class AChannelAdapter {
-
-        private ChannelAdapter adapter;
-        private DummyChannel channel;
-        private ChannelListener channelListener;
-        private ClientSession clientSession;
-
-        public Object create() {
-            channel = new DummyChannel();
-            clientSession = mock(ClientSession.class);
-
-            adapter = new ChannelAdapter(10);
-            channelListener = adapter;
-            adapter.setChannel(channel);
-            return null;
-        }
-
-        public void createsAGatewayWhichSendsRequestsToTheChannel() {
-            RpcGateway gateway = adapter.getGateway();
-            try {
-                gateway.remoteFindAll();
-            } catch (RuntimeException e) {
-                if (e.getCause() != null && e.getCause().getClass().equals(TimeoutException.class)) {
-                    // OK because in this test setup no response is sent back
-                } else {
-                    throw e;
-                }
-            }
-            specify(channel.senders, should.containInOrder((ClientSession) null));
-            specify(channel.messages.size(), should.equal(1));
-        }
-    }
-*/
-
-    public class WhenThereIsARpcChannel {
+    public class WhenThereIsAChannelForRpcBetweenOneClient {
 
         private ChannelAdapter adapterOnServer;
         private MockChannel mockChannel;
-        private ChannelListener channelListenerOnServer;
         private ServerSessionListener serverSessionListenerOnClient;
         private ClientChannelAdapter adapterOnClient;
 
@@ -96,37 +53,35 @@ public class DarkstarIntegrationSpec extends Specification<Object> {
         private RpcGateway gatewayOnClient;
 
         public Object create() {
-            adapterOnServer = new ChannelAdapter();
+
+            // initialization on server
+            adapterOnServer = new ChannelAdapter(100);
             gatewayOnServer = adapterOnServer.getGateway();
-            channelListenerOnServer = new ChannelListener() {
-                public void receivedMessage(Channel channel, ClientSession sender, ByteBuffer message) {
-                    System.out.println("DarkstarIntegrationSpec$WhenThereIsARpcChannel.receivedMessage");
-                    adapterOnServer.receivedMessage(channel, sender, message);
-                }
-            };
-            mockChannel = new MockChannel(channelListenerOnServer);
+            mockChannel = new MockChannel(adapterOnServer);
             adapterOnServer.setChannel(mockChannel.getChannel());
 
-            adapterOnClient = new ClientChannelAdapter(1000);
+            // initialization on client
+            adapterOnClient = new ClientChannelAdapter(100);
             gatewayOnClient = adapterOnClient.getGateway();
             serverSessionListenerOnClient = new NullServerSessionListener() {
                 public ClientChannelListener joinedChannel(ClientChannel channel) {
-                    System.out.println("DarkstarIntegrationSpec$WhenThereIsARpcChannel.joinedChannel");
                     return adapterOnClient.joinedChannel(channel);
                 }
             };
+
+            // server makes the client join the channel
             mockChannel.joinChannel(serverSessionListenerOnClient);
 
             return null;
         }
 
-        public void clientCanQueryServicesOnServer() {
+        public void clientCanUseServicesOnServer() {
             Set<?> services = gatewayOnClient.remoteFindAll();
             specify(services.size(), should.equal(1));
             mockChannel.shutdownAndWait();
         }
 
-        public void serverCanQueryServicesOnClient() {
+        public void serverCanUseServicesOnClient() {
             Set<?> services = gatewayOnServer.remoteFindAll();
             specify(services.size(), should.equal(1));
             mockChannel.shutdownAndWait();
@@ -150,54 +105,6 @@ public class DarkstarIntegrationSpec extends Specification<Object> {
         }
 
         public void disconnected(boolean graceful, String reason) {
-        }
-    }
-
-    private class DummyChannel implements Channel {
-
-        public List<ClientSession> senders = new ArrayList<ClientSession>();
-        public List<ByteBuffer> messages = new ArrayList<ByteBuffer>();
-
-        public String getName() {
-            throw new UnsupportedOperationException();
-        }
-
-        public Delivery getDeliveryRequirement() {
-            throw new UnsupportedOperationException();
-        }
-
-        public boolean hasSessions() {
-            throw new UnsupportedOperationException();
-        }
-
-        public Iterator<ClientSession> getSessions() {
-            throw new UnsupportedOperationException();
-        }
-
-        public Channel join(ClientSession session) {
-            throw new UnsupportedOperationException();
-        }
-
-        public Channel join(Set<ClientSession> sessions) {
-            throw new UnsupportedOperationException();
-        }
-
-        public Channel leave(ClientSession session) {
-            throw new UnsupportedOperationException();
-        }
-
-        public Channel leave(Set<ClientSession> sessions) {
-            throw new UnsupportedOperationException();
-        }
-
-        public Channel leaveAll() {
-            throw new UnsupportedOperationException();
-        }
-
-        public Channel send(ClientSession sender, ByteBuffer message) {
-            senders.add(sender);
-            messages.add(message);
-            return this;
         }
     }
 }

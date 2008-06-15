@@ -41,10 +41,14 @@ public class ClientChannelAdapter implements ClientChannelListener {
 
     private static final Logger log = Logger.getLogger(ClientChannelAdapter.class.getName());
 
+    // client-to-server requests
     private final MessageSender requestSender;
+    private MessageReciever responseReciever;
+
+    // server-to-client requests
     private MessageReciever requestReciever;
     private final MessageSender responseSender;
-    private MessageReciever responseReciever;
+
     private final RpcGateway gateway;
     private ClientChannel clientChannel;
 
@@ -58,7 +62,11 @@ public class ClientChannelAdapter implements ClientChannelListener {
         gateway = new RpcGateway(requestSender, responseSender, timeout);
     }
 
-    public ClientChannelListener joinedChannel(ClientChannel channel) {
+    public RpcGateway getGateway() {
+        return gateway;
+    }
+
+    public ClientChannelListener joinedChannel(ClientChannel channel) {  // TODO: make contstructor parameter
         assert this.clientChannel == null;
         this.clientChannel = channel;
         return this;
@@ -70,25 +78,19 @@ public class ClientChannelAdapter implements ClientChannelListener {
     }
 
     public void receivedMessage(ClientChannel channel, ByteBuffer message) {
-        System.out.println("ClientChannelAdapter.receivedMessage");
         byte header = message.get();
-        if (header == RpcGateway.RESPONSE_FROM_MASTER) {
-            responseReciever.receivedMessage(ByteBufferUtils.asByteArray(message));
-        } else if (header == RpcGateway.REQUEST_TO_SLAVE) {
+        if (header == RpcGateway.REQUEST_TO_SLAVE) {
             requestReciever.receivedMessage(ByteBufferUtils.asByteArray(message));
+        } else if (header == RpcGateway.RESPONSE_FROM_MASTER) {
+            responseReciever.receivedMessage(ByteBufferUtils.asByteArray(message));
         } else {
             log.warning("Unexpected header " + header + " on channel " + channel);
         }
     }
 
-    public RpcGateway getGateway() {
-        return gateway;
-    }
-
     private class MyRequestSender implements MessageSender {
 
         public void send(byte[] message) throws IOException {
-            System.out.println("ClientChannelAdapter$MyRequestSender.send");
             ByteBuffer buf = ByteBuffer.allocateDirect(message.length + 1);
             buf.put(RpcGateway.REQUEST_TO_MASTER);
             buf.put(message);
@@ -104,7 +106,6 @@ public class ClientChannelAdapter implements ClientChannelListener {
     private class MyResponseSender implements MessageSender {
 
         public void send(byte[] message) throws IOException {
-            System.out.println("ClientChannelAdapter$MyResponseSender.send");
             ByteBuffer buf = ByteBuffer.allocateDirect(message.length + 1);
             buf.put(RpcGateway.RESPONSE_FROM_SLAVE);
             buf.put(message);

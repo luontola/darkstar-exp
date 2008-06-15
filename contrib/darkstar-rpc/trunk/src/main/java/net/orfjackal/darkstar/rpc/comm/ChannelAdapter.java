@@ -42,14 +42,16 @@ public class ChannelAdapter implements ChannelListener {
 
     private static final Logger log = Logger.getLogger(ChannelAdapter.class.getName());
 
+    // server-to-client requests
     private final MessageSender requestSender;
     private MessageReciever responseReciever;
 
-    private final MessageSender responseSender;
+    // client-to-server requests
     private MessageReciever requestReciever;
+    private final MessageSender responseSender;
 
-    private Channel channel;
     private final RpcGateway gateway;
+    private Channel channel;
 
     public ChannelAdapter() {
         this(1000);
@@ -70,7 +72,6 @@ public class ChannelAdapter implements ChannelListener {
     }
 
     public void receivedMessage(Channel channel, ClientSession sender, ByteBuffer message) {
-        System.out.println("ChannelAdapter.receivedMessage");
         byte header = message.get();
         if (header == RpcGateway.REQUEST_TO_MASTER) {
             requestReciever.receivedMessage(ByteBufferUtils.asByteArray(message));
@@ -84,7 +85,6 @@ public class ChannelAdapter implements ChannelListener {
     private class MyRequestSender implements MessageSender {
 
         public void send(byte[] message) throws IOException {
-            System.out.println("ChannelAdapter$MyRequestSender.send");
             ByteBuffer buf = ByteBuffer.allocateDirect(message.length + 1);
             buf.put(RpcGateway.REQUEST_TO_SLAVE);
             buf.put(message);
@@ -100,7 +100,6 @@ public class ChannelAdapter implements ChannelListener {
     private class MyResponseSender implements MessageSender {
 
         public void send(byte[] message) throws IOException {
-            System.out.println("ChannelAdapter$MyResponseSender.send");
             ByteBuffer buf = ByteBuffer.allocateDirect(message.length + 1);
             buf.put(RpcGateway.RESPONSE_FROM_MASTER);
             buf.put(message);
