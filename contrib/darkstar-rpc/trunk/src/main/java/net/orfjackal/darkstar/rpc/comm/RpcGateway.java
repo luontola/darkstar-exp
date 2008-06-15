@@ -66,7 +66,7 @@ public class RpcGateway implements RpcServer {
         return null;
     }
 
-    public <T> Set<T> findRemoteByType(Class<T> serviceInterface) {
+    public <T> Set<T> remoteFindByType(Class<T> serviceInterface) {
         Set<ServiceReference<T>> refs;
         Future<Set<ServiceReference<T>>> f = serviceProvider.findByType(serviceInterface);
         try {
@@ -74,10 +74,25 @@ public class RpcGateway implements RpcServer {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        Set<T> services = new HashSet<T>();
-        for (ServiceReference<T> ref : refs) {
-            services.add(proxyFactory.create(ref));
+        return asProxies(refs);
+    }
+
+    public Set<?> remoteFindAll() {
+        Set<ServiceReference<?>> refs;
+        Future<Set<ServiceReference<?>>> f = serviceProvider.findAll();
+        try {
+            refs = f.get(timeout, TimeUnit.MILLISECONDS);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return services;
+        return asProxies(refs);
+    }
+
+    private Set asProxies(Set refs) {
+        Set proxies = new HashSet();
+        for (Object ref : refs) {
+            proxies.add(proxyFactory.create((ServiceReference) ref));
+        }
+        return proxies;
     }
 }

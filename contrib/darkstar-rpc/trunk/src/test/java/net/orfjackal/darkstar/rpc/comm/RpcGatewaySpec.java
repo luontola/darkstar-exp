@@ -51,18 +51,21 @@ public class RpcGatewaySpec extends Specification<Object> {
 
     public class ARpcGateway {
 
-        private RpcGateway gatewayToMaster;
-        private RpcGateway gatewayToSlave;
-        private Foo fooOnClient;
-        private Foo fooOnServer;
+        private RpcGateway slaveGateway;
+        private RpcGateway masterGateway;
+        private Foo fooOnSlave;
+        private Foo fooOnMaster;
+        private Bar barOnMaster;
 
         public Object create() {
-            gatewayToMaster = new RpcGateway(toMaster.getClientToServer(), toSlave.getServerToClient(), 100);
-            gatewayToSlave = new RpcGateway(toSlave.getClientToServer(), toMaster.getServerToClient(), 100);
-            fooOnClient = mock(Foo.class, "fooOnClient");
-            fooOnServer = mock(Foo.class, "fooOnServer");
-            gatewayToMaster.registerService(Foo.class, fooOnClient);
-            gatewayToSlave.registerService(Foo.class, fooOnServer);
+            slaveGateway = new RpcGateway(toMaster.getClientToServer(), toSlave.getServerToClient(), 100);
+            masterGateway = new RpcGateway(toSlave.getClientToServer(), toMaster.getServerToClient(), 100);
+            fooOnSlave = mock(Foo.class, "fooOnSlave");
+            fooOnMaster = mock(Foo.class, "fooOnMaster");
+            barOnMaster = mock(Bar.class, "barOnMaster");
+            slaveGateway.registerService(Foo.class, fooOnSlave);
+            masterGateway.registerService(Foo.class, fooOnMaster);
+            masterGateway.registerService(Bar.class, barOnMaster);
             return null;
         }
 
@@ -70,14 +73,37 @@ public class RpcGatewaySpec extends Specification<Object> {
             shutdownNetwork();
         }
 
+        public void slaveCanFindAllServicesOnMaster() {
+            Set<?> onMaster = slaveGateway.remoteFindAll();
+            specify(onMaster.size(), should.equal(3));
+        }
+
+        public void masterCanFindAllServicesOnSlave() {
+            Set<?> onSlave = masterGateway.remoteFindAll();
+            specify(onSlave.size(), should.equal(2));
+        }
+
+        public void slaveCanFindServicesOnMasterByType() {
+            Set<Foo> foosOnMaster = slaveGateway.remoteFindByType(Foo.class);
+            specify(foosOnMaster.size(), should.equal(1));
+            Set<Bar> barsOnMaster = slaveGateway.remoteFindByType(Bar.class);
+            specify(barsOnMaster.size(), should.equal(1));
+        }
+
+        public void masterCanFindServicesOnSlaveByType() {
+            Set<Foo> foosOnSlave = masterGateway.remoteFindByType(Foo.class);
+            specify(foosOnSlave.size(), should.equal(1));
+            Set<Bar> barsOnSlave = masterGateway.remoteFindByType(Bar.class);
+            specify(barsOnSlave.size(), should.equal(0));
+        }
+
         public void allowsCallingRemoteServicesOnServer() throws Exception {
             checking(new Expectations() {{
-                one(fooOnServer).serviceMethod();
-//                one(fooOnServer).hello("ping?"); will(returnValue(ServiceHelper.wrap("pong!")));
+                one(fooOnMaster).serviceMethod();
+//                one(fooOnMaster).hello("ping?"); will(returnValue(ServiceHelper.wrap("pong!")));
             }});
-            Set<Foo> servicesOnServer = gatewayToMaster.findRemoteByType(Foo.class);
-            specify(servicesOnServer.size(), should.equal(1));
-            Foo foo = servicesOnServer.iterator().next();
+            Set<Foo> foos = slaveGateway.remoteFindByType(Foo.class);
+            Foo foo = foos.iterator().next();
             foo.serviceMethod();
 //            Future<String> f = foo.hello("ping?");
 //            String s = f.get(100, TimeUnit.MILLISECONDS);
@@ -91,5 +117,8 @@ public class RpcGatewaySpec extends Specification<Object> {
         void serviceMethod();
 
         Future<String> hello(String s);
+    }
+
+    public interface Bar {
     }
 }
