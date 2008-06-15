@@ -24,9 +24,17 @@
 
 package net.orfjackal.darkstar.rpc.comm;
 
+import com.sun.sgs.app.Channel;
+import com.sun.sgs.app.ChannelManager;
+import com.sun.sgs.app.Delivery;
+import com.sun.sgs.client.ClientChannel;
+import com.sun.sgs.client.ClientChannelListener;
+import com.sun.sgs.client.ServerSessionListener;
 import jdave.Specification;
 import jdave.junit4.JDaveRunner;
 import org.junit.runner.RunWith;
+
+import java.nio.ByteBuffer;
 
 /**
  * @author Esko Luontola
@@ -35,14 +43,62 @@ import org.junit.runner.RunWith;
 @RunWith(JDaveRunner.class)
 public class DarkstarIntegrationSpec extends Specification<Object> {
 
-    public class ClientConnectsToAService {
+    public class WhenServerCreatesARpcChannel {
+
+        private ChannelAdapter adapter;
 
         public Object create() {
+            ChannelManager channelManager = mock(ChannelManager.class);
+
+            Channel channel = channelManager.createChannel("RpcChannel", adapter.getChannelListener(), Delivery.UNORDERED_RELIABLE);
+            adapter.setChannel(channel);
+
             return null;
         }
 
-        public void todo() {
-            specify(true); // TODO
+        // TODO
+    }
+
+    public class WhenClientJoinsARpcChannel {
+
+        private ClientChannelAdapter adapter;
+
+        public Object create() {
+            adapter = new ClientChannelAdapter();
+
+            ServerSessionListener serverSessionListener = new NullServerSessionListener() {
+
+                public ClientChannelListener joinedChannel(ClientChannel channel) {
+                    return adapter.joinedChannel(channel);
+                }
+
+                public void receivedMessage(ByteBuffer message) {
+                    adapter.receivedMessage(message);
+                }
+            };
+            return null;
+        }
+
+        // TODO
+    }
+
+
+    private static class NullServerSessionListener implements ServerSessionListener {
+
+        public ClientChannelListener joinedChannel(ClientChannel channel) {
+            return null;
+        }
+
+        public void receivedMessage(ByteBuffer message) {
+        }
+
+        public void reconnecting() {
+        }
+
+        public void reconnected() {
+        }
+
+        public void disconnected(boolean graceful, String reason) {
         }
     }
 }
