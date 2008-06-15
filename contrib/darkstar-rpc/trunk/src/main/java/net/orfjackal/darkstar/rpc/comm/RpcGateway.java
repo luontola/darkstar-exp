@@ -43,14 +43,13 @@ public class RpcGateway implements RpcServer {
 
     private final long timeout;
     private final RpcServer server;
-    private final RpcClient client;
     private final RpcProxyFactory proxyFactory;
     private final ServiceProvider serviceProvider;
 
     public RpcGateway(MessageSender requestSender, MessageSender responseSender, long timeoutMs) {
         this.timeout = timeoutMs;
         server = new RpcServerImpl(responseSender);
-        client = new RpcClientImpl(requestSender);
+        RpcClient client = new RpcClientImpl(requestSender);
         proxyFactory = new RpcProxyFactory(client);
         serviceProvider = proxyFactory.create(client.getServiceProvider());
     }

@@ -115,11 +115,21 @@ public class RpcGatewaySpec extends Specification<Object> {
             specify(barsOnSlave.size(), should.equal(0));
         }
 
-        public void slaveCanCallServicesOnMaster() throws Exception {
+        public void slaveCanCallServicesOnMaster() {
             checking(new Expectations() {{
                 one(fooOnMaster).serviceMethod();
             }});
             Set<Foo> foos = slaveGateway.remoteFindByType(Foo.class);
+            Foo foo = foos.iterator().next();
+            foo.serviceMethod();
+            shutdownNetwork();
+        }
+
+        public void masterCanCallServicesOnSlave() {
+            checking(new Expectations() {{
+                one(fooOnSlave).serviceMethod();
+            }});
+            Set<Foo> foos = masterGateway.remoteFindByType(Foo.class);
             Foo foo = foos.iterator().next();
             foo.serviceMethod();
             shutdownNetwork();
@@ -134,7 +144,18 @@ public class RpcGatewaySpec extends Specification<Object> {
             Future<String> future = foo.hello("ping?");
             specify(future.get(100, TimeUnit.MILLISECONDS), should.equal("pong!"));
         }
+
+        public void masterGetsResponsesFromSlave() throws ExecutionException, TimeoutException, InterruptedException {
+            checking(new Expectations() {{
+                one(fooOnSlave).hello("ping?"); will(returnValue(ServiceHelper.wrap("pong!")));
+            }});
+            Set<Foo> foos = masterGateway.remoteFindByType(Foo.class);
+            Foo foo = foos.iterator().next();
+            Future<String> future = foo.hello("ping?");
+            specify(future.get(100, TimeUnit.MILLISECONDS), should.equal("pong!"));
+        }
     }
+
 
     public interface Foo {
 

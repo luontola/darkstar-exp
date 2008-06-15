@@ -124,9 +124,6 @@ public class EndToEndSpec extends Specification<Object> {
     }
 }
 
-// TODO: [ServiceGateway] wrap the creation and use of a ServiceProvider
-// TODO: [ServiceGateway] callbacks, two-way method calls
-
 /*
 TODO: synchronous and asynchronous versions of the same interface (or rely on Future.get() only?)
 
