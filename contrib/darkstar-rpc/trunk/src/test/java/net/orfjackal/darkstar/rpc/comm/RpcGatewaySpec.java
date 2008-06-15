@@ -115,7 +115,7 @@ public class RpcGatewaySpec extends Specification<Object> {
             specify(barsOnSlave.size(), should.equal(0));
         }
 
-        public void slaveCanCallServicesOnMaster() {
+        public void slaveCanCallServiceMethodsOnMaster() {
             checking(new Expectations() {{
                 one(fooOnMaster).serviceMethod();
             }});
@@ -125,7 +125,7 @@ public class RpcGatewaySpec extends Specification<Object> {
             shutdownNetwork();
         }
 
-        public void masterCanCallServicesOnSlave() {
+        public void masterCanCallServiceMethodsOnSlave() {
             checking(new Expectations() {{
                 one(fooOnSlave).serviceMethod();
             }});
