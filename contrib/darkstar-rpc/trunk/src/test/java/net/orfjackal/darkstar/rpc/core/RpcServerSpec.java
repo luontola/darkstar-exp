@@ -199,7 +199,7 @@ public class RpcServerSpec extends Specification<Object> {
         }
 
         public void allTheServicesAreRegistered() {
-            specify(server.getServices().values(), should.containAll(service1, service2));
+            specify(server.registeredServices().values(), should.containAll(service1, service2));
         }
 
         public void eachServiceWillHaveItsOwnServiceId() {

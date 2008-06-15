@@ -49,14 +49,13 @@ public class ServiceProviderImpl implements ServiceProvider, Serializable {
     }
 
     public Future<Set<ServiceReference<?>>> findAll() {
-        Set<ServiceReference<?>> services = new HashSet<ServiceReference<?>>(server.getServices().keySet());
+        Set<ServiceReference<?>> services = new HashSet<ServiceReference<?>>(server.registeredServices().keySet());
         return ServiceHelper.wrap(services);
     }
 
-    @SuppressWarnings({"unchecked"})
     public <T> Future<Set<ServiceReference<T>>> findByType(Class<T> serviceInterface) {
         Set<ServiceReference<T>> services = new HashSet<ServiceReference<T>>();
-        for (ServiceReference<?> ref : server.getServices().keySet()) {
+        for (ServiceReference<?> ref : server.registeredServices().keySet()) {
             if (ref.getServiceInterface().equals(serviceInterface)) {
                 services.add((ServiceReference<T>) ref);
             }

@@ -27,6 +27,7 @@ package net.orfjackal.darkstar.rpc.comm;
 import jdave.Specification;
 import jdave.junit4.JDaveRunner;
 import net.orfjackal.darkstar.rpc.MockNetwork;
+import net.orfjackal.darkstar.rpc.ServiceReference;
 import org.jmock.Expectations;
 import org.junit.runner.RunWith;
 
@@ -56,6 +57,7 @@ public class RpcGatewaySpec extends Specification<Object> {
         private Foo fooOnSlave;
         private Foo fooOnMaster;
         private Bar barOnMaster;
+        private ServiceReference<Foo> fooOnSlaveRef;
 
         public Object create() {
             slaveGateway = new RpcGateway(toMaster.getClientToServer(), toSlave.getServerToClient(), 100);
@@ -63,7 +65,7 @@ public class RpcGatewaySpec extends Specification<Object> {
             fooOnSlave = mock(Foo.class, "fooOnSlave");
             fooOnMaster = mock(Foo.class, "fooOnMaster");
             barOnMaster = mock(Bar.class, "barOnMaster");
-            slaveGateway.registerService(Foo.class, fooOnSlave);
+            fooOnSlaveRef = slaveGateway.registerService(Foo.class, fooOnSlave);
             masterGateway.registerService(Foo.class, fooOnMaster);
             masterGateway.registerService(Bar.class, barOnMaster);
             return null;
@@ -71,6 +73,18 @@ public class RpcGatewaySpec extends Specification<Object> {
 
         public void destroy() {
             shutdownNetwork();
+        }
+
+        public void servicesCanBeAddedLocally() {
+            int before = slaveGateway.registeredServices().size();
+            slaveGateway.registerService(Bar.class, dummy(Bar.class));
+            specify(slaveGateway.registeredServices().size(), should.equal(before + 1));
+        }
+
+        public void servicesCanBeRemovedLocally() {
+            int before = slaveGateway.registeredServices().size();
+            slaveGateway.unregisterService(fooOnSlaveRef);
+            specify(slaveGateway.registeredServices().size(), should.equal(before - 1));
         }
 
         public void slaveCanFindAllServicesOnMaster() {

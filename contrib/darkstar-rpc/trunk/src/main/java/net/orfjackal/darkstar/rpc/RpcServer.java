@@ -34,7 +34,7 @@ public interface RpcServer {
 
     <T> ServiceReference<T> registerService(Class<T> serviceInterface, T service);
 
-    void unregisterService(ServiceReference<?> service);
+    void unregisterService(ServiceReference<?> serviceRef);
 
-    Map<ServiceReference<?>, Object> getServices();
+    Map<ServiceReference<?>, Object> registeredServices();
 }

@@ -84,11 +84,11 @@ public class RpcServerImpl implements RpcServer, MessageReciever, Serializable {
         return ref;
     }
 
-    public void unregisterService(ServiceReference<?> service) {
-        services.remove(service.getServiceId());
+    public void unregisterService(ServiceReference<?> serviceRef) {
+        services.remove(serviceRef.getServiceId());
     }
 
-    public Map<ServiceReference<?>, Object> getServices() {
+    public Map<ServiceReference<?>, Object> registeredServices() {
         Map<ServiceReference<?>, Object> map = new HashMap<ServiceReference<?>, Object>();
         for (ServiceHolder<?> holder : services.values()) {
             map.put(holder.getReference(), holder.getService());

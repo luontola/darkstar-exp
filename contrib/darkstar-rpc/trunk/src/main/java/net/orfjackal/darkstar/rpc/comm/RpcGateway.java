@@ -59,11 +59,12 @@ public class RpcGateway implements RpcServer {
         return server.registerService(serviceInterface, service);
     }
 
-    public void unregisterService(ServiceReference<?> service) {
+    public void unregisterService(ServiceReference<?> serviceRef) {
+        server.unregisterService(serviceRef);
     }
 
-    public Map<ServiceReference<?>, Object> getServices() {
-        return null;
+    public Map<ServiceReference<?>, Object> registeredServices() {
+        return server.registeredServices();
     }
 
     public <T> Set<T> remoteFindByType(Class<T> serviceInterface) {
