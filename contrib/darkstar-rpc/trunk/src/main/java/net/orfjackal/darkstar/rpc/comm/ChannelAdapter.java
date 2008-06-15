@@ -78,6 +78,13 @@ public class ChannelAdapter implements ChannelListener {
         }
     }
 
+    private void sendToChannel(ByteBuffer buf) {
+        if (channel == null) {
+            throw new IllegalStateException("No connection");
+        }
+        channel.send(null, buf);
+    }
+
     private class MyRequestSender implements MessageSender {
 
         public void send(byte[] message) throws IOException {
@@ -85,7 +92,7 @@ public class ChannelAdapter implements ChannelListener {
             buf.put(RpcGateway.REQUEST_TO_SLAVE);
             buf.put(message);
             buf.flip();
-            channel.send(null, buf);
+            sendToChannel(buf);
         }
 
         public void setCallback(MessageReciever callback) {
@@ -100,7 +107,7 @@ public class ChannelAdapter implements ChannelListener {
             buf.put(RpcGateway.RESPONSE_FROM_MASTER);
             buf.put(message);
             buf.flip();
-            channel.send(null, buf);
+            sendToChannel(buf);
         }
 
         public void setCallback(MessageReciever callback) {

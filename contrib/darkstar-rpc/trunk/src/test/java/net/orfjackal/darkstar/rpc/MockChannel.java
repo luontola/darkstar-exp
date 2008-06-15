@@ -62,12 +62,20 @@ public class MockChannel {
         this.channelListener = channelListener;
     }
 
+    public Channel getChannel() {
+        return channel;
+    }
+
     public void joinChannel(ServerSessionListener session) {
         clientChannelListeners.add(session.joinedChannel(clientChannel));
     }
 
-    public Channel getChannel() {
-        return channel;
+    public void leaveAll() {
+        for (Iterator<ClientChannelListener> it = clientChannelListeners.iterator(); it.hasNext();) {
+            ClientChannelListener listener = it.next();
+            it.remove();
+            listener.leftChannel(clientChannel);
+        }
     }
 
     public void shutdown() {
@@ -141,6 +149,9 @@ public class MockChannel {
         }
 
         public void send(final ByteBuffer message) throws IOException {
+            if (clientChannelListeners.isEmpty()) {
+                throw new IllegalStateException("You are not a member of this channel");
+            }
             messageQueue.execute(new Runnable() {
                 public void run() {
                     channelListener.receivedMessage(channel, clientSession, message);

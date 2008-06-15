@@ -27,13 +27,19 @@ package net.orfjackal.darkstar.rpc.comm;
 import com.sun.sgs.client.ClientChannel;
 import com.sun.sgs.client.ClientChannelListener;
 import com.sun.sgs.client.ServerSessionListener;
+import jdave.Block;
 import jdave.Specification;
 import jdave.junit4.JDaveRunner;
 import net.orfjackal.darkstar.rpc.MockChannel;
+import net.orfjackal.darkstar.rpc.ServiceProvider;
+import net.orfjackal.darkstar.rpc.ServiceReference;
 import org.junit.runner.RunWith;
 
 import java.nio.ByteBuffer;
 import java.util.Set;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * @author Esko Luontola
@@ -83,6 +89,23 @@ public class DarkstarIntegrationSpec extends Specification<Object> {
         public void serverCanUseServicesOnClient() {
             Set<?> services = gatewayOnServer.remoteFindAll();
             specify(services.size(), should.equal(1));
+        }
+
+        public void ifTheClientLeavesTheChannelAllCommunicationsWillBeCut() {
+            final ServiceProvider providerOnClient = gatewayOnClient.remoteFindByType(ServiceProvider.class).iterator().next();
+            final ServiceProvider providerOnServer = gatewayOnServer.remoteFindByType(ServiceProvider.class).iterator().next();
+            mockChannel.leaveAll();
+            specify(new Block() {
+                public void run() throws Throwable {
+                    providerOnClient.findAll();
+                }
+            }, should.raise(IllegalStateException.class));
+            specify(new Block() {
+                public void run() throws Throwable {
+                    Future<Set<ServiceReference<?>>> f = providerOnServer.findAll();
+                    f.get(100, TimeUnit.MILLISECONDS);
+                }
+            }, should.raise(TimeoutException.class));
         }
     }
 
