@@ -24,10 +24,7 @@
 
 package net.orfjackal.darkstar.rpc.comm;
 
-import com.sun.sgs.app.Channel;
-import com.sun.sgs.app.ChannelListener;
-import com.sun.sgs.app.ChannelManager;
-import com.sun.sgs.app.Delivery;
+import com.sun.sgs.app.*;
 import com.sun.sgs.client.ClientChannel;
 import com.sun.sgs.client.ClientChannelListener;
 import com.sun.sgs.client.ServerSessionListener;
@@ -37,6 +34,11 @@ import org.jmock.Expectations;
 import org.junit.runner.RunWith;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.TimeoutException;
 
 /**
  * @author Esko Luontola
@@ -44,6 +46,39 @@ import java.nio.ByteBuffer;
  */
 @RunWith(JDaveRunner.class)
 public class DarkstarIntegrationSpec extends Specification<Object> {
+
+    public class AChannelAdapter {
+
+        private ChannelAdapter adapter;
+        private DummyChannel channel;
+        private ChannelListener channelListener;
+        private ClientSession clientSession;
+
+        public Object create() {
+            channel = new DummyChannel();
+            clientSession = mock(ClientSession.class);
+
+            adapter = new ChannelAdapter(10);
+            channelListener = adapter.getChannelListener();
+            adapter.setChannel(channel);
+            return null;
+        }
+
+        public void createsAGatewayWhichSendsRequestsToTheChannel() {
+            RpcGateway gateway = adapter.getGateway();
+            try {
+                gateway.remoteFindAll();
+            } catch (RuntimeException e) {
+                if (e.getCause() != null && e.getCause().getClass().equals(TimeoutException.class)) {
+                    // OK because in this test setup no response is sent back
+                } else {
+                    throw e;
+                }
+            }
+            specify(channel.senders, should.containInOrder((ClientSession) null));
+            specify(channel.messages.size(), should.equal(1));
+        }
+    }
 
     public class WhenServerCreatesARpcChannel {
 
@@ -106,6 +141,54 @@ public class DarkstarIntegrationSpec extends Specification<Object> {
         }
 
         public void disconnected(boolean graceful, String reason) {
+        }
+    }
+
+    private class DummyChannel implements Channel {
+
+        public List<ClientSession> senders = new ArrayList<ClientSession>();
+        public List<ByteBuffer> messages = new ArrayList<ByteBuffer>();
+
+        public String getName() {
+            throw new UnsupportedOperationException();
+        }
+
+        public Delivery getDeliveryRequirement() {
+            throw new UnsupportedOperationException();
+        }
+
+        public boolean hasSessions() {
+            throw new UnsupportedOperationException();
+        }
+
+        public Iterator<ClientSession> getSessions() {
+            throw new UnsupportedOperationException();
+        }
+
+        public Channel join(ClientSession session) {
+            throw new UnsupportedOperationException();
+        }
+
+        public Channel join(Set<ClientSession> sessions) {
+            throw new UnsupportedOperationException();
+        }
+
+        public Channel leave(ClientSession session) {
+            throw new UnsupportedOperationException();
+        }
+
+        public Channel leave(Set<ClientSession> sessions) {
+            throw new UnsupportedOperationException();
+        }
+
+        public Channel leaveAll() {
+            throw new UnsupportedOperationException();
+        }
+
+        public Channel send(ClientSession sender, ByteBuffer message) {
+            senders.add(sender);
+            messages.add(message);
+            return this;
         }
     }
 }

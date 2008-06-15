@@ -26,18 +26,68 @@ package net.orfjackal.darkstar.rpc.comm;
 
 import com.sun.sgs.app.Channel;
 import com.sun.sgs.app.ChannelListener;
+import net.orfjackal.darkstar.rpc.MessageReciever;
+import net.orfjackal.darkstar.rpc.MessageSender;
+
+import java.io.IOException;
+import java.nio.ByteBuffer;
 
 /**
  * @author Esko Luontola
  * @since 15.6.2008
  */
 public class ChannelAdapter {
-    
+
+    private final long timeout;
+
+    private final MessageSender requestSender;
+    private MessageReciever responseReciever;
+
+    private final MessageSender responseSender;
+    private MessageReciever requestReciever;
+
+    private Channel channel;
+
+    public ChannelAdapter() {
+        this(1000);
+    }
+
+    public ChannelAdapter(long timeout) {
+        this.timeout = timeout;
+        requestSender = new MyRequestSender();
+        responseSender = new MyResponseSender();
+    }
+
     public ChannelListener getChannelListener() {
         return null;
     }
 
     public void setChannel(Channel channel) {
+        this.channel = channel;
+    }
 
+    public RpcGateway getGateway() {
+        return new RpcGateway(requestSender, responseSender, timeout);
+    }
+
+    private class MyRequestSender implements MessageSender {
+
+        public void send(byte[] message) throws IOException {
+            channel.send(null, ByteBuffer.wrap(message));
+        }
+
+        public void setCallback(MessageReciever callback) {
+            responseReciever = callback;
+        }
+    }
+
+    private class MyResponseSender implements MessageSender {
+
+        public void send(byte[] message) throws IOException {
+        }
+
+        public void setCallback(MessageReciever callback) {
+            requestReciever = callback;
+        }
     }
 }
