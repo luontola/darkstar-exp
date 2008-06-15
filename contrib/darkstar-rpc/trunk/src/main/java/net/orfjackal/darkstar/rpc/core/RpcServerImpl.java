@@ -50,18 +50,18 @@ public class RpcServerImpl implements RpcServer, MessageReciever, Serializable {
     private static final Logger log = Logger.getLogger(RpcServerImpl.class.getName());
 
     private final Map<Long, ServiceHolder<?>> services;
-    private final MessageSender connectionToClient;
+    private final MessageSender responseSender;
     private long nextServiceId = FIRST_SERVICE_ID;
 
-    public RpcServerImpl(MessageSender connectionToClient) {
-        this(connectionToClient, new ConcurrentHashMap<Long, ServiceHolder<?>>());
+    public RpcServerImpl(MessageSender responseSender) {
+        this(responseSender, new ConcurrentHashMap<Long, ServiceHolder<?>>());
     }
 
-    public RpcServerImpl(MessageSender connectionToClient, Map<Long, ServiceHolder<?>> backingMap) {
+    public RpcServerImpl(MessageSender responseSender, Map<Long, ServiceHolder<?>> backingMap) {
         assert backingMap.size() == 0;
-        connectionToClient.setCallback(this);
+        responseSender.setCallback(this);
         this.services = backingMap;
-        this.connectionToClient = connectionToClient;
+        this.responseSender = responseSender;
         registerDefaultServices();
     }
 
@@ -101,7 +101,7 @@ public class RpcServerImpl implements RpcServer, MessageReciever, Serializable {
         Response rsp = invokeService(rq);
         try {
             if (rsp != null) {
-                connectionToClient.send(rsp.toBytes());
+                responseSender.send(rsp.toBytes());
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

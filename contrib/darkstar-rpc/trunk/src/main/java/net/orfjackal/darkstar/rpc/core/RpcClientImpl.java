@@ -43,12 +43,12 @@ public class RpcClientImpl implements RpcClient, MessageReciever, Serializable {
     private static final Logger log = Logger.getLogger(RpcClientImpl.class.getName());
 
     private final Map<Long, RpcFuture<?>> waitingForResponse = new ConcurrentHashMap<Long, RpcFuture<?>>();
-    private final MessageSender connectionToServer;
+    private final MessageSender requestSender;
     private long nextRequestId = 1L;
 
-    public RpcClientImpl(MessageSender connectionToServer) {
-        connectionToServer.setCallback(this);
-        this.connectionToServer = connectionToServer;
+    public RpcClientImpl(MessageSender requestSender) {
+        requestSender.setCallback(this);
+        this.requestSender = requestSender;
     }
 
     public ServiceReference<ServiceProvider> getServiceProvider() {
@@ -67,7 +67,7 @@ public class RpcClientImpl implements RpcClient, MessageReciever, Serializable {
     private Request sendRequest(long serviceId, String methodName, Class<?>[] paramTypes, Object[] parameters) {
         Request rq = new Request(nextRequestId(), serviceId, methodName, paramTypes, parameters);
         try {
-            connectionToServer.send(rq.toBytes());
+            requestSender.send(rq.toBytes());
         } catch (IOException e) {
             throw new RuntimeException("Unable to invoke method " + methodName + " on service " + serviceId, e);
         }
