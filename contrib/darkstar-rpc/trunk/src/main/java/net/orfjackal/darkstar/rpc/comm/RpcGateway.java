@@ -41,6 +41,11 @@ import java.util.concurrent.TimeUnit;
  */
 public class RpcGateway implements RpcServer {
 
+    public static final byte REQUEST_TO_MASTER = 0;
+    public static final byte RESPONSE_FROM_MASTER = 1;
+    public static final byte REQUEST_TO_SLAVE = 2;
+    public static final byte RESPONSE_FROM_SLAVE = 3;
+
     private final long timeout;
     private final RpcServer server;
     private final RpcProxyFactory proxyFactory;

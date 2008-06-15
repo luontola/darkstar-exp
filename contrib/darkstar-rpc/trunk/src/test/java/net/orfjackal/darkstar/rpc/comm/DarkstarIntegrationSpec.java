@@ -41,7 +41,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.TimeoutException;
 
 /**
  * @author Esko Luontola
@@ -50,6 +49,7 @@ import java.util.concurrent.TimeoutException;
 @RunWith(JDaveRunner.class)
 public class DarkstarIntegrationSpec extends Specification<Object> {
 
+/*
     public class AChannelAdapter {
 
         private ChannelAdapter adapter;
@@ -82,6 +82,7 @@ public class DarkstarIntegrationSpec extends Specification<Object> {
             specify(channel.messages.size(), should.equal(1));
         }
     }
+*/
 
     public class WhenThereIsARpcChannel {
 
@@ -124,6 +125,12 @@ public class DarkstarIntegrationSpec extends Specification<Object> {
             specify(services.size(), should.equal(1));
             mockChannel.shutdownAndWait();
         }
+
+//        public void serverCanQueryServicesOnClient() {
+//            Set<?> services = gatewayOnServer.remoteFindAll();
+//            specify(services.size(), should.equal(1));
+//            mockChannel.shutdownAndWait();
+//        }
     }
 
 

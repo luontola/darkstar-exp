@@ -71,16 +71,20 @@ public class ChannelAdapter implements ChannelListener {
 
     public void receivedMessage(Channel channel, ClientSession sender, ByteBuffer message) {
         System.out.println("ChannelAdapter.receivedMessage");
-        System.out.println("channel = " + channel);
-        System.out.println("sender = " + sender);
-        requestReciever.receivedMessage(ByteBufferUtils.asByteArray(message));
+        byte header = message.get();
+        if (header == RpcGateway.REQUEST_TO_MASTER) {
+            requestReciever.receivedMessage(ByteBufferUtils.asByteArray(message));
+        } else {
+            System.err.println("UNKNOWN HEADER: " + header);
+        }
     }
 
     private class MyRequestSender implements MessageSender {
 
         public void send(byte[] message) throws IOException {
             System.out.println("ChannelAdapter$MyRequestSender.send");
-            channel.send(null, ByteBuffer.wrap(message));
+//            channel.send(null, ByteBuffer.wrap(message));
+            // TODO
         }
 
         public void setCallback(MessageReciever callback) {
@@ -92,7 +96,11 @@ public class ChannelAdapter implements ChannelListener {
 
         public void send(byte[] message) throws IOException {
             System.out.println("ChannelAdapter$MyResponseSender.send");
-            channel.send(null, ByteBuffer.wrap(message));
+            ByteBuffer buf = ByteBuffer.allocateDirect(message.length + 1);
+            buf.put(RpcGateway.RESPONSE_FROM_MASTER);
+            buf.put(message);
+            buf.flip();
+            channel.send(null, buf);
         }
 
         public void setCallback(MessageReciever callback) {

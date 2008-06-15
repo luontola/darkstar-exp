@@ -65,7 +65,12 @@ public class ClientChannelAdapter implements ClientChannelListener {
 
     public void receivedMessage(ClientChannel channel, ByteBuffer message) {
         System.out.println("ClientChannelAdapter.receivedMessage");
-        responseReciever.receivedMessage(ByteBufferUtils.asByteArray(message));
+        byte header = message.get();
+        if (header == RpcGateway.RESPONSE_FROM_MASTER) {
+            responseReciever.receivedMessage(ByteBufferUtils.asByteArray(message));
+        } else {
+            System.err.println("UNKNOWN HEADER: " + header);
+        }
     }
 
     public RpcGateway getGateway() {
@@ -76,7 +81,11 @@ public class ClientChannelAdapter implements ClientChannelListener {
 
         public void send(byte[] message) throws IOException {
             System.out.println("ClientChannelAdapter$MyRequestSender.send");
-            clientChannel.send(ByteBuffer.wrap(message));
+            ByteBuffer buf = ByteBuffer.allocateDirect(message.length + 1);
+            buf.put(RpcGateway.REQUEST_TO_MASTER);
+            buf.put(message);
+            buf.flip();
+            clientChannel.send(buf);
         }
 
         public void setCallback(MessageReciever callback) {
