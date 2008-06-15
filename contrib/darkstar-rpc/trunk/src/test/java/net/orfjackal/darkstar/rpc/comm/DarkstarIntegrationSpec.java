@@ -24,13 +24,16 @@
 
 package net.orfjackal.darkstar.rpc.comm;
 
-import com.sun.sgs.app.*;
+import com.sun.sgs.app.Channel;
+import com.sun.sgs.app.ChannelListener;
+import com.sun.sgs.app.ClientSession;
+import com.sun.sgs.app.Delivery;
 import com.sun.sgs.client.ClientChannel;
 import com.sun.sgs.client.ClientChannelListener;
 import com.sun.sgs.client.ServerSessionListener;
 import jdave.Specification;
 import jdave.junit4.JDaveRunner;
-import org.jmock.Expectations;
+import net.orfjackal.darkstar.rpc.MockChannel;
 import org.junit.runner.RunWith;
 
 import java.nio.ByteBuffer;
@@ -59,7 +62,7 @@ public class DarkstarIntegrationSpec extends Specification<Object> {
             clientSession = mock(ClientSession.class);
 
             adapter = new ChannelAdapter(10);
-            channelListener = adapter.getChannelListener();
+            channelListener = adapter;
             adapter.setChannel(channel);
             return null;
         }
@@ -80,48 +83,47 @@ public class DarkstarIntegrationSpec extends Specification<Object> {
         }
     }
 
-    public class WhenServerCreatesARpcChannel {
+    public class WhenThereIsARpcChannel {
 
-        private ChannelAdapter adapter;
+        private ChannelAdapter adapterOnServer;
+        private MockChannel mockChannel;
+        private ChannelListener channelListenerOnServer;
+        private ServerSessionListener serverSessionListenerOnClient;
+        private ClientChannelAdapter adapterOnClient;
 
-        public Object create() {
-            final ChannelManager channelManager = mock(ChannelManager.class);
-            final Channel mockChannel = mock(Channel.class);
-            checking(new Expectations() {{
-                one(channelManager).createChannel("RpcChannel", with(aNonNull(ChannelListener.class)), with(any(Delivery.class)));
-                    will(returnValue(mockChannel));
-            }});
-
-            Channel channel = channelManager.createChannel("RpcChannel", adapter.getChannelListener(), Delivery.UNORDERED_RELIABLE);
-            adapter.setChannel(channel);
-
-            return null;
-        }
-
-        // TODO
-    }
-
-    public class WhenClientJoinsARpcChannel {
-
-        private ClientChannelAdapter adapter;
+        private RpcGateway gatewayOnServer;
+        private RpcGateway gatewayOnClient;
 
         public Object create() {
-            adapter = new ClientChannelAdapter();
-
-            ServerSessionListener serverSessionListener = new NullServerSessionListener() {
-
-                public ClientChannelListener joinedChannel(ClientChannel channel) {
-                    return adapter.joinedChannel(channel);
-                }
-
-                public void receivedMessage(ByteBuffer message) {
-                    adapter.receivedMessage(message);
+            adapterOnServer = new ChannelAdapter();
+            gatewayOnServer = adapterOnServer.getGateway();
+            channelListenerOnServer = new ChannelListener() {
+                public void receivedMessage(Channel channel, ClientSession sender, ByteBuffer message) {
+                    System.out.println("DarkstarIntegrationSpec$WhenThereIsARpcChannel.receivedMessage");
+                    adapterOnServer.receivedMessage(channel, sender, message);
                 }
             };
+            mockChannel = new MockChannel(channelListenerOnServer);
+            adapterOnServer.setChannel(mockChannel.getChannel());
+
+            adapterOnClient = new ClientChannelAdapter();
+            gatewayOnClient = adapterOnClient.getGateway();
+            serverSessionListenerOnClient = new NullServerSessionListener() {
+                public ClientChannelListener joinedChannel(ClientChannel channel) {
+                    System.out.println("DarkstarIntegrationSpec$WhenThereIsARpcChannel.joinedChannel");
+                    return adapterOnClient.joinedChannel(channel);
+                }
+            };
+            mockChannel.joinChannel(serverSessionListenerOnClient);
+
             return null;
         }
 
-        // TODO
+        public void clientCanQueryServicesOnServer() {
+            Set<?> services = gatewayOnClient.remoteFindAll();
+            specify(services.size(), should.equal(1));
+            mockChannel.shutdownAndWait();
+        }
     }
 
 

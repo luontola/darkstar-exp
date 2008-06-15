@@ -26,20 +26,73 @@ package net.orfjackal.darkstar.rpc.comm;
 
 import com.sun.sgs.client.ClientChannel;
 import com.sun.sgs.client.ClientChannelListener;
+import net.orfjackal.darkstar.rpc.MessageReciever;
+import net.orfjackal.darkstar.rpc.MessageSender;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 
 /**
  * @author Esko Luontola
  * @since 15.6.2008
  */
-public class ClientChannelAdapter {
+public class ClientChannelAdapter implements ClientChannelListener {
 
-    public ClientChannelListener joinedChannel(ClientChannel channel) {
-        return null;
+    private final MessageSender requestSender;
+    private MessageReciever requestReciever;
+    private final MessageSender responseSender;
+    private MessageReciever responseReciever;
+    private final RpcGateway gateway;
+    private ClientChannel clientChannel;
+
+    public ClientChannelAdapter() {
+        requestSender = new MyRequestSender();
+        responseSender = new MyResponseSender();
+        gateway = new RpcGateway(requestSender, responseSender, 1000);
     }
 
-    public void receivedMessage(ByteBuffer message) {
-        
+
+    public ClientChannelListener joinedChannel(ClientChannel channel) {
+        assert this.clientChannel == null;
+        this.clientChannel = channel;
+        return this;
+    }
+
+    public void leftChannel(ClientChannel channel) {
+        assert this.clientChannel == channel;
+        this.clientChannel = null;
+    }
+
+    public void receivedMessage(ClientChannel channel, ByteBuffer message) {
+        System.out.println("ClientChannelAdapter.receivedMessage");
+        responseReciever.receivedMessage(ByteBufferUtils.asByteArray(message));
+    }
+
+    public RpcGateway getGateway() {
+        return gateway;
+    }
+
+    private class MyRequestSender implements MessageSender {
+
+        public void send(byte[] message) throws IOException {
+            System.out.println("ClientChannelAdapter$MyRequestSender.send");
+            clientChannel.send(ByteBuffer.wrap(message));
+        }
+
+        public void setCallback(MessageReciever callback) {
+            responseReciever = callback;
+        }
+    }
+
+    private class MyResponseSender implements MessageSender {
+
+        public void send(byte[] message) throws IOException {
+            System.out.println("ClientChannelAdapter$MyResponseSender.send");
+            // TODO
+        }
+
+        public void setCallback(MessageReciever callback) {
+            requestReciever = callback;
+        }
     }
 }

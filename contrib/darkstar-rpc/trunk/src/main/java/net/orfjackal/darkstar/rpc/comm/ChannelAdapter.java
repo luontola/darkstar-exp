@@ -26,6 +26,7 @@ package net.orfjackal.darkstar.rpc.comm;
 
 import com.sun.sgs.app.Channel;
 import com.sun.sgs.app.ChannelListener;
+import com.sun.sgs.app.ClientSession;
 import net.orfjackal.darkstar.rpc.MessageReciever;
 import net.orfjackal.darkstar.rpc.MessageSender;
 
@@ -36,7 +37,7 @@ import java.nio.ByteBuffer;
  * @author Esko Luontola
  * @since 15.6.2008
  */
-public class ChannelAdapter {
+public class ChannelAdapter implements ChannelListener {
 
     private final long timeout;
 
@@ -47,6 +48,7 @@ public class ChannelAdapter {
     private MessageReciever requestReciever;
 
     private Channel channel;
+    private final RpcGateway gateway;
 
     public ChannelAdapter() {
         this(1000);
@@ -56,10 +58,7 @@ public class ChannelAdapter {
         this.timeout = timeout;
         requestSender = new MyRequestSender();
         responseSender = new MyResponseSender();
-    }
-
-    public ChannelListener getChannelListener() {
-        return null;
+        gateway = new RpcGateway(requestSender, responseSender, this.timeout);
     }
 
     public void setChannel(Channel channel) {
@@ -67,12 +66,20 @@ public class ChannelAdapter {
     }
 
     public RpcGateway getGateway() {
-        return new RpcGateway(requestSender, responseSender, timeout);
+        return gateway;
+    }
+
+    public void receivedMessage(Channel channel, ClientSession sender, ByteBuffer message) {
+        System.out.println("ChannelAdapter.receivedMessage");
+        System.out.println("channel = " + channel);
+        System.out.println("sender = " + sender);
+        requestReciever.receivedMessage(ByteBufferUtils.asByteArray(message));
     }
 
     private class MyRequestSender implements MessageSender {
 
         public void send(byte[] message) throws IOException {
+            System.out.println("ChannelAdapter$MyRequestSender.send");
             channel.send(null, ByteBuffer.wrap(message));
         }
 
@@ -84,6 +91,8 @@ public class ChannelAdapter {
     private class MyResponseSender implements MessageSender {
 
         public void send(byte[] message) throws IOException {
+            System.out.println("ChannelAdapter$MyResponseSender.send");
+            channel.send(null, ByteBuffer.wrap(message));
         }
 
         public void setCallback(MessageReciever callback) {
