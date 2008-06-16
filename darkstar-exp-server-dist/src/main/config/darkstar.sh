@@ -50,8 +50,73 @@ if [ -z "$DARKSTAR_HOME" ]; then
 fi
 
 
-# TODO: Find out current environment
-NATIVE_LIBRARY_DIR=$DARKSTAR_HOME/lib/win32-x86
+# Figure out what platform we're running on and set the platform and
+# pathsep variables appropriately.  Here are the supported platforms:
+#
+# OS		Hardware	Platform	Path Separator
+# --------	--------	--------------	--------------
+# Mac OS X	PowerPC		macosx-ppc	:
+# Mac OS X	Intel x86	macosx-x86	:
+# Solaris	Intel x86	solaris-x86	:
+# Solaris	Sparc		solaris-sparc	:
+# Linux		Intel x86	linux-x86	:
+# Linux		Intel x86_64	linux-x86_64	:
+# Windows	Intel x86	win32-x86	;
+#
+platform=unknown
+os=`uname -s`
+case $os in
+    Darwin)
+	pathsep=":"
+	mach=`uname -p`
+	case $mach in
+	    powerpc)
+		platform=macosx-ppc;;
+	    i386)
+	    	platform=macosx-x86;;
+	    *)
+		echo Unknown hardware: $mach;
+		exit 1;
+	esac;;
+    SunOS)
+	pathsep=":"
+	mach=`uname -p`
+	case $mach in
+	    i386)
+	    	platform=solaris-x86;;
+	    sparc)
+	    	platform=solaris-sparc;;
+	    *)
+		echo Unknown hardware: $mach;
+		exit 1;
+	esac;;
+    Linux)
+	pathsep=":"
+	mach=`uname -m`;
+	case $mach in
+	    i686)
+		platform=linux-x86;;
+	    x86_64)
+		platform=linux-x86_64;;
+	    *)
+		echo Unknown hardware: $mach;
+		exit 1;
+	esac;;
+    CYGWIN*)
+	pathsep=";"
+	mach=`uname -m`;
+	case $mach in
+	    i686)
+		platform=win32-x86;;
+	    *)
+		echo Unknown hardware: $mach;
+		exit 1;
+	esac;;
+    *)
+	echo Unknown operating system: $os;
+	exit 1;
+esac
+NATIVE_LIBRARY_DIR=$DARKSTAR_HOME/lib/$platform
 
 
 # Custom JVM options (comments start with ";")
@@ -61,10 +126,10 @@ VMOPTIONS=`sed -e 's/;.*$//' "$DARKSTAR_HOME/darkstar.vmoptions"`
 # Add all JARs in library dirs to classpath
 CP=
 for FILE in $DARKSTAR_HOME/lib/*.jar; do
-    CP=$CP:$FILE
+    CP=$CP$pathsep$FILE
 done
 for FILE in $APP_LIBRARY_DIR/*.jar; do
-    CP=$CP:$FILE
+    CP=$CP$pathsep$FILE
 done
 
 
