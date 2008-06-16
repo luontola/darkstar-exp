@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>net.orfjackal.darkstar-exp</groupId>
+        <artifactId>darkstar-exp</artifactId>
+        <version>0.9.6_0</version>
+    </parent>
+
+    <artifactId>darkstar-client</artifactId>
+    <packaging>jar</packaging>
+
+    <name>darkstar-client</name>
+
+    <licenses>
+        <license>
+            <name>BSD License</name>
+            <url>http://www.opensource.org/licenses/bsd-license.php</url>
+        </license>
+    </licenses>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>net.orfjackal.darkstar-exp</groupId>
+            <artifactId>darkstar-shared</artifactId>
+        </dependency>
+
+    </dependencies>
+
+</project>
