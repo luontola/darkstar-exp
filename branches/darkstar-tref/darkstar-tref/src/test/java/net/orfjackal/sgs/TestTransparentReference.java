@@ -244,16 +244,19 @@ public abstract class TestTransparentReference {
 
         public void testMarkForUpdateOnManagedObjectShouldUseMarkForUpdate() {
             TransparentReferenceUtil.markForUpdate(managedObject);
+            // TODO: mock the DataManager
             // unable to test, should call: AppContext.getDataManager().markForUpdate(managedObject);
         }
 
         public void testMarkForUpdateOnTransparentReferenceShouldUseGetForUpdate() {
             TransparentReferenceUtil.markForUpdate(proxy);
+            // TODO: mock the DataManager
             // unable to test, should call: ManagedReference.getForUpdate();
         }
 
         public void testMarkForUpdateOnNormalObjectShouldDoNothing() {
             TransparentReferenceUtil.markForUpdate(normalObject);
+            // TODO: mock the DataManager
             // unable to test, should call nothing
         }
     }
