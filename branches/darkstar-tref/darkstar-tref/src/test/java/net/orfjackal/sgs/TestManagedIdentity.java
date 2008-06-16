@@ -17,7 +17,6 @@
 
 package net.orfjackal.sgs;
 
-import com.sun.sgs.app.AppContext;
 import com.sun.sgs.app.ManagedObject;
 import junit.framework.TestCase;
 
@@ -37,7 +36,8 @@ public abstract class TestManagedIdentity {
         private Object obj;
 
         protected void setUp() throws Exception {
-            AppContext.setContextResolver(new MockAppContextResolver());
+            MockAppContextResolver.install();
+            
             man1 = new DummyManagedObject();
             man2 = new DummyManagedObject();
             ref1 = factory.createTransparentReference(man1);
@@ -46,7 +46,7 @@ public abstract class TestManagedIdentity {
         }
 
         protected void tearDown() throws Exception {
-            AppContext.setContextResolver(null);
+            MockAppContextResolver.uninstall();
         }
 
         public void testManagedObjectEqualsManagedObject() {

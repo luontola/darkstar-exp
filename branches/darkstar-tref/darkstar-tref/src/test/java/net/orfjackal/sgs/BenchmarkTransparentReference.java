@@ -49,7 +49,7 @@ public class BenchmarkTransparentReference {
     private static int junk = 0;
 
     public static void main(String[] args) throws Exception {
-//        MockSGS.init();
+        MockAppContextResolver.install();
 
         System.out.println("Current strategy: " + current + "\n");
         if (current == JDK_PROXYING) {
@@ -79,6 +79,8 @@ public class BenchmarkTransparentReference {
 
         // prevent JIT compiler from optimizing away all benchmarks
         System.out.println("(Junk: " + junk + ")");
+
+        MockAppContextResolver.uninstall();
     }
 
     private static String result(String name, long totalMillis, int iterations) {

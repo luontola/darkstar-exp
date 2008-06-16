@@ -17,7 +17,6 @@
 
 package net.orfjackal.sgs;
 
-import com.sun.sgs.app.AppContext;
 import com.sun.sgs.app.ManagedObject;
 import com.sun.sgs.app.ManagedReference;
 import junit.framework.TestCase;
@@ -54,14 +53,15 @@ public abstract class TestTransparentReference {
         private Object proxy;
 
         protected void setUp() throws Exception {
-            AppContext.setContextResolver(new MockAppContextResolver());
+            MockAppContextResolver.install();
+
             TransparentReferenceImpl.setFactory(factory);
             object = new DummyManagedObject();
             proxy = factory.createTransparentReference(object);
         }
 
         protected void tearDown() throws Exception {
-            AppContext.setContextResolver(null);
+            MockAppContextResolver.uninstall();
         }
 
         public void testAProxyShouldBeCreated() {
@@ -169,7 +169,8 @@ public abstract class TestTransparentReference {
         private SerializationTestObject deserialized;
 
         protected void setUp() throws Exception {
-//            MockSGS.init();
+            MockAppContextResolver.install();
+
             TransparentReferenceImpl.setFactory(factory);
             managedObject = new DummyManagedObject();
             normalObject = new DummyNormalObject();
@@ -182,6 +183,10 @@ public abstract class TestTransparentReference {
             byte[] bytes = outBytes.toByteArray();
 
             deserialized = (SerializationTestObject) deserializeObject(bytes);
+        }
+
+        protected void tearDown() throws Exception {
+            MockAppContextResolver.uninstall();
         }
 
         public void testShouldReplaceManagedObjectsWithProxies() {
@@ -225,11 +230,16 @@ public abstract class TestTransparentReference {
         private Object normalObject;
 
         protected void setUp() throws Exception {
-//            MockSGS.init();
+            MockAppContextResolver.install();
+
             TransparentReferenceImpl.setFactory(factory);
             managedObject = new DummyManagedObject();
             proxy = (DummyInterface) factory.createTransparentReference(managedObject);
             normalObject = new Object();
+        }
+
+        protected void tearDown() throws Exception {
+            MockAppContextResolver.uninstall();
         }
 
         public void testMarkForUpdateOnManagedObjectShouldUseMarkForUpdate() {

@@ -20,7 +20,11 @@ package net.orfjackal.sgs;
 
 import com.sun.sgs.app.*;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
@@ -29,6 +33,32 @@ import java.util.Map;
  * @since 17.6.2008
  */
 public class MockAppContextResolver implements AppContextResolver {
+
+    private static MockAppContextResolver instance;
+
+    public static MockAppContextResolver getInstance() {
+        if (instance == null) {
+            throw new IllegalStateException("MockAppContextResolver is not installed");
+        }
+        return instance;
+    }
+
+    public static void install() {
+        if (instance != null) {
+            throw new IllegalStateException("Warning: install before uninstall");
+        }
+        instance = new MockAppContextResolver();
+        AppContext.setContextResolver(instance);
+    }
+
+    public static void uninstall() {
+        if (instance == null) {
+            throw new IllegalStateException("Warning: uninstall before install");
+        }
+        instance = null;
+        AppContext.setContextResolver(null);
+    }
+
 
     private final MockDataManager dataManager = new MockDataManager();
 
@@ -48,58 +78,84 @@ public class MockAppContextResolver implements AppContextResolver {
         throw new UnsupportedOperationException();
     }
 
+
     private static class MockDataManager implements DataManager {
 
         private final Map<Object, ManagedReference<Object>> refs = new IdentityHashMap<Object, ManagedReference<Object>>();
+        private final Map<Long, ManagedObject> objects = new HashMap<Long, ManagedObject>();
+        private volatile long nextObjectId = 1;
 
         public ManagedObject getBinding(String name) {
-            return null;
+            throw new UnsupportedOperationException();
         }
 
         public void setBinding(String name, Object object) {
+            throw new UnsupportedOperationException();
         }
 
         public void removeBinding(String name) {
+            throw new UnsupportedOperationException();
         }
 
         public String nextBoundName(String name) {
-            return null;
+            throw new UnsupportedOperationException();
         }
 
         public void removeObject(Object object) {
+            if (!refs.containsKey(object)) {
+                throw new IllegalArgumentException("Not in data store: " + object);
+            }
+            if (object instanceof ManagedObjectRemoval) {
+                ManagedObjectRemoval rem = (ManagedObjectRemoval) object;
+                rem.removingObject();
+            }
+            ManagedReference<Object> ref = refs.remove(object);
+            objects.remove(ref.getId().longValue());
         }
 
         public void markForUpdate(Object object) {
+            // do nothing - the objects are always in memory
         }
 
         public <T> ManagedReference<T> createReference(T object) {
             ManagedReference<T> ref = (ManagedReference<T>) refs.get(object);
             if (ref == null) {
-                ref = new MockManagedReference<T>(object);
+                ref = new MockManagedReference<T>(nextObjectId++, object);
                 refs.put(object, (ManagedReference<Object>) ref);
+                objects.put(ref.getId().longValue(), (ManagedObject) object);
             }
             return ref;
         }
     }
 
-    private static class MockManagedReference<T> implements ManagedReference<T> {
 
-        private final T object;
+    private static class MockManagedReference<T> implements ManagedReference<T>, Serializable {
 
-        public MockManagedReference(T object) {
-            this.object = object;
+        private static final long serialVersionUID = 1L;
+
+        private final long oid;
+        private transient ManagedObject object;
+
+        public MockManagedReference(long oid, T object) {
+            this.oid = oid;
+            this.object = (ManagedObject) object;
         }
 
         public T get() {
-            return object;
+            return (T) object;
         }
 
         public T getForUpdate() {
-            return object;
+            return (T) object;
         }
 
         public BigInteger getId() {
-            return BigInteger.valueOf(System.identityHashCode(object));
+            return BigInteger.valueOf(oid);
+        }
+
+        private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+            in.defaultReadObject();
+            this.object = getInstance().dataManager.objects.get(oid);
         }
     }
 }

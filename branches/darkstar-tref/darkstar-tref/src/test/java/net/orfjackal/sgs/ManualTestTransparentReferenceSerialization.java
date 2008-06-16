@@ -42,7 +42,8 @@ public class ManualTestTransparentReferenceSerialization {
     public static class Step1_Serialize {
 
         public static void main(String[] args) throws IOException {
-//            MockSGS.init();
+            MockAppContextResolver.install();
+
             TransparentReferenceImpl.setFactory(FACTORY);
             DummyInterface proxy = (DummyInterface) FACTORY.createTransparentReference(new DummyManagedObject2());
             System.out.println("proxy = " + proxy);
@@ -51,12 +52,15 @@ public class ManualTestTransparentReferenceSerialization {
             out.writeObject(proxy);
             out.close();
             System.out.println("Written to " + FILE.getCanonicalPath());
+
+            MockAppContextResolver.uninstall();
         }
     }
 
     public static class Step2_Deserialize {
         public static void main(String[] args) throws IOException, ClassNotFoundException {
-//            MockSGS.init();
+            MockAppContextResolver.install();
+
             TransparentReferenceImpl.setFactory(FACTORY);
             ObjectInputStream in = new ObjectInputStream(new FileInputStream(FILE));
             Object o = in.readObject();
@@ -71,6 +75,8 @@ public class ManualTestTransparentReferenceSerialization {
                     + "\t(expected: " + DummyInterface.class.isAssignableFrom(DummyManagedObject2.class) + ")");
             System.out.println("instanceof DummyInterface2 = " + (o instanceof DummyInterface2)
                     + "\t(expected: " + DummyInterface2.class.isAssignableFrom(DummyManagedObject2.class) + ")");
+
+            MockAppContextResolver.uninstall();
         }
     }
 
@@ -81,9 +87,10 @@ public class ManualTestTransparentReferenceSerialization {
         }
     }
 
-    public static class DummyManagedObject2 implements Serializable, ManagedObject,
+    public static class DummyManagedObject2 implements
+            DummyInterface,
 //            DummyInterface2,
-            DummyInterface {
+            Serializable, ManagedObject {
 
         private static final long serialVersionUID = 1L;
 
