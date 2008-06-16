@@ -1,0 +1,161 @@
+Index: darkstar-server/src/main/java/com/sun/sgs/app/AppContextResolverImpl.java
+===================================================================
+--- darkstar-server/src/main/java/com/sun/sgs/app/AppContextResolverImpl.java	(revision 97)
++++ darkstar-server/src/main/java/com/sun/sgs/app/AppContextResolverImpl.java	(revision 97)
+@@ -0,0 +1,45 @@
++/*
++ * Copyright 2007-2008 Sun Microsystems, Inc.
++ *
++ * This file is part of Project Darkstar Server.
++ *
++ * Project Darkstar Server is free software: you can redistribute it
++ * and/or modify it under the terms of the GNU General Public License
++ * version 2 as published by the Free Software Foundation and
++ * distributed hereunder to you.
++ *
++ * Project Darkstar Server is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ */
++
++package com.sun.sgs.app;
++
++import com.sun.sgs.impl.kernel.ContextResolver;
++
++/**
++ * @author Esko Luontola
++ * @since 17.6.2008
++ */
++public class AppContextResolverImpl implements AppContextResolver {
++
++    public ChannelManager getChannelManager() {
++        return ContextResolver.getChannelManager();
++    }
++
++    public DataManager getDataManager() {
++        return ContextResolver.getDataManager();
++    }
++
++    public TaskManager getTaskManager() {
++        return ContextResolver.getTaskManager();
++    }
++
++    public <T> T getManager(Class<T> type) {
++        return ContextResolver.getManager(type);
++    }
++}
+Index: darkstar-server/src/main/java/com/sun/sgs/app/AppContextResolver.java
+===================================================================
+--- darkstar-server/src/main/java/com/sun/sgs/app/AppContextResolver.java	(revision 97)
++++ darkstar-server/src/main/java/com/sun/sgs/app/AppContextResolver.java	(revision 97)
+@@ -0,0 +1,35 @@
++/*
++ * Copyright 2007-2008 Sun Microsystems, Inc.
++ *
++ * This file is part of Project Darkstar Server.
++ *
++ * Project Darkstar Server is free software: you can redistribute it
++ * and/or modify it under the terms of the GNU General Public License
++ * version 2 as published by the Free Software Foundation and
++ * distributed hereunder to you.
++ *
++ * Project Darkstar Server is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ */
++
++package com.sun.sgs.app;
++
++/**
++ * @author Esko Luontola
++ * @since 17.6.2008
++ */
++public interface AppContextResolver {
++
++    ChannelManager getChannelManager();
++
++    DataManager getDataManager();
++
++    TaskManager getTaskManager();
++
++    <T> T getManager(Class<T> type);
++}
+Index: darkstar-server/src/main/java/com/sun/sgs/app/AppContext.java
+===================================================================
+--- darkstar-server/src/main/java/com/sun/sgs/app/AppContext.java	(revision 96)
++++ darkstar-server/src/main/java/com/sun/sgs/app/AppContext.java	(revision 97)
+@@ -19,15 +19,27 @@
+ 
+ package com.sun.sgs.app;
+ 
+-import com.sun.sgs.impl.kernel.ContextResolver;
+-
+-
+ /**
+  * Provides access to facilities available in the current application context.
+  */
+ public final class AppContext {
+ 
++    private static final AppContextResolver DEFAULT = new AppContextResolverImpl();
++    private static AppContextResolver resolver = DEFAULT;
++
+     /**
++     * Allows overriding the default ContextResolver for testing purposes.
++     * Provide your own implementation of AppContextResolver to mock Darkstar.
++     * Setting this to null will revert to using the default ContextResolver.
++     */
++    public static void setContextResolver(AppContextResolver resolver) {
++        if (resolver == null) {
++            resolver = DEFAULT;
++        }
++        AppContext.resolver = resolver;
++    }
++
++    /**
+      * Returns the {@code ChannelManager} for use by the current
+      * application.  The object returned is not serializable, and should not be
+      * stored as part of a managed object.
+@@ -35,7 +47,7 @@
+      * @return	the {@code ChannelManager} for the current application
+      */
+     public static ChannelManager getChannelManager() {
+-        return ContextResolver.getChannelManager();
++        return resolver.getChannelManager();
+     }
+ 
+     /**
+@@ -46,7 +58,7 @@
+      * @return	the {@code DataManager} for the current application
+      */
+     public static DataManager getDataManager() {
+-        return ContextResolver.getDataManager();
++        return resolver.getDataManager();
+     }
+ 
+     /**
+@@ -57,7 +69,7 @@
+      * @return	the {@code TaskManager} for the current application
+      */
+     public static TaskManager getTaskManager() {
+-        return ContextResolver.getTaskManager();
++        return resolver.getTaskManager();
+     }
+ 
+     /**
+@@ -72,7 +84,7 @@
+      *		specified type
+      */
+     public static <T> T getManager(Class<T> type) {
+-        return ContextResolver.getManager(type);    
++        return resolver.getManager(type);
+     }
+ 
+ }
