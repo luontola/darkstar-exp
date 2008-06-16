@@ -1,0 +1,15 @@
+#summary What the version numbers of Darkstar EXP mean
+
+= Darkstar EXP's Version Numbers =
+
+The version numbering scheme is based on the version numbers of the vanilla Project Darkstar on which the EXP version is based on. In addition to that, there is a number representing the version of EXP, if more than one EXP version is based on the same vanilla version.
+
+To illustrate:
+
+  # Darkstar 0.9.6 is the original unmodified version
+  # Darkstar EXP 0.9.6_0 is based on Darkstar 0.9.6 without any new features
+  # Darkstar EXP 0.9.6_1 is based on Darkstar EXP 0.9.6_0 with the TransparentReferences feature added
+  # Darkstar EXP 0.9.6_2 is based on Darkstar EXP 0.9.6_1 with some more features added
+  # The original Project Darkstar team releases Darkstar 0.9.7
+  # Darkstar EXP 0.9.7_0 is based on Darkstar 0.9.7 without any new features
+  # Darkstar EXP 0.9.7_1 is based on Darkstar EXP 0.9.7_0 with all the previous new features merged from Darkstar EXP 0.9.6_2
