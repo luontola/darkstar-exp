@@ -49,7 +49,7 @@ public final class TransparentReferenceImpl implements TransparentReference, Ser
     }
 
     public ManagedObject getManagedObject() {
-        return (ManagedObject) reference.get(type);
+        return (ManagedObject) reference.get();
     }
 
     public ManagedReference getManagedReference() {

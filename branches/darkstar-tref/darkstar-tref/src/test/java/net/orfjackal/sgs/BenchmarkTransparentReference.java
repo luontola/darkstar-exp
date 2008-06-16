@@ -17,7 +17,6 @@
 
 package net.orfjackal.sgs;
 
-import com.perpetual.sgs.mock.MockSGS;
 import com.sun.sgs.app.AppContext;
 import com.sun.sgs.app.ManagedReference;
 import static net.orfjackal.sgs.BenchmarkTransparentReference.Strategy.CGLIB_PROXYING;
@@ -50,7 +49,7 @@ public class BenchmarkTransparentReference {
     private static int junk = 0;
 
     public static void main(String[] args) throws Exception {
-        MockSGS.init();
+//        MockSGS.init();
 
         System.out.println("Current strategy: " + current + "\n");
         if (current == JDK_PROXYING) {
@@ -161,7 +160,7 @@ public class BenchmarkTransparentReference {
 
         long start = System.currentTimeMillis();
         for (int i = 0; i < iterations; i++) {
-            DummyInterface object = reference.get(DummyInterface.class);
+            DummyInterface object = (DummyInterface) reference.get();
             junk += object.dummyMethod();
         }
         long end = System.currentTimeMillis();

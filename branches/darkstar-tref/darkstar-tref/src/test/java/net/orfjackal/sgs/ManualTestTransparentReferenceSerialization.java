@@ -17,7 +17,6 @@
 
 package net.orfjackal.sgs;
 
-import com.perpetual.sgs.mock.MockSGS;
 import com.sun.sgs.app.ManagedObject;
 
 import java.io.*;
@@ -43,7 +42,7 @@ public class ManualTestTransparentReferenceSerialization {
     public static class Step1_Serialize {
 
         public static void main(String[] args) throws IOException {
-            MockSGS.init();
+//            MockSGS.init();
             TransparentReferenceImpl.setFactory(FACTORY);
             DummyInterface proxy = (DummyInterface) FACTORY.createTransparentReference(new DummyManagedObject2());
             System.out.println("proxy = " + proxy);
@@ -57,7 +56,7 @@ public class ManualTestTransparentReferenceSerialization {
 
     public static class Step2_Deserialize {
         public static void main(String[] args) throws IOException, ClassNotFoundException {
-            MockSGS.init();
+//            MockSGS.init();
             TransparentReferenceImpl.setFactory(FACTORY);
             ObjectInputStream in = new ObjectInputStream(new FileInputStream(FILE));
             Object o = in.readObject();

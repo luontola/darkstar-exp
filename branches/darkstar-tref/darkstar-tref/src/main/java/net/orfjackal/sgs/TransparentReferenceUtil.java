@@ -41,7 +41,7 @@ public final class TransparentReferenceUtil {
     public static void markForUpdate(Object object) {
         if (object instanceof TransparentReference) {
             TransparentReference ref = (TransparentReference) object;
-            ref.getManagedReference().getForUpdate(ref.getType());
+            ref.getManagedReference().getForUpdate();
         } else if (object instanceof ManagedObject) {
             AppContext.getDataManager().markForUpdate((ManagedObject) object);
         }

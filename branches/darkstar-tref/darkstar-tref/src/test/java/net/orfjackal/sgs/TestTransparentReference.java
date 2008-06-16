@@ -17,7 +17,6 @@
 
 package net.orfjackal.sgs;
 
-import com.perpetual.sgs.mock.MockSGS;
 import com.sun.sgs.app.ManagedObject;
 import com.sun.sgs.app.ManagedReference;
 import junit.framework.TestCase;
@@ -54,7 +53,7 @@ public abstract class TestTransparentReference {
         private Object proxy;
 
         protected void setUp() throws Exception {
-            MockSGS.init();
+//            MockSGS.init();
             TransparentReferenceImpl.setFactory(factory);
             object = new DummyManagedObject();
             proxy = factory.createTransparentReference(object);
@@ -152,7 +151,7 @@ public abstract class TestTransparentReference {
 
         public void testItShouldBePossibleToGetTheManagedReferenceFromTheProxy() {
             ManagedReference reference = ((TransparentReference) proxy).getManagedReference();
-            assertSame(object, reference.get(DummyManagedObject.class));
+            assertSame(object, reference.get());
         }
     }
 
@@ -165,7 +164,7 @@ public abstract class TestTransparentReference {
         private SerializationTestObject deserialized;
 
         protected void setUp() throws Exception {
-            MockSGS.init();
+//            MockSGS.init();
             TransparentReferenceImpl.setFactory(factory);
             managedObject = new DummyManagedObject();
             normalObject = new DummyNormalObject();
@@ -221,7 +220,7 @@ public abstract class TestTransparentReference {
         private Object normalObject;
 
         protected void setUp() throws Exception {
-            MockSGS.init();
+//            MockSGS.init();
             TransparentReferenceImpl.setFactory(factory);
             managedObject = new DummyManagedObject();
             proxy = (DummyInterface) factory.createTransparentReference(managedObject);
