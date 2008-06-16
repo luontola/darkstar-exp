@@ -7,7 +7,7 @@
     <version>0.9.6_1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>Darkstar EXP</name>
+    <name>Darkstar EXP (darkstar-tref)</name>
     <description>Experimental branch of Project Darkstar for testing new features</description>
     <url>http://code.google.com/p/darkstar-exp/</url>
     <inceptionYear>2008</inceptionYear>
@@ -70,6 +70,7 @@
         <module>darkstar-server</module>
         <module>darkstar-server-tutorial</module>
         <module>darkstar-shared</module>
+        <module>darkstar-tref</module>
     </modules>
 
     <dependencies>
