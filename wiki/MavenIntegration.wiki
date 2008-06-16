@@ -1,9 +1,35 @@
 #summary How to use Darkstar in a Maven project
 #labels Featured
 
-= Vanilla Darkstar =
+To use Darkstar EXP or the vanilla version of Project Darkstar within a [http://maven.apache.org/ Maven] project, add the following lines to your POM file.
 
-To use the vanilla version of Project Darkstar within a [http://maven.apache.org/ Maven] project, add the following lines to your POM file:
+== Darkstar EXP ==
+
+{{{
+    <repositories>
+        <repository>
+            <id>orfjackal</id>
+            <url>http://repo.orfjackal.net/maven2</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>net.orfjackal.darkstar-exp</groupId>
+            <artifactId>darkstar-server</artifactId>
+            <version>0.9.6_0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.orfjackal.darkstar-exp</groupId>
+            <artifactId>darkstar-client</artifactId>
+            <version>0.9.6_0</version>
+        </dependency>
+    <dependencies>
+}}}
+
+
+== Vanilla Darkstar ==
 
 {{{
     <repositories>
@@ -24,7 +50,6 @@ To use the vanilla version of Project Darkstar within a [http://maven.apache.org
             <groupId>com.projectdarkstar</groupId>
             <artifactId>darkstar-client</artifactId>
             <version>0.9.6</version>
-            <scope>provided</scope>
         </dependency>
     <dependencies>
 }}}
