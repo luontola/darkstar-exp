@@ -31,20 +31,12 @@
         <format>zip</format>
     </formats>
     <includeBaseDirectory>true</includeBaseDirectory>
-    <baseDirectory>${module.artifactId}-${module.version}-src</baseDirectory>
 
     <fileSets>
         <fileSet>
             <excludes>
-                <!-- Generated files -->
                 <exclude>target/**</exclude>
                 <exclude>*/target/**</exclude>
-
-                <!-- IntelliJ IDEA project files -->
-                <exclude>*.iws</exclude>
-                <exclude>*.ipr</exclude>
-                <exclude>*.iml</exclude>
-                <exclude>*/*.iml</exclude>
             </excludes>
         </fileSet>
     </fileSets>
