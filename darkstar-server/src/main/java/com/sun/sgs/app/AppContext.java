@@ -19,13 +19,25 @@
 
 package com.sun.sgs.app;
 
-import com.sun.sgs.impl.kernel.ContextResolver;
-
-
 /**
  * Provides access to facilities available in the current application context.
  */
 public final class AppContext {
+
+    private static final AppContextResolver DEFAULT = new AppContextResolverImpl();
+    private static AppContextResolver resolver = DEFAULT;
+
+    /**
+     * Allows overriding the default ContextResolver for testing purposes.
+     * Provide your own implementation of AppContextResolver to mock Darkstar.
+     * Setting this to null will revert to using the default ContextResolver.
+     */
+    public static void setContextResolver(AppContextResolver resolver) {
+        if (resolver == null) {
+            resolver = DEFAULT;
+        }
+        AppContext.resolver = resolver;
+    }
 
     /**
      * Returns the {@code ChannelManager} for use by the current
@@ -35,7 +47,7 @@ public final class AppContext {
      * @return	the {@code ChannelManager} for the current application
      */
     public static ChannelManager getChannelManager() {
-        return ContextResolver.getChannelManager();
+        return resolver.getChannelManager();
     }
 
     /**
@@ -46,7 +58,7 @@ public final class AppContext {
      * @return	the {@code DataManager} for the current application
      */
     public static DataManager getDataManager() {
-        return ContextResolver.getDataManager();
+        return resolver.getDataManager();
     }
 
     /**
@@ -57,7 +69,7 @@ public final class AppContext {
      * @return	the {@code TaskManager} for the current application
      */
     public static TaskManager getTaskManager() {
-        return ContextResolver.getTaskManager();
+        return resolver.getTaskManager();
     }
 
     /**
@@ -72,7 +84,7 @@ public final class AppContext {
      *		specified type
      */
     public static <T> T getManager(Class<T> type) {
-        return ContextResolver.getManager(type);    
+        return resolver.getManager(type);
     }
 
 }
