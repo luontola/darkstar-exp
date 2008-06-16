@@ -17,6 +17,7 @@
 
 package net.orfjackal.sgs;
 
+import com.sun.sgs.app.AppContext;
 import com.sun.sgs.app.ManagedObject;
 import com.sun.sgs.app.ManagedReference;
 import junit.framework.TestCase;
@@ -53,10 +54,14 @@ public abstract class TestTransparentReference {
         private Object proxy;
 
         protected void setUp() throws Exception {
-//            MockSGS.init();
+            AppContext.setContextResolver(new MockAppContextResolver());
             TransparentReferenceImpl.setFactory(factory);
             object = new DummyManagedObject();
             proxy = factory.createTransparentReference(object);
+        }
+
+        protected void tearDown() throws Exception {
+            AppContext.setContextResolver(null);
         }
 
         public void testAProxyShouldBeCreated() {
