@@ -1,19 +1,25 @@
 #!/bin/sh
 # Copyright (c) 2008, Esko Luontola. All Rights Reserved.
 #
-# This file is part of Darkstar EXP.
+# Redistribution and use in source and binary forms, with or without modification,
+# are permitted provided that the following conditions are met:
 #
-# Darkstar EXP is free software: you can redistribute it and/or modify it
-# under the terms of the GNU General Public License version 2 as published by
-# the Free Software Foundation and distributed hereunder to you.
+#     * Redistributions of source code must retain the above copyright notice,
+#       this list of conditions and the following disclaimer.
+#     * Redistributions in binary form must reproduce the above copyright notice,
+#       this list of conditions and the following disclaimer in the documentation
+#       and/or other materials provided with the distribution.
 #
-# Darkstar EXP is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-# more details.
-#
-# You should have received a copy of the GNU General Public License along
-# with this program.  If not, see <http://www.gnu.org/licenses/>.
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+# ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+# ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 # Startup script for Darkstar EXP. Loads dynamically all JAR files
@@ -44,73 +50,9 @@ if [ -z "$DARKSTAR_HOME" ]; then
 fi
 
 
-# Figure out what platform we're running on and set the platform and
-# pathsep variables appropriately.  Here are the supported platforms:
-#
-# OS		Hardware	Platform	Path Separator
-# --------	--------	--------------	--------------
-# Mac OS X	PowerPC		macosx-ppc	:
-# Mac OS X	Intel x86	macosx-x86	:
-# Solaris	Intel x86	solaris-x86	:
-# Solaris	Sparc		solaris-sparc	:
-# Linux		Intel x86	linux-x86	:
-# Linux		Intel x86_64	linux-x86_64	:
-# Windows	Intel x86	win32-x86	;
-#
-platform=unknown
-os=`uname -s`
-case $os in
-    Darwin)
-	pathsep=":"
-	mach=`uname -p`
-	case $mach in
-	    powerpc)
-		platform=macosx-ppc;;
-	    i386)
-	    	platform=macosx-x86;;
-	    *)
-		echo Unknown hardware: $mach;
-		exit 1;
-	esac;;
-    SunOS)
-	pathsep=":"
-	mach=`uname -p`
-	case $mach in
-	    i386)
-	    	platform=solaris-x86;;
-	    sparc)
-	    	platform=solaris-sparc;;
-	    *)
-		echo Unknown hardware: $mach;
-		exit 1;
-	esac;;
-    Linux)
-	pathsep=":"
-	mach=`uname -m`;
-	case $mach in
-	    i686)
-		platform=linux-x86;;
-	    x86_64)
-		platform=linux-x86_64;;
-	    *)
-		echo Unknown hardware: $mach;
-		exit 1;
-	esac;;
-    CYGWIN*)
-	pathsep=";"
-	mach=`uname -m`;
-	case $mach in
-	    i686)
-		platform=win32-x86;;
-	    *)
-		echo Unknown hardware: $mach;
-		exit 1;
-	esac;;
-    *)
-	echo Unknown operating system: $os;
-	exit 1;
-esac
-NATIVE_LIBRARY_DIR=$DARKSTAR_HOME/lib/$platform
+# The PLATFORM and PATHSEP variables are set by platform.sh
+. "$DARKSTAR_HOME/platform.sh"
+NATIVE_LIBRARY_DIR=$DARKSTAR_HOME/lib/$PLATFORM
 
 
 # Custom JVM options (comments start with ";")
@@ -120,10 +62,10 @@ VMOPTIONS=`sed -e 's/;.*$//' "$DARKSTAR_HOME/darkstar.vmoptions"`
 # Add all JARs in library dirs to classpath
 CP=
 for FILE in $DARKSTAR_HOME/lib/*.jar; do
-    CP=$CP$pathsep$FILE
+    CP=$CP$PATHSEP$FILE
 done
 for FILE in $APP_LIBRARY_DIR/*.jar; do
-    CP=$CP$pathsep$FILE
+    CP=$CP$PATHSEP$FILE
 done
 
 
