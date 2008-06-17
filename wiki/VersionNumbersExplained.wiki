@@ -1,4 +1,5 @@
 #summary What the version numbers of Darkstar EXP mean
+#labels Featured
 
 = Darkstar EXP's Version Numbers =
 
