@@ -18,9 +18,19 @@
 
 package net.orfjackal.darkstar.exp;
 
+import com.sun.sgs.app.AppListener;
+import com.sun.sgs.app.ClientSession;
+import com.sun.sgs.app.ClientSessionListener;
 import jdave.Specification;
 import jdave.junit4.JDaveRunner;
+import net.orfjackal.darkstar.integration.DarkstarServer;
+import net.orfjackal.darkstar.integration.util.StreamWaiter;
+import net.orfjackal.darkstar.integration.util.TempDirectory;
 import org.junit.runner.RunWith;
+
+import java.io.*;
+import java.util.Properties;
+import java.util.concurrent.TimeoutException;
 
 /**
  * @author Esko Luontola
@@ -29,18 +39,94 @@ import org.junit.runner.RunWith;
 @RunWith(JDaveRunner.class)
 public class AppRootAsRelativeToAppPropertiesFileSpec extends Specification<Object> {
 
-    public class WhenAppPropertiesFileIsInServerHomeDir {
+    private static final int TIMEOUT = 5000;
 
-        public Object create() {
+    private TempDirectory tempDirectory;
+    private DarkstarServer server;
+    private StreamWaiter waiter;
+
+    private Properties appProps;
+
+    public void create() {
+        tempDirectory = new TempDirectory();
+        tempDirectory.create();
+
+        server = new DarkstarServer(tempDirectory.getDirectory());
+        waiter = new StreamWaiter(new ByteArrayOutputStream());
+
+        appProps = new Properties();
+        appProps.setProperty(DarkstarServer.APP_NAME, "HellWorld");
+        appProps.setProperty(DarkstarServer.APP_LISTENER, HelloWorld.class.getName());
+        appProps.setProperty(DarkstarServer.APP_PORT, DarkstarServer.APP_PORT_DEFAULT);
+    }
+
+    public void destroy() {
+        waiter.dispose();
+        try {
+            System.out.println(server.getSystemOut());
+            System.err.println(server.getSystemErr());
+        } catch (Exception e) {
+        }
+        tempDirectory.dispose();
+    }
+
+    private void startsUpAndUsesDataDir(File dataDir1, File dir) throws TimeoutException {
+        specify(dataDir1.listFiles().length == 0);
+        server.start(dir);
+        waiter.setStream(server.getSystemOut());
+        waiter.waitForBytes(HelloWorld.STARTUP_MSG.getBytes(), TIMEOUT);
+        specify(dataDir1.listFiles().length > 5);
+        server.shutdown();
+    }
+
+    private static void writeToFile(File file, Properties properties) {
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            properties.store(out, null);
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public class WhenAppPropertiesFileIsInCurrentDirectory {
+
+        private File currentDir;
+        private File configFile;
+
+        private TempDirectory appRootParentTemp;
+        private File appRoot;
+        private File dataDir;
+
+        public Object create() throws IOException {
+            currentDir = new File(".").getCanonicalFile();
+            configFile = new File(currentDir, "HelloWorld.properties");
+
+            appRootParentTemp = new TempDirectory(new File(currentDir, "data.tmp"));
+            appRootParentTemp.create();
+
+            appRoot = new File(appRootParentTemp.getDirectory(), "HelloWorld");
+            dataDir = new File(appRoot, "dsdb");
+            dataDir.mkdirs();
             return null;
         }
 
-        public void absoluteAppRootIsAbsolute() {
-            // TODO
+        public void destroy() {
+            configFile.delete();
+            appRootParentTemp.dispose();
         }
 
-        public void relativeAppRootIsRelativeToServerHome() {
-            // TODO
+        public void absoluteAppRootIsAbsolute() throws TimeoutException {
+            appProps.setProperty(DarkstarServer.APP_ROOT, appRoot.getAbsolutePath());
+            writeToFile(configFile, appProps);
+            startsUpAndUsesDataDir(dataDir, configFile);
+        }
+
+        public void relativeAppRootIsRelativeToServerHome() throws TimeoutException {
+            appProps.setProperty(DarkstarServer.APP_ROOT, "data.tmp" + File.separator + "HelloWorld");
+            writeToFile(configFile, appProps);
+            startsUpAndUsesDataDir(dataDir, configFile);
         }
     }
 
@@ -56,6 +142,21 @@ public class AppRootAsRelativeToAppPropertiesFileSpec extends Specification<Obje
 
         public void relativeAppRootIsRelativeToDirectoryOfAppPropertiesFile() {
             // TODO
+        }
+    }
+
+
+    public static class HelloWorld implements AppListener, Serializable {
+        private static final long serialVersionUID = 1L;
+
+        private static final String STARTUP_MSG = "Hello world!";
+
+        public void initialize(Properties props) {
+            System.out.println(STARTUP_MSG);
+        }
+
+        public ClientSessionListener loggedIn(ClientSession session) {
+            return null;
         }
     }
 }
