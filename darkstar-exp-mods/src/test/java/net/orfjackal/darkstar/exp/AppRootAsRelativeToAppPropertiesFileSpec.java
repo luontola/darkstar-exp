@@ -67,11 +67,14 @@ public class AppRootAsRelativeToAppPropertiesFileSpec extends Specification<Obje
 
     private void startsUpAndUsesDataDir(File dataDir, File configFile) throws TimeoutException {
         specify(dataDir.listFiles().length == 0);
-        server.start(configFile);
-        waiter.setStream(server.getSystemOut());
-        waiter.waitForBytes(HelloWorld.STARTUP_MSG.getBytes(), TIMEOUT);
+        try {
+            server.start(configFile);
+            waiter.setStream(server.getSystemOut());
+            waiter.waitForBytes(HelloWorld.STARTUP_MSG.getBytes(), TIMEOUT);
+        } finally {
+            server.shutdown();
+        }
         specify(dataDir.listFiles().length > 5);
-        server.shutdown();
     }
 
     private static void writeToFile(File file, Properties properties) {
@@ -125,12 +128,32 @@ public class AppRootAsRelativeToAppPropertiesFileSpec extends Specification<Obje
 
     public class WhenAppPropertiesFileIsInAnotherDirectory {
 
+        private TempDirectory anotherDirTemp;
+        private File configFile;
+        private File appRoot;
+        private File dataDir;
+
         public Object create() {
+            anotherDirTemp = new TempDirectory();
+            anotherDirTemp.create();
+
+            File anotherDir = anotherDirTemp.getDirectory();
+            configFile = new File(anotherDir, "HelloWorld.properties");
+
+            appRoot = new File(anotherDir, "data" + File.separator + "HelloWorld");
+            dataDir = new File(appRoot, "dsdb");
+            dataDir.mkdirs();
             return null;
         }
 
-        public void absoluteAppRootIsAbsolute() {
-            // TODO
+        public void destroy() {
+            anotherDirTemp.dispose();
+        }
+
+        public void absoluteAppRootIsAbsolute() throws TimeoutException {
+            appProps.setProperty(DarkstarServer.APP_ROOT, appRoot.getAbsolutePath());
+            writeToFile(configFile, appProps);
+            startsUpAndUsesDataDir(dataDir, configFile);
         }
 
         public void relativeAppRootIsRelativeToDirectoryOfAppPropertiesFile() {
