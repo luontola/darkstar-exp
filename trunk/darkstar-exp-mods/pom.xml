@@ -12,7 +12,7 @@
     <packaging>jar</packaging>
 
     <name>darkstar-exp-mods</name>
-    <description>Common place for testing Darkstar EXP's modifications to the original sources</description>
+    <description>Common place for Darkstar EXP's modifications to the original sources</description>
 
     <licenses>
         <license>
@@ -34,7 +34,7 @@
         <dependency>
             <groupId>net.orfjackal.darkstar-exp</groupId>
             <artifactId>darkstar-server</artifactId>
-            <scope>test</scope>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
