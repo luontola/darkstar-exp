@@ -66,6 +66,7 @@
         <module>darkstar-client</module>
         <module>darkstar-client-tutorial</module>
         <module>darkstar-exp-client-dist</module>
+        <module>darkstar-exp-mods</module>
         <module>darkstar-exp-server-dist</module>
         <module>darkstar-server</module>
         <module>darkstar-server-tutorial</module>
