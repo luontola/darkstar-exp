@@ -57,12 +57,6 @@ public class AppRootAsRelativeToAppPropertiesFileSpec extends Specification<Obje
 
     public void destroy() {
         waiter.dispose();
-        try {
-            System.out.println(server.getSystemOut());
-            System.err.println(server.getSystemErr());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     private void startsUpAndUsesDataDir(File dataDir, File configFile) throws TimeoutException {
@@ -140,7 +134,7 @@ public class AppRootAsRelativeToAppPropertiesFileSpec extends Specification<Obje
             File anotherDir = anotherDirTemp.getDirectory();
             configFile = new File(anotherDir, "HelloWorld.properties");
 
-            appRoot = new File(anotherDir, "data" + File.separator + "HelloWorld");
+            appRoot = new File(anotherDir, "data.tmp" + File.separator + "HelloWorld");
             dataDir = new File(appRoot, "dsdb");
             dataDir.mkdirs();
             return null;
@@ -156,8 +150,10 @@ public class AppRootAsRelativeToAppPropertiesFileSpec extends Specification<Obje
             startsUpAndUsesDataDir(dataDir, configFile);
         }
 
-        public void relativeAppRootIsRelativeToDirectoryOfAppPropertiesFile() {
-            // TODO
+        public void relativeAppRootIsRelativeToDirectoryOfAppPropertiesFile() throws TimeoutException {
+            appProps.setProperty(DarkstarServer.APP_ROOT, "data.tmp" + File.separator + "HelloWorld");
+            writeToFile(configFile, appProps);
+            startsUpAndUsesDataDir(dataDir, configFile);
         }
     }
 
