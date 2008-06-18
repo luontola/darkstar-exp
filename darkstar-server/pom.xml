@@ -30,6 +30,11 @@
 
         <dependency>
             <groupId>net.orfjackal.darkstar-exp</groupId>
+            <artifactId>darkstar-exp-mods</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>net.orfjackal.darkstar-exp</groupId>
             <artifactId>darkstar-shared</artifactId>
         </dependency>
 
@@ -78,21 +83,21 @@
                         <include>**/Test*.java</include>
                     </includes>
                     <!-- HACK: The tests have side effects, so each must be run in a separate VM -->
-                    <forkMode>pertest</forkMode>
+                    <forkMode>always</forkMode>
                     <argLine>-server</argLine>
                     <systemProperties>
                         <property>
                             <name>com.sun.sgs.impl.service.data.store.db.environment.class</name>
                             <value>${test.bdb.env}</value>
                         </property>
-                        <property>
-                            <!-- HACK: It would be best to download the library from a repository automatically -->
-                            <!-- Expect the 'libdb_java45' library to be in the root of this module -->
-                            <name>java.library.path</name>
-                            <value>.</value>
-                            <!--<value>${bdb.lib.dir}/win32-x86</value>-->
-                            <!--<value>${bdb.lib.dir}</value>-->
-                        </property>
+                        <!--<property>-->
+                        <!-- HACK: It would be best to download the library from a repository automatically -->
+                        <!-- Expect the 'libdb_java45' library to be in the root of this module -->
+                        <!--<name>java.library.path</name>-->
+                        <!--<value>.</value>-->
+                        <!--<value>${bdb.lib.dir}/win32-x86</value>-->
+                        <!--<value>${bdb.lib.dir}</value>-->
+                        <!--</property>-->
                         <property>
                             <!-- HACK: The tests have side effects, so they must use a temp dir which is emptied before running the tests -->
                             <name>java.io.tmpdir</name>

@@ -96,6 +96,12 @@
 
             <dependency>
                 <groupId>net.orfjackal.darkstar-exp</groupId>
+                <artifactId>darkstar-exp-mods</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>net.orfjackal.darkstar-exp</groupId>
                 <artifactId>darkstar-client</artifactId>
                 <version>${project.version}</version>
             </dependency>
