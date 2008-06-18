@@ -30,11 +30,6 @@
 
         <dependency>
             <groupId>net.orfjackal.darkstar-exp</groupId>
-            <artifactId>darkstar-exp-mods</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>net.orfjackal.darkstar-exp</groupId>
             <artifactId>darkstar-shared</artifactId>
         </dependency>
 
