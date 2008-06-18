@@ -42,6 +42,7 @@ import com.sun.sgs.profile.ProfileRegistrar;
 import com.sun.sgs.service.DataService;
 import com.sun.sgs.service.Service;
 import com.sun.sgs.service.TransactionProxy;
+import net.orfjackal.darkstar.exp.AppRootAsRelativeToAppPropertiesFile;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -839,10 +840,7 @@ class Kernel {
         // check the standard properties
         checkProperties(appProperties, args[0]);
 
-        // [darkstar-exp] interpret app root as relative to the properties file
-        File propertiesDir = new File(args[0]).getParentFile();
-        File appRoot = new File(propertiesDir, appProperties.getProperty(StandardProperties.APP_ROOT));
-        appProperties.setProperty(StandardProperties.APP_ROOT, appRoot.getPath());
+        AppRootAsRelativeToAppPropertiesFile.apply(appProperties, new File(args[0]));
 
         // boot the kernel
         new Kernel(appProperties);
