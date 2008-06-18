@@ -32,9 +32,6 @@
       <entry name="!?*.java" />
     </wildcardResourcePatterns>
   </component>
-  <component name="CompilerWorkspaceConfiguration">
-    <option name="COMPILE_IN_BACKGROUND" value="true" />
-  </component>
   <component name="DependenciesAnalyzeManager">
     <option name="myForwardDirection" value="false" />
   </component>
