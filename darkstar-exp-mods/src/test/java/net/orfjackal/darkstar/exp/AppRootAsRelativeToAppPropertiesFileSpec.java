@@ -41,17 +41,12 @@ public class AppRootAsRelativeToAppPropertiesFileSpec extends Specification<Obje
 
     private static final int TIMEOUT = 5000;
 
-    private TempDirectory tempDirectory;
     private DarkstarServer server;
     private StreamWaiter waiter;
-
     private Properties appProps;
 
     public void create() {
-        tempDirectory = new TempDirectory();
-        tempDirectory.create();
-
-        server = new DarkstarServer(tempDirectory.getDirectory());
+        server = new DarkstarServer(new File("."));
         waiter = new StreamWaiter(new ByteArrayOutputStream());
 
         appProps = new Properties();
@@ -66,16 +61,16 @@ public class AppRootAsRelativeToAppPropertiesFileSpec extends Specification<Obje
             System.out.println(server.getSystemOut());
             System.err.println(server.getSystemErr());
         } catch (Exception e) {
+            e.printStackTrace();
         }
-        tempDirectory.dispose();
     }
 
-    private void startsUpAndUsesDataDir(File dataDir1, File dir) throws TimeoutException {
-        specify(dataDir1.listFiles().length == 0);
-        server.start(dir);
+    private void startsUpAndUsesDataDir(File dataDir, File configFile) throws TimeoutException {
+        specify(dataDir.listFiles().length == 0);
+        server.start(configFile);
         waiter.setStream(server.getSystemOut());
         waiter.waitForBytes(HelloWorld.STARTUP_MSG.getBytes(), TIMEOUT);
-        specify(dataDir1.listFiles().length > 5);
+        specify(dataDir.listFiles().length > 5);
         server.shutdown();
     }
 
@@ -92,15 +87,13 @@ public class AppRootAsRelativeToAppPropertiesFileSpec extends Specification<Obje
 
     public class WhenAppPropertiesFileIsInCurrentDirectory {
 
-        private File currentDir;
         private File configFile;
-
         private TempDirectory appRootParentTemp;
         private File appRoot;
         private File dataDir;
 
         public Object create() throws IOException {
-            currentDir = new File(".").getCanonicalFile();
+            File currentDir = new File(".").getCanonicalFile();
             configFile = new File(currentDir, "HelloWorld.properties");
 
             appRootParentTemp = new TempDirectory(new File(currentDir, "data.tmp"));
@@ -123,7 +116,7 @@ public class AppRootAsRelativeToAppPropertiesFileSpec extends Specification<Obje
             startsUpAndUsesDataDir(dataDir, configFile);
         }
 
-        public void relativeAppRootIsRelativeToServerHome() throws TimeoutException {
+        public void relativeAppRootIsRelativeToCurrentDirectory() throws TimeoutException {
             appProps.setProperty(DarkstarServer.APP_ROOT, "data.tmp" + File.separator + "HelloWorld");
             writeToFile(configFile, appProps);
             startsUpAndUsesDataDir(dataDir, configFile);
