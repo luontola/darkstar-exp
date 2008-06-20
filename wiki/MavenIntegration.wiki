@@ -35,7 +35,7 @@ Contains experimental features which are not included in the vanilla version.
 
 == Vanilla Darkstar ==
 
-The original unmodified version of Darkstar.
+The original unmodified version of Darkstar. This is the same as can be downloaded from [http://www.projectdarkstar.com/downloads/ official site], except that it has been converted to Maven format and recompiled.
 
 {{{
     <repositories>
