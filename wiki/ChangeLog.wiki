@@ -1,6 +1,4 @@
-#summary Release notes of Darkstar EXP
-
-= Change Log =
+#summary What is included in each Darkstar EXP release
 
 *Darkstar EXP 0.9.6_0* (2008-06-16)
   * _Based on Darkstar 0.9.6_
