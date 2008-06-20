@@ -7,7 +7,7 @@ To use Darkstar EXP or the vanilla version of Project Darkstar within a [http://
 
 == Darkstar EXP ==
 
-Contains experimental features which are not included in the vanilla version.
+Contains experimental features which are not included in the vanilla version. Also see ChangeLog and VersionNumbersExplained.
 
 {{{
     <repositories>
