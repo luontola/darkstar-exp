@@ -3,11 +3,7 @@
 
 = Using Maven =
 
-To use Darkstar EXP or the vanilla version of Project Darkstar within a [http://maven.apache.org/ Maven] project, add the following lines to your POM file.
-
-== Darkstar EXP ==
-
-Contains experimental features which are not included in the vanilla version. Also see ChangeLog and VersionNumbersExplained.
+To use Darkstar EXP or the vanilla version of Project Darkstar within a [http://maven.apache.org/ Maven] project, first add the following repository declaration to your POM file:
 
 {{{
     <repositories>
@@ -16,20 +12,26 @@ Contains experimental features which are not included in the vanilla version. Al
             <url>http://repo.orfjackal.net/maven2</url>
         </repository>
     </repositories>
+}}}
 
-    <dependencies>
+Then add the Darkstar Client or Server dependencies of your choice from those listed below. For the server libraries it might be best to use the "provided" scope, if you start Darkstar Server using the default startup scripts.
+
+
+== Darkstar EXP ==
+
+Contains experimental features which are not included in the vanilla version. Also see ChangeLog and VersionNumbersExplained.
+
+{{{
         <dependency>
             <groupId>net.orfjackal.darkstar-exp</groupId>
             <artifactId>darkstar-server</artifactId>
             <version>0.9.6_0</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>net.orfjackal.darkstar-exp</groupId>
             <artifactId>darkstar-client</artifactId>
             <version>0.9.6_0</version>
         </dependency>
-    <dependencies>
 }}}
 
 
@@ -38,24 +40,26 @@ Contains experimental features which are not included in the vanilla version. Al
 The original unmodified version of Darkstar. This is the same as can be downloaded from [http://www.projectdarkstar.com/downloads/ official site], except that it has been converted to Maven format and recompiled.
 
 {{{
-    <repositories>
-        <repository>
-            <id>orfjackal</id>
-            <url>http://repo.orfjackal.net/maven2</url>
-        </repository>
-    </repositories>
-
-    <dependencies>
         <dependency>
             <groupId>com.projectdarkstar</groupId>
             <artifactId>darkstar-server</artifactId>
             <version>0.9.6</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.projectdarkstar</groupId>
             <artifactId>darkstar-client</artifactId>
             <version>0.9.6</version>
         </dependency>
-    <dependencies>
+}}}
+{{{
+        <dependency>
+            <groupId>com.projectdarkstar</groupId>
+            <artifactId>darkstar-server</artifactId>
+            <version>0.9.5.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.projectdarkstar</groupId>
+            <artifactId>darkstar-client</artifactId>
+            <version>0.9.5.1</version>
+        </dependency>
 }}}
