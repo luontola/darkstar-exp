@@ -33,6 +33,8 @@ import java.util.Map;
  */
 public class MockDataManager implements DataManager {
 
+    // TODO: write tests for this class
+
     private final Map<Object, ManagedReference<?>> refs = new IdentityHashMap<Object, ManagedReference<?>>();
     private final Map<Long, ManagedObject> objects = new HashMap<Long, ManagedObject>();
     private volatile long nextObjectId = 1;

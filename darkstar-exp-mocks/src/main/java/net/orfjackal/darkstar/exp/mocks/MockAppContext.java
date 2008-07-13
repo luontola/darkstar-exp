@@ -26,6 +26,8 @@ import com.sun.sgs.app.AppContext;
  */
 public class MockAppContext {
 
+    // TODO: write tests for this class
+
     private static MockAppContextResolver instance;
 
     public static MockAppContextResolver getInstance() {
