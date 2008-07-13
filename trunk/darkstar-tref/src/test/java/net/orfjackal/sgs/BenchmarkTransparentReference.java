@@ -19,6 +19,7 @@ package net.orfjackal.sgs;
 
 import com.sun.sgs.app.AppContext;
 import com.sun.sgs.app.ManagedReference;
+import net.orfjackal.darkstar.exp.mocks.MockAppContextResolver;
 import static net.orfjackal.sgs.BenchmarkTransparentReference.Strategy.CGLIB_PROXYING;
 import static net.orfjackal.sgs.BenchmarkTransparentReference.Strategy.JDK_PROXYING;
 

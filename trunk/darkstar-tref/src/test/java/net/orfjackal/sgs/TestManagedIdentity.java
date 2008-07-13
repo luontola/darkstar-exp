@@ -19,6 +19,7 @@ package net.orfjackal.sgs;
 
 import com.sun.sgs.app.ManagedObject;
 import junit.framework.TestCase;
+import net.orfjackal.darkstar.exp.mocks.MockAppContextResolver;
 
 /**
  * @author Esko Luontola
