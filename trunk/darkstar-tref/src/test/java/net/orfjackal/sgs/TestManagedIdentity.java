@@ -19,7 +19,7 @@ package net.orfjackal.sgs;
 
 import com.sun.sgs.app.ManagedObject;
 import junit.framework.TestCase;
-import net.orfjackal.darkstar.exp.mocks.MockAppContextResolver;
+import net.orfjackal.darkstar.exp.mocks.MockAppContext;
 
 /**
  * @author Esko Luontola
@@ -37,7 +37,7 @@ public abstract class TestManagedIdentity {
         private Object obj;
 
         protected void setUp() throws Exception {
-            MockAppContextResolver.install();
+            MockAppContext.install();
             
             man1 = new DummyManagedObject();
             man2 = new DummyManagedObject();
@@ -47,7 +47,7 @@ public abstract class TestManagedIdentity {
         }
 
         protected void tearDown() throws Exception {
-            MockAppContextResolver.uninstall();
+            MockAppContext.uninstall();
         }
 
         public void testManagedObjectEqualsManagedObject() {

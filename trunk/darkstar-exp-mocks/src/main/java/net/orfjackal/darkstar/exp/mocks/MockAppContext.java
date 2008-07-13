@@ -18,32 +18,36 @@
 
 package net.orfjackal.darkstar.exp.mocks;
 
-import com.sun.sgs.app.AppContextResolver;
-import com.sun.sgs.app.ChannelManager;
-import com.sun.sgs.app.DataManager;
-import com.sun.sgs.app.TaskManager;
+import com.sun.sgs.app.AppContext;
 
 /**
  * @author Esko Luontola
  * @since 17.6.2008
  */
-public class MockAppContextResolver implements AppContextResolver {
+public class MockAppContext {
 
-    public final MockDataManager dataManager = new MockDataManager();
+    private static MockAppContextResolver instance;
 
-    public ChannelManager getChannelManager() {
-        throw new UnsupportedOperationException();
+    public static MockAppContextResolver getInstance() {
+        if (instance == null) {
+            throw new IllegalStateException("MockAppContextResolver is not installed");
+        }
+        return instance;
     }
 
-    public DataManager getDataManager() {
-        return dataManager;
+    public static void install() {
+        if (instance != null) {
+            throw new IllegalStateException("Warning: install before uninstall");
+        }
+        instance = new MockAppContextResolver();
+        AppContext.setContextResolver(instance);
     }
 
-    public TaskManager getTaskManager() {
-        throw new UnsupportedOperationException();
-    }
-
-    public <T> T getManager(Class<T> type) {
-        throw new UnsupportedOperationException();
+    public static void uninstall() {
+        if (instance == null) {
+            throw new IllegalStateException("Warning: uninstall before install");
+        }
+        instance = null;
+        AppContext.setContextResolver(null);
     }
 }

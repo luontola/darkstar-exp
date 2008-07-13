@@ -18,7 +18,7 @@
 package net.orfjackal.sgs;
 
 import com.sun.sgs.app.ManagedObject;
-import net.orfjackal.darkstar.exp.mocks.MockAppContextResolver;
+import net.orfjackal.darkstar.exp.mocks.MockAppContext;
 
 import java.io.*;
 
@@ -43,7 +43,7 @@ public class ManualTestTransparentReferenceSerialization {
     public static class Step1_Serialize {
 
         public static void main(String[] args) throws IOException {
-            MockAppContextResolver.install();
+            MockAppContext.install();
 
             TransparentReferenceImpl.setFactory(FACTORY);
             DummyInterface proxy = (DummyInterface) FACTORY.createTransparentReference(new DummyManagedObject2());
@@ -54,13 +54,13 @@ public class ManualTestTransparentReferenceSerialization {
             out.close();
             System.out.println("Written to " + FILE.getCanonicalPath());
 
-            MockAppContextResolver.uninstall();
+            MockAppContext.uninstall();
         }
     }
 
     public static class Step2_Deserialize {
         public static void main(String[] args) throws IOException, ClassNotFoundException {
-            MockAppContextResolver.install();
+            MockAppContext.install();
 
             TransparentReferenceImpl.setFactory(FACTORY);
             ObjectInputStream in = new ObjectInputStream(new FileInputStream(FILE));
@@ -77,7 +77,7 @@ public class ManualTestTransparentReferenceSerialization {
             System.out.println("instanceof DummyInterface2 = " + (o instanceof DummyInterface2)
                     + "\t(expected: " + DummyInterface2.class.isAssignableFrom(DummyManagedObject2.class) + ")");
 
-            MockAppContextResolver.uninstall();
+            MockAppContext.uninstall();
         }
     }
 

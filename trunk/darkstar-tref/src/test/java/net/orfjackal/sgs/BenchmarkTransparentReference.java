@@ -19,7 +19,7 @@ package net.orfjackal.sgs;
 
 import com.sun.sgs.app.AppContext;
 import com.sun.sgs.app.ManagedReference;
-import net.orfjackal.darkstar.exp.mocks.MockAppContextResolver;
+import net.orfjackal.darkstar.exp.mocks.MockAppContext;
 import static net.orfjackal.sgs.BenchmarkTransparentReference.Strategy.CGLIB_PROXYING;
 import static net.orfjackal.sgs.BenchmarkTransparentReference.Strategy.JDK_PROXYING;
 
@@ -50,7 +50,7 @@ public class BenchmarkTransparentReference {
     private static int junk = 0;
 
     public static void main(String[] args) throws Exception {
-        MockAppContextResolver.install();
+        MockAppContext.install();
 
         System.out.println("Current strategy: " + current + "\n");
         if (current == JDK_PROXYING) {
@@ -81,7 +81,7 @@ public class BenchmarkTransparentReference {
         // prevent JIT compiler from optimizing away all benchmarks
         System.out.println("(Junk: " + junk + ")");
 
-        MockAppContextResolver.uninstall();
+        MockAppContext.uninstall();
     }
 
     private static String result(String name, long totalMillis, int iterations) {

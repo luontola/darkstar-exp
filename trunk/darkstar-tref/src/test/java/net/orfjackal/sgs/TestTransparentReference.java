@@ -20,7 +20,7 @@ package net.orfjackal.sgs;
 import com.sun.sgs.app.ManagedObject;
 import com.sun.sgs.app.ManagedReference;
 import junit.framework.TestCase;
-import net.orfjackal.darkstar.exp.mocks.MockAppContextResolver;
+import net.orfjackal.darkstar.exp.mocks.MockAppContext;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -54,7 +54,7 @@ public abstract class TestTransparentReference {
         private Object proxy;
 
         protected void setUp() throws Exception {
-            MockAppContextResolver.install();
+            MockAppContext.install();
 
             TransparentReferenceImpl.setFactory(factory);
             object = new DummyManagedObject();
@@ -62,7 +62,7 @@ public abstract class TestTransparentReference {
         }
 
         protected void tearDown() throws Exception {
-            MockAppContextResolver.uninstall();
+            MockAppContext.uninstall();
         }
 
         public void testAProxyShouldBeCreated() {
@@ -170,7 +170,7 @@ public abstract class TestTransparentReference {
         private SerializationTestObject deserialized;
 
         protected void setUp() throws Exception {
-            MockAppContextResolver.install();
+            MockAppContext.install();
 
             TransparentReferenceImpl.setFactory(factory);
             managedObject = new DummyManagedObject();
@@ -187,7 +187,7 @@ public abstract class TestTransparentReference {
         }
 
         protected void tearDown() throws Exception {
-            MockAppContextResolver.uninstall();
+            MockAppContext.uninstall();
         }
 
         public void testShouldReplaceManagedObjectsWithProxies() {
@@ -231,7 +231,7 @@ public abstract class TestTransparentReference {
         private Object normalObject;
 
         protected void setUp() throws Exception {
-            MockAppContextResolver.install();
+            MockAppContext.install();
 
             TransparentReferenceImpl.setFactory(factory);
             managedObject = new DummyManagedObject();
@@ -240,7 +240,7 @@ public abstract class TestTransparentReference {
         }
 
         protected void tearDown() throws Exception {
-            MockAppContextResolver.uninstall();
+            MockAppContext.uninstall();
         }
 
         public void testMarkForUpdateOnManagedObjectShouldUseMarkForUpdate() {
