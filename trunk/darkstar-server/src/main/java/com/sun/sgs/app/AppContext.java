@@ -24,6 +24,7 @@ package com.sun.sgs.app;
  */
 public final class AppContext {
 
+    // TODO: This is still and indirect dependency to ContextResolver but it would be possible to fully decouple AppContext if Kernel would inject AppContextResolverImpl
     private static final AppContextResolver DEFAULT = new AppContextResolverImpl();
     private static AppContextResolver resolver = DEFAULT;
 
