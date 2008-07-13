@@ -6,4 +6,5 @@
   * NEW: Interpret the application root in the application properties file as relative to the properties file, instead of the working directory
 
 *Darkstar EXP 0.9.6_1* (2008-07-13)
-  * NEW: MockAppContext for mocking DataManager
+  * NEW: Decoupled !AppContext from Darkstar implementation to make testing easier
+  * NEW: !MockAppContext for mocking !DataManager
