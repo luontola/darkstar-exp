@@ -141,6 +141,22 @@
     <option name="runMavenInBackground" value="true" />
     <option name="useMavenEmbedder" value="false" />
   </component>
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/darkstar-analysis/pom.xml" />
+        <option value="$PROJECT_DIR$/darkstar-client/pom.xml" />
+        <option value="$PROJECT_DIR$/darkstar-client-tutorial/pom.xml" />
+        <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/darkstar-exp-client-dist/pom.xml" />
+        <option value="$PROJECT_DIR$/darkstar-exp-mods/pom.xml" />
+        <option value="$PROJECT_DIR$/darkstar-exp-server-dist/pom.xml" />
+        <option value="$PROJECT_DIR$/darkstar-server/pom.xml" />
+        <option value="$PROJECT_DIR$/darkstar-server-tutorial/pom.xml" />
+        <option value="$PROJECT_DIR$/darkstar-shared/pom.xml" />
+      </list>
+    </option>
+  </component>
   <component name="Palette2">
     <group name="Swing">
       <item class="com.intellij.uiDesigner.HSpacer" tooltip-text="Horizontal Spacer" icon="/com/intellij/uiDesigner/icons/hspacer.png" removable="false" auto-create-binding="false" can-attach-label="false">
@@ -275,6 +291,7 @@
       <module fileurl="file://$PROJECT_DIR$/darkstar-server/darkstar-server.iml" filepath="$PROJECT_DIR$/darkstar-server/darkstar-server.iml" group="Project Darkstar" />
       <module fileurl="file://$PROJECT_DIR$/darkstar-server-tutorial/darkstar-server-tutorial.iml" filepath="$PROJECT_DIR$/darkstar-server-tutorial/darkstar-server-tutorial.iml" group="Project Darkstar" />
       <module fileurl="file://$PROJECT_DIR$/darkstar-shared/darkstar-shared.iml" filepath="$PROJECT_DIR$/darkstar-shared/darkstar-shared.iml" group="Project Darkstar" />
+      <module fileurl="file://$PROJECT_DIR$/darkstar-tref/darkstar-tref.iml" filepath="$PROJECT_DIR$/darkstar-tref/darkstar-tref.iml" group="Darkstar EXP" />
     </modules>
   </component>
   <component name="ProjectRootConfigurable.UI">

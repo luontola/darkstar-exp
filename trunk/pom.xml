@@ -71,6 +71,7 @@
         <module>darkstar-server</module>
         <module>darkstar-server-tutorial</module>
         <module>darkstar-shared</module>
+        <module>darkstar-tref</module>
     </modules>
 
     <dependencies>
@@ -97,31 +98,31 @@
             <dependency>
                 <groupId>net.orfjackal.darkstar-exp</groupId>
                 <artifactId>darkstar-client</artifactId>
-                <version>${project.version}</version>
+                <version>${version}</version>
             </dependency>
 
             <dependency>
                 <groupId>net.orfjackal.darkstar-exp</groupId>
                 <artifactId>darkstar-client-tutorial</artifactId>
-                <version>${project.version}</version>
+                <version>${version}</version>
             </dependency>
 
             <dependency>
                 <groupId>net.orfjackal.darkstar-exp</groupId>
                 <artifactId>darkstar-server</artifactId>
-                <version>${project.version}</version>
+                <version>${version}</version>
             </dependency>
 
             <dependency>
                 <groupId>net.orfjackal.darkstar-exp</groupId>
                 <artifactId>darkstar-server-tutorial</artifactId>
-                <version>${project.version}</version>
+                <version>${version}</version>
             </dependency>
 
             <dependency>
                 <groupId>net.orfjackal.darkstar-exp</groupId>
                 <artifactId>darkstar-shared</artifactId>
-                <version>${project.version}</version>
+                <version>${version}</version>
             </dependency>
 
             <dependency>
