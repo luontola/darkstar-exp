@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>net.orfjackal.darkstar-exp</groupId>
+        <artifactId>darkstar-exp</artifactId>
+        <version>0.9.6_1</version>
+    </parent>
+
+    <artifactId>darkstar-server-tutorial</artifactId>
+    <packaging>jar</packaging>
+
+    <name>darkstar-server-tutorial</name>
+
+    <licenses>
+        <license>
+            <name>GNU General Public License v2</name>
+            <url>http://www.opensource.org/licenses/gpl-2.0.php</url>
+        </license>
+    </licenses>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>net.orfjackal.darkstar-exp</groupId>
+            <artifactId>darkstar-server</artifactId>
+        </dependency>
+
+    </dependencies>
+
+</project>

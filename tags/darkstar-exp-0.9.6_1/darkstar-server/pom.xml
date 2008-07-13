@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>net.orfjackal.darkstar-exp</groupId>
+        <artifactId>darkstar-exp</artifactId>
+        <version>0.9.6_1</version>
+    </parent>
+
+    <artifactId>darkstar-server</artifactId>
+    <packaging>jar</packaging>
+
+    <name>darkstar-server</name>
+
+    <licenses>
+        <license>
+            <name>GNU General Public License v2</name>
+            <url>http://www.opensource.org/licenses/gpl-2.0.php</url>
+        </license>
+    </licenses>
+
+    <properties>
+        <!--<bdb.lib.dir>${basedir}/../bdb-4.5.20</bdb.lib.dir>-->
+        <!--<test.bdb.env>com.sun.sgs.impl.service.data.store.db.je.JeEnvironment</test.bdb.env>-->
+        <test.bdb.env>com.sun.sgs.impl.service.data.store.db.bdb.BdbEnvironment</test.bdb.env>
+    </properties>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>net.orfjackal.darkstar-exp</groupId>
+            <artifactId>darkstar-shared</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>berkeleydb</groupId>
+            <artifactId>bdb</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>berkeleydb</groupId>
+            <artifactId>bdb-natives</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>berkeleydb</groupId>
+            <artifactId>je</artifactId>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/sgs.version</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>**/sgs.version</exclude>
+                </excludes>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
+
+        <plugins>
+
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <!--<skipTests>true</skipTests>-->
+                    <includes>
+                        <include>**/Test*.java</include>
+                    </includes>
+                    <!-- HACK: The tests have side effects, so each must be run in a separate VM -->
+                    <forkMode>always</forkMode>
+                    <argLine>-server</argLine>
+                    <systemProperties>
+                        <property>
+                            <name>com.sun.sgs.impl.service.data.store.db.environment.class</name>
+                            <value>${test.bdb.env}</value>
+                        </property>
+                        <!--<property>-->
+                        <!-- HACK: It would be best to download the library from a repository automatically -->
+                        <!-- Expect the 'libdb_java45' library to be in the root of this module -->
+                        <!--<name>java.library.path</name>-->
+                        <!--<value>.</value>-->
+                        <!--<value>${bdb.lib.dir}/win32-x86</value>-->
+                        <!--<value>${bdb.lib.dir}</value>-->
+                        <!--</property>-->
+                        <property>
+                            <!-- HACK: The tests have side effects, so they must use a temp dir which is emptied before running the tests -->
+                            <name>java.io.tmpdir</name>
+                            <value>${basedir}/target/temp</value>
+                        </property>
+                    </systemProperties>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>test-compile</phase>
+                        <configuration>
+                            <tasks>
+                                <!-- Prepare temp dir for running tests -->
+                                <delete dir="${basedir}/target/temp" />
+                                <mkdir dir="${basedir}/target/temp" />
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+    <reporting>
+        <plugins>
+
+            <!--
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <subpackages>com.sun.sgs.app:com.sun.sgs.protocol.simple</subpackages>
+                </configuration>
+            </plugin>
+            -->
+
+        </plugins>
+    </reporting>
+
+</project>
