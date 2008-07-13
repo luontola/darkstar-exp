@@ -29,6 +29,8 @@ import com.sun.sgs.app.TaskManager;
  */
 public class MockAppContextResolver implements AppContextResolver {
 
+    // TODO: implement channel and task managers, add support for changing the managers
+
     public final MockDataManager dataManager = new MockDataManager();
 
     public ChannelManager getChannelManager() {
