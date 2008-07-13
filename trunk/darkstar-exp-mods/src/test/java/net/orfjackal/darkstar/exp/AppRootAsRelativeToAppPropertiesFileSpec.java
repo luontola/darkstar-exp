@@ -21,6 +21,7 @@ package net.orfjackal.darkstar.exp;
 import com.sun.sgs.app.AppListener;
 import com.sun.sgs.app.ClientSession;
 import com.sun.sgs.app.ClientSessionListener;
+import jdave.Group;
 import jdave.Specification;
 import jdave.junit4.JDaveRunner;
 import net.orfjackal.darkstar.integration.DarkstarServer;
@@ -37,6 +38,7 @@ import java.util.concurrent.TimeoutException;
  * @since 18.6.2008
  */
 @RunWith(JDaveRunner.class)
+@Group({"slow", "integration"})
 public class AppRootAsRelativeToAppPropertiesFileSpec extends Specification<Object> {
 
     private static final int TIMEOUT = 5000;
