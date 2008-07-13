@@ -17,8 +17,8 @@
 1. Run these commands in the project's root directory to release a new version:
 
       svn update
-     (mvn -Dtag="darkstar-vanilla-0.9.6_1" -DpreparationGoals="clean" -DdryRun=true release:prepare)
-      mvn -Dtag="darkstar-vanilla-0.9.6_1" -DpreparationGoals="clean" release:prepare
+     (mvn -DpreparationGoals="clean" -DdryRun=true release:prepare)
+      mvn -DpreparationGoals="clean" release:prepare
       mvn release:clean
 
    (Version number conventions: 1.2.3-SNAPSHOT -> 1.2.3 -> 1.2.4-SNAPSHOT)
