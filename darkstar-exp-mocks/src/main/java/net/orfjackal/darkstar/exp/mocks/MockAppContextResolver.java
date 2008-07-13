@@ -16,7 +16,7 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.orfjackal.sgs;
+package net.orfjackal.darkstar.exp.mocks;
 
 import com.sun.sgs.app.*;
 
