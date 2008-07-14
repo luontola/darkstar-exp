@@ -15,20 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.orfjackal.sgs;
+package net.orfjackal.darkstar.tref;
 
 /**
  * @author Esko Luontola
- * @since 1.2.2008
+ * @since 25.1.2008
  */
-public class TestManagedIdentity_CglibProxy extends TestManagedIdentity {
+public interface DummyInterface {
 
-    public static class ManagedIdentityContracts_CglibProxy
-            extends TestManagedIdentity.ManagedIdentityContracts {
-
-        protected void setUp() throws Exception {
-            factory = new TransparentReferenceCglibProxyFactory();
-            super.setUp();
-        }
-    }
+    int dummyMethod();
 }

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.orfjackal.sgs.util;
+package net.orfjackal.darkstar.tref.util;
 
 import java.util.Collections;
 import java.util.HashMap;

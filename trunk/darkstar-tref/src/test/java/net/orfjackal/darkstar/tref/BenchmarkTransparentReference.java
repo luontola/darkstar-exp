@@ -15,13 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.orfjackal.sgs;
+package net.orfjackal.darkstar.tref;
 
 import com.sun.sgs.app.AppContext;
 import com.sun.sgs.app.ManagedReference;
 import net.orfjackal.darkstar.exp.mocks.MockAppContext;
-import static net.orfjackal.sgs.BenchmarkTransparentReference.Strategy.CGLIB_PROXYING;
-import static net.orfjackal.sgs.BenchmarkTransparentReference.Strategy.JDK_PROXYING;
+import static net.orfjackal.darkstar.tref.BenchmarkTransparentReference.Strategy.CGLIB_PROXYING;
+import static net.orfjackal.darkstar.tref.BenchmarkTransparentReference.Strategy.JDK_PROXYING;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
