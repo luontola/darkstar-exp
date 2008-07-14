@@ -28,28 +28,28 @@ public class MockAppContext {
 
     // TODO: write tests for this class
 
-    private static MockAppContextResolver instance;
+    private static MockAppContextResolver resolver;
 
-    public static MockAppContextResolver getInstance() {
-        if (instance == null) {
+    public static MockAppContextResolver getResolver() {
+        if (resolver == null) {
             throw new IllegalStateException("MockAppContextResolver is not installed");
         }
-        return instance;
+        return resolver;
     }
 
     public static void install() {
-        if (instance != null) {
+        if (resolver != null) {
             throw new IllegalStateException("Warning: install before uninstall");
         }
-        instance = new MockAppContextResolver();
-        AppContext.setContextResolver(instance);
+        resolver = new MockAppContextResolver();
+        AppContext.setContextResolver(resolver);
     }
 
     public static void uninstall() {
-        if (instance == null) {
+        if (resolver == null) {
             throw new IllegalStateException("Warning: uninstall before install");
         }
-        instance = null;
+        resolver = null;
         AppContext.setContextResolver(null);
     }
 }

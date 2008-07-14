@@ -18,10 +18,10 @@
 
 package net.orfjackal.darkstar.exp.mocks;
 
-import com.sun.sgs.app.AppContextResolver;
-import com.sun.sgs.app.ChannelManager;
-import com.sun.sgs.app.DataManager;
-import com.sun.sgs.app.TaskManager;
+import com.sun.sgs.app.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Esko Luontola
@@ -29,23 +29,49 @@ import com.sun.sgs.app.TaskManager;
  */
 public class MockAppContextResolver implements AppContextResolver {
 
-    // TODO: implement channel and task managers, add support for changing the managers
+    public MockChannelManager channelManager = new MockChannelManager();
+    public MockDataManager dataManager = new MockDataManager();
+    public MockTaskManager taskManager = new MockTaskManager();
+    public final Map<Class<?>, Object> managers = new HashMap<Class<?>, Object>();
 
-    public final MockDataManager dataManager = new MockDataManager();
-
+    /**
+     * @see com.sun.sgs.impl.kernel.KernelContext#getChannelManager()
+     */
     public ChannelManager getChannelManager() {
-        throw new UnsupportedOperationException();
+        if (channelManager == null) {
+            throw new ManagerNotFoundException("this application is running without a ChannelManager");
+        }
+        return channelManager;
     }
 
+    /**
+     * @see com.sun.sgs.impl.kernel.KernelContext#getDataManager()
+     */
     public DataManager getDataManager() {
+        if (dataManager == null) {
+            throw new ManagerNotFoundException("this application is running without a DataManager");
+        }
         return dataManager;
     }
 
+    /**
+     * @see com.sun.sgs.impl.kernel.KernelContext#getTaskManager()
+     */
     public TaskManager getTaskManager() {
-        throw new UnsupportedOperationException();
+        if (taskManager == null) {
+            throw new ManagerNotFoundException("this application is running without a TaskManager");
+        }
+        return taskManager;
     }
 
+    /**
+     * @see com.sun.sgs.impl.kernel.KernelContext#getManager(Class<T>)
+     */
     public <T> T getManager(Class<T> type) {
-        throw new UnsupportedOperationException();
+        Object manager = managers.get(type);
+        if (manager == null) {
+            throw new ManagerNotFoundException("couldn't find manager: " + type.getName());
+        }
+        return type.cast(manager);
     }
 }

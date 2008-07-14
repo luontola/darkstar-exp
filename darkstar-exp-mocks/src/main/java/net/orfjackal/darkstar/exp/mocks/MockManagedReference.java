@@ -31,7 +31,7 @@ import java.math.BigInteger;
  * @since 17.6.2008
  */
 public class MockManagedReference<T> implements ManagedReference<T>, Serializable {
-    
+
     // TODO: write tests for this class
 
     private static final long serialVersionUID = 1L;
@@ -58,6 +58,6 @@ public class MockManagedReference<T> implements ManagedReference<T>, Serializabl
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
-        this.object = MockAppContext.getInstance().dataManager.getObjectById(oid);
+        this.object = MockAppContext.getResolver().dataManager.getObjectById(oid);
     }
 }
