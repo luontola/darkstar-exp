@@ -57,13 +57,21 @@ public class HooksSpec extends Specification<Object> {
             specify(hook.getClass(), should.equal(TransformHook.class));
         }
 
+        public void theInstanceIsCached() {
+            TransformHook hook2 = Hooks.get(TransformHook.class);
+            specify(hook == hook2);
+        }
+
         public void theHookContainsSomeDefaultBehaviour() {
             specify(hook.transform("foo"), should.equal("foo"));
         }
 
-        public void theHookInstanceIsCached() {
-            TransformHook hook2 = Hooks.get(TransformHook.class);
-            specify(hook == hook2);
+        public void aCustomHookMayNotBeInstalledAfterTheHookTypeIsUsed() {
+            specify(new Block() {
+                public void run() throws Throwable {
+                    hookManager.installHook(new UpperCaseTransformHook());
+                }
+            }, should.raise(IllegalArgumentException.class));
         }
     }
 
