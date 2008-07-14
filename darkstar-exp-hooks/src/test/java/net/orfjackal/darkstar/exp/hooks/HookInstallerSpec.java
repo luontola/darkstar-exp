@@ -21,8 +21,7 @@ package net.orfjackal.darkstar.exp.hooks;
 import jdave.Group;
 import jdave.Specification;
 import jdave.junit4.JDaveRunner;
-import static net.orfjackal.darkstar.exp.hooks.DummyHooks.TransformHook;
-import static net.orfjackal.darkstar.exp.hooks.DummyHooks.UpperCaseTransformHook;
+import static net.orfjackal.darkstar.exp.hooks.DummyHooks.*;
 import org.junit.runner.RunWith;
 
 import java.util.Properties;
@@ -47,12 +46,15 @@ public class HookInstallerSpec extends Specification<Object> {
     public class WhenNoHooksHaveBeenConfigured {
 
         public Object create() {
+            HookInstaller.installHooksFromProperties(props, manager);
             return null;
         }
 
         public void noHooksWillBeInstalled() {
-            HookInstaller.installHooksFromProperties(props, manager);
-            specify(manager.get(TransformHook.class).getClass(), should.equal(TransformHook.class));
+            specify(manager.get(TransformHook.class).getClass(),
+                    should.equal(TransformHook.class));
+            specify(manager.get(AnotherHook.class).getClass(),
+                    should.equal(AnotherHook.class));
         }
     }
 
@@ -60,12 +62,35 @@ public class HookInstallerSpec extends Specification<Object> {
 
         public Object create() {
             props.setProperty(HookInstaller.HOOKS_KEY, UpperCaseTransformHook.class.getName());
+            HookInstaller.installHooksFromProperties(props, manager);
             return null;
         }
 
         public void theSpecifiedHookWillBeInstalled() {
+            specify(manager.get(TransformHook.class).getClass(),
+                    should.equal(UpperCaseTransformHook.class));
+            specify(manager.get(AnotherHook.class).getClass(),
+                    should.equal(AnotherHook.class));
+        }
+    }
+
+    public class WhenManyHooksHaveBeenConfigured {
+
+        public Object create() {
+            // many hooks separated by whitespace
+            String hookList = " " + UpperCaseTransformHook.class.getName()
+                    + "\n    " + CustomAnotherHook.class.getName()
+                    + "\n";
+            props.setProperty(HookInstaller.HOOKS_KEY, hookList);
             HookInstaller.installHooksFromProperties(props, manager);
-            specify(manager.get(TransformHook.class).getClass(), should.equal(UpperCaseTransformHook.class));
+            return null;
+        }
+
+        public void allTheHooksWillBeInstalled() {
+            specify(manager.get(TransformHook.class).getClass(),
+                    should.equal(UpperCaseTransformHook.class));
+            specify(manager.get(AnotherHook.class).getClass(),
+                    should.equal(CustomAnotherHook.class));
         }
     }
 }

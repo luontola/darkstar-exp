@@ -18,6 +18,8 @@
 
 package net.orfjackal.darkstar.exp.hooks;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -29,18 +31,30 @@ public class HookInstaller {
     public static final String HOOKS_KEY = "darkstar-exp.hooks";
 
     public static void installHooksFromProperties(Properties props, HookManager manager) {
-        String value = props.getProperty(HOOKS_KEY);
+        String types = props.getProperty(HOOKS_KEY);
         try {
-            if (value != null) {
-                Hook hook = getHookType(value).newInstance();
+            for (String type : split(types)) {
+                Hook hook = toClass(type).newInstance();
                 manager.installHook(hook);
             }
         } catch (Exception e) {
-            throw new IllegalArgumentException("Invalid " + HOOKS_KEY + " property: " + value, e);
+            throw new IllegalArgumentException("Invalid " + HOOKS_KEY + " property: " + types, e);
         }
     }
 
-    private static Class<? extends Hook> getHookType(String value) throws ClassNotFoundException {
+    private static List<String> split(String value) {
+        List<String> result = new ArrayList<String>();
+        if (value != null) {
+            for (String s : value.split("\\s+")) {
+                if (!s.equals("")) {
+                    result.add(s);
+                }
+            }
+        }
+        return result;
+    }
+
+    private static Class<? extends Hook> toClass(String value) throws ClassNotFoundException {
         Class<?> type = HookInstaller.class.getClassLoader().loadClass(value);
         return type.asSubclass(Hook.class);
     }
