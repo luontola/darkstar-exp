@@ -20,12 +20,15 @@ package net.orfjackal.darkstar.exp.hooks;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Properties;
+import java.util.logging.Logger;
 
 /**
  * @author Esko Luontola
  * @since 14.7.2008
  */
 public final class DarkstarExp {
+    private static final Logger log = Logger.getLogger(DarkstarExp.class.getName());
 
     public static final String CONFIG_FILE = "darkstar.exp.config.file";
     public static final String HOOKS = "darkstar.exp.hooks";
@@ -33,10 +36,23 @@ public final class DarkstarExp {
     private DarkstarExp() {
     }
 
-    public static void init() throws IOException {
-        File config = new File(System.getProperty(CONFIG_FILE));
-        HookManager m = new HookManager();
-        HookInstaller.installHooksFromFile(config, m);
-        Hooks.setHookManager(m);
+    public static void init(Properties appProperties) throws IOException {
+        HookManager hookManager = new HookManager();
+        if (System.getProperty(HOOKS) != null) {
+            log.info("Loading hooks from system property");
+            HookInstaller.installHooksFromProperties(System.getProperties(), hookManager);
+
+        } else if (appProperties.getProperty(HOOKS) != null) {
+            log.info("Loading hooks from application config");
+            HookInstaller.installHooksFromProperties(appProperties, hookManager);
+
+        } else if (System.getProperty(CONFIG_FILE) != null) {
+            log.info("Loading hooks from server config");
+            HookInstaller.installHooksFromFile(new File(System.getProperty(CONFIG_FILE)), hookManager);
+
+        } else {
+            log.warning("Unable to load hooks");
+        }
+        Hooks.setHookManager(hookManager);
     }
 }

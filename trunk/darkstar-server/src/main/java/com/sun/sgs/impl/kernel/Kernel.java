@@ -833,8 +833,6 @@ class Kernel {
             System.exit(0);
         }
 
-        DarkstarExp.init();
-
         // Get the properties, merging properties given on the command line
         // with the first argument, which is the application config file.
         // The config file properties have precedence.
@@ -844,6 +842,7 @@ class Kernel {
         // check the standard properties
         checkProperties(appProperties, args[0]);
 
+        DarkstarExp.init(appProperties);
         Hooks.get(ApplicationPropertiesHook.class).apply(appProperties, new File(args[0]));
 
         // boot the kernel
