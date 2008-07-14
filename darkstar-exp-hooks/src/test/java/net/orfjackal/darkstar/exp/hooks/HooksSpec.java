@@ -22,6 +22,7 @@ import jdave.Block;
 import jdave.Group;
 import jdave.Specification;
 import jdave.junit4.JDaveRunner;
+import static net.orfjackal.darkstar.exp.hooks.DummyHooks.*;
 import org.junit.runner.RunWith;
 
 /**
@@ -109,37 +110,6 @@ public class HooksSpec extends Specification<Object> {
             hookManager.installHook(customAnother);
             AnotherHook another = Hooks.get(AnotherHook.class);
             specify(another == customAnother);
-        }
-    }
-
-
-    public static class TransformHook implements Hook {
-        public String transform(String param) {
-            return param;
-        }
-    }
-
-    public static class UpperCaseTransformHook extends TransformHook {
-        public String transform(String param) {
-            return param.toUpperCase();
-        }
-    }
-
-    public static class LowerCaseTransformHook extends TransformHook {
-        public String transform(String param) {
-            return param.toLowerCase();
-        }
-    }
-
-    public static class AnotherHook implements Hook {
-        public void doSomething() {
-            // default implementation
-        }
-    }
-
-    public static class CustomAnotherHook extends AnotherHook {
-        public void doSomething() {
-            // custom implementation
         }
     }
 }

@@ -16,15 +16,16 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.orfjackal.darkstar.exp;
+package net.orfjackal.darkstar.exp.mods;
 
 import com.sun.sgs.impl.kernel.StandardProperties;
+import net.orfjackal.darkstar.exp.hooks.hooktypes.ApplicationPropertiesHook;
 
 import java.io.File;
 import java.util.Properties;
 
 /**
- * [Darkstar EXP] Interpret app root as relative to the properties file.
+ * Interpret app root as relative to the properties file.
  * <p/>
  * Insert in {@link com.sun.sgs.impl.kernel.Kernel#main(String[])}
  * right before {@code new Kernel(appProperties)}
@@ -32,9 +33,9 @@ import java.util.Properties;
  * @author Esko Luontola
  * @since 19.6.2008
  */
-public class AppRootAsRelativeToAppPropertiesFile {
+public class AppRootAsRelativeToAppPropertiesFileHook extends ApplicationPropertiesHook {
 
-    public static void apply(Properties appProps, File appPropsFile) {
+    public void apply(Properties appProps, File appPropsFile) {
         String appRootProp = appProps.getProperty(StandardProperties.APP_ROOT);
         File appRoot;
         if (new File(appRootProp).isAbsolute()) {
