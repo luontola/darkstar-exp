@@ -72,11 +72,12 @@
                 <include>*.txt</include>
             </includes>
         </fileSet>
+        <!-- TODO: not yet working
         <fileSet>
-            <!-- TODO: not yet working -->
             <outputDirectory>doc/darkstar-server-api</outputDirectory>
             <directory>../darkstar-server/target/site/apidocs</directory>
         </fileSet>
+        -->
 
         <!-- Tutorials -->
         <fileSet>

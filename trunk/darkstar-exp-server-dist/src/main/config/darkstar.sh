@@ -72,6 +72,7 @@ done
 # Start up Darkstar Server
 "$JAVA" $VMOPTIONS \
     -Djava.library.path="$NATIVE_LIBRARY_DIR" \
-    -Djava.util.logging.config.file="$DARKSTAR_HOME\darkstar-logging.properties" \
+    -Djava.util.logging.config.file="$DARKSTAR_HOME/darkstar-logging.properties" \
+    -Ddarkstar.exp.config.file="$DARKSTAR_HOME/darkstar-exp.properties" \
     -cp $CP \
     com.sun.sgs.impl.kernel.Kernel "$APP_CONFIG_FILE"

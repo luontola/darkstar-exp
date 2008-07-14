@@ -24,6 +24,8 @@ import com.sun.sgs.app.ClientSessionListener;
 import jdave.Group;
 import jdave.Specification;
 import jdave.junit4.JDaveRunner;
+import net.orfjackal.darkstar.exp.hooks.DarkstarExp;
+import net.orfjackal.darkstar.exp.mods.AppRootAsRelativeToAppPropertiesFileHook;
 import net.orfjackal.darkstar.integration.DarkstarServer;
 import net.orfjackal.darkstar.integration.util.StreamWaiter;
 import net.orfjackal.darkstar.integration.util.TempDirectory;
@@ -55,6 +57,7 @@ public class AppRootAsRelativeToAppPropertiesFileSpec extends Specification<Obje
         appProps.setProperty(DarkstarServer.APP_NAME, "HellWorld");
         appProps.setProperty(DarkstarServer.APP_LISTENER, HelloWorld.class.getName());
         appProps.setProperty(DarkstarServer.APP_PORT, DarkstarServer.APP_PORT_DEFAULT);
+        appProps.setProperty(DarkstarExp.HOOKS, AppRootAsRelativeToAppPropertiesFileHook.class.getName());
     }
 
     public void destroy() {
