@@ -22,7 +22,10 @@ package net.orfjackal.darkstar.exp.hooks;
  * @author Esko Luontola
  * @since 14.7.2008
  */
-public class Hooks {
+public final class Hooks {
+
+    private Hooks() {
+    }
 
     private static HookManager hookManager;
 
