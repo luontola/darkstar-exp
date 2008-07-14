@@ -146,6 +146,7 @@
       </library>
     </orderEntry>
     <orderEntry type="module" module-name="darkstar-server" />
+    <orderEntry type="module" module-name="darkstar-exp-hooks" />
     <orderEntry type="module" module-name="darkstar-shared" />
     <orderEntry type="module-library">
       <library name="org.apache.mina:mina-core:1.1.0">
