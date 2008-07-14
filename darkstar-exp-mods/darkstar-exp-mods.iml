@@ -145,10 +145,10 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="darkstar-server" />
-    <orderEntry type="module" module-name="darkstar-exp-hooks" />
-    <orderEntry type="module" module-name="darkstar-shared" />
-    <orderEntry type="module-library">
+    <orderEntry type="module" module-name="darkstar-server" exported="" />
+    <orderEntry type="module" module-name="darkstar-exp-hooks" exported="" />
+    <orderEntry type="module" module-name="darkstar-shared" exported="" />
+    <orderEntry type="module-library" exported="">
       <library name="org.apache.mina:mina-core:1.1.0">
         <CLASSES>
           <root url="jar://$M2_REPO$/org/apache/mina/mina-core/1.1.0/mina-core-1.1.0.jar!/" />
@@ -161,7 +161,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="org.slf4j:slf4j-api:1.4.0">
         <CLASSES>
           <root url="jar://$M2_REPO$/org/slf4j/slf4j-api/1.4.0/slf4j-api-1.4.0.jar!/" />
@@ -174,7 +174,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="org.slf4j:slf4j-jdk14:1.4.0">
         <CLASSES>
           <root url="jar://$M2_REPO$/org/slf4j/slf4j-jdk14/1.4.0/slf4j-jdk14-1.4.0.jar!/" />
@@ -187,7 +187,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="berkeleydb:bdb:4.5.20">
         <CLASSES>
           <root url="jar://$M2_REPO$/berkeleydb/bdb/4.5.20/bdb-4.5.20.jar!/" />
@@ -200,7 +200,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="berkeleydb:bdb-natives:4.5.20">
         <CLASSES>
           <root url="jar://$M2_REPO$/berkeleydb/bdb-natives/4.5.20/bdb-natives-4.5.20.jar!/" />
@@ -213,7 +213,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="berkeleydb:je:3.2.44">
         <CLASSES>
           <root url="jar://$M2_REPO$/berkeleydb/je/3.2.44/je-3.2.44.jar!/" />

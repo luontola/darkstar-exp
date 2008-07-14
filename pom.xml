@@ -140,6 +140,12 @@
             </dependency>
 
             <dependency>
+                <groupId>net.orfjackal.darkstar-exp</groupId>
+                <artifactId>darkstar-exp-mods</artifactId>
+                <version>${version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>berkeleydb</groupId>
                 <artifactId>bdb</artifactId>
                 <version>4.5.20</version>

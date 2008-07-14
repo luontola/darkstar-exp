@@ -42,7 +42,9 @@ import com.sun.sgs.profile.ProfileRegistrar;
 import com.sun.sgs.service.DataService;
 import com.sun.sgs.service.Service;
 import com.sun.sgs.service.TransactionProxy;
-import net.orfjackal.darkstar.exp.AppRootAsRelativeToAppPropertiesFile;
+import net.orfjackal.darkstar.exp.hooks.DarkstarExp;
+import net.orfjackal.darkstar.exp.hooks.Hooks;
+import net.orfjackal.darkstar.exp.hooks.hooktypes.ApplicationPropertiesHook;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -840,7 +842,9 @@ class Kernel {
         // check the standard properties
         checkProperties(appProperties, args[0]);
 
-        AppRootAsRelativeToAppPropertiesFile.apply(appProperties, new File(args[0]));
+        // [Darkstar EXP] Install hook manager for injecting EXP's modifications
+        DarkstarExp.init();
+        Hooks.get(ApplicationPropertiesHook.class).apply(appProperties, new File(args[0]));
 
         // boot the kernel
         new Kernel(appProperties);

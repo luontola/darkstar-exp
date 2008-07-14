@@ -18,6 +18,9 @@
 
 package net.orfjackal.darkstar.exp.hooks;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -28,17 +31,23 @@ import java.util.Properties;
  */
 public class HookInstaller {
 
-    public static final String HOOKS_KEY = "darkstar-exp.hooks";
+    public static void installHooksFromFile(File file, HookManager manager) throws IOException {
+        Properties props = new Properties();
+        FileInputStream in = new FileInputStream(file);
+        props.load(in);
+        in.close();
+        installHooksFromProperties(props, manager);
+    }
 
     public static void installHooksFromProperties(Properties props, HookManager manager) {
-        String types = props.getProperty(HOOKS_KEY);
+        String types = props.getProperty(DarkstarExp.HOOKS);
         try {
             for (String type : split(types)) {
                 Hook hook = toClass(type).newInstance();
                 manager.installHook(hook);
             }
         } catch (Exception e) {
-            throw new IllegalArgumentException("Invalid " + HOOKS_KEY + " property: " + types, e);
+            throw new IllegalArgumentException("Invalid " + DarkstarExp.HOOKS + " property: " + types, e);
         }
     }
 

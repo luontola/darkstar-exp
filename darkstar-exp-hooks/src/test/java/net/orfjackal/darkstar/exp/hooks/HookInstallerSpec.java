@@ -25,6 +25,9 @@ import jdave.junit4.JDaveRunner;
 import static net.orfjackal.darkstar.exp.hooks.DummyHooks.*;
 import org.junit.runner.RunWith;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Properties;
 
 /**
@@ -62,7 +65,7 @@ public class HookInstallerSpec extends Specification<Object> {
     public class WhenOneHookHasBeenConfigured {
 
         public Object create() {
-            props.setProperty(HookInstaller.HOOKS_KEY, UpperCaseTransformHook.class.getName());
+            props.setProperty(DarkstarExp.HOOKS, UpperCaseTransformHook.class.getName());
             HookInstaller.installHooksFromProperties(props, manager);
             return null;
         }
@@ -82,7 +85,7 @@ public class HookInstallerSpec extends Specification<Object> {
             String hookList = " " + UpperCaseTransformHook.class.getName()
                     + "\n    " + CustomAnotherHook.class.getName()
                     + "\n";
-            props.setProperty(HookInstaller.HOOKS_KEY, hookList);
+            props.setProperty(DarkstarExp.HOOKS, hookList);
             HookInstaller.installHooksFromProperties(props, manager);
             return null;
         }
@@ -95,6 +98,32 @@ public class HookInstallerSpec extends Specification<Object> {
         }
     }
 
+    public class WhenHooksAreConfiguredInAPropertiesFile {
+
+        private File propsFile;
+
+        public Object create() throws IOException {
+            props.setProperty(DarkstarExp.HOOKS, UpperCaseTransformHook.class.getName());
+
+            propsFile = File.createTempFile("hooks", ".properties.tmp");
+            FileOutputStream out = new FileOutputStream(propsFile);
+            props.store(out, null);
+            out.close();
+            return null;
+        }
+
+        public void destroy() {
+            propsFile.delete();
+            propsFile.deleteOnExit();
+        }
+
+        public void theHooksWillBeReadAndInstalledFromTheFile() throws IOException {
+            HookInstaller.installHooksFromFile(propsFile, manager);
+            specify(manager.get(TransformHook.class).getClass(),
+                    should.equal(UpperCaseTransformHook.class));
+        }
+    }
+
     public class InvalidConfigurationsAre {
 
         public Object create() {
@@ -102,7 +131,7 @@ public class HookInstallerSpec extends Specification<Object> {
         }
 
         public void aNonHookClass() {
-            props.setProperty(HookInstaller.HOOKS_KEY, String.class.getName());
+            props.setProperty(DarkstarExp.HOOKS, String.class.getName());
             specify(new Block() {
                 public void run() throws Throwable {
                     HookInstaller.installHooksFromProperties(props, manager);
@@ -111,7 +140,7 @@ public class HookInstallerSpec extends Specification<Object> {
         }
 
         public void aClassWhichDoesNotExist() {
-            props.setProperty(HookInstaller.HOOKS_KEY, "foo.bar.GhostClass");
+            props.setProperty(DarkstarExp.HOOKS, "foo.bar.GhostClass");
             specify(new Block() {
                 public void run() throws Throwable {
                     HookInstaller.installHooksFromProperties(props, manager);
@@ -120,7 +149,7 @@ public class HookInstallerSpec extends Specification<Object> {
         }
 
         public void aClassWhichDoesNotHaveAnAccessibleDefaultConstructor() {
-            props.setProperty(HookInstaller.HOOKS_KEY, InaccessibleHook.class.getName());
+            props.setProperty(DarkstarExp.HOOKS, InaccessibleHook.class.getName());
             specify(new Block() {
                 public void run() throws Throwable {
                     HookInstaller.installHooksFromProperties(props, manager);

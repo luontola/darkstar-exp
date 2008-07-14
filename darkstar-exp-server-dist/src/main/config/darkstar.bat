@@ -56,6 +56,7 @@ for /f %%G in ('dir /b "%APP_LIBRARY_DIR%\*.jar"')   do (call :add_to_classpath 
 "%JAVA%" %VMOPTIONS% ^
     -Djava.library.path="%NATIVE_LIBRARY_DIR%" ^
     -Djava.util.logging.config.file="%DARKSTAR_HOME%\darkstar-logging.properties" ^
+    -Ddarkstar.exp.config.file="%DARKSTAR_HOME%\darkstar-exp.properties" ^
     -cp %CP% ^
     com.sun.sgs.impl.kernel.Kernel "%APP_CONFIG_FILE%"
 goto :eof
