@@ -15,30 +15,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.orfjackal.sgs;
-
-import com.sun.sgs.app.ManagedObject;
-
-import java.io.Serializable;
+package net.orfjackal.darkstar.tref;
 
 /**
  * @author Esko Luontola
- * @since 25.1.2008
+ * @since 1.2.2008
  */
-public class DummyManagedObject implements Serializable, ManagedObject, DummyInterface {
+public class TestManagedIdentity_CglibProxy extends TestManagedIdentity {
 
-    public int lastValue = 0;
+    public static class ManagedIdentityContracts_CglibProxy
+            extends TestManagedIdentity.ManagedIdentityContracts {
 
-    public int dummyMethod() {
-        return ++lastValue;
-    }
-
-    @SuppressWarnings({"EqualsWhichDoesntCheckParameterClass"})
-    public boolean equals(Object obj) {
-        return ManagedIdentity.equals(this, obj);
-    }
-
-    public int hashCode() {
-        return ManagedIdentity.hashCode(this);
+        protected void setUp() throws Exception {
+            factory = new TransparentReferenceCglibProxyFactory();
+            super.setUp();
+        }
     }
 }

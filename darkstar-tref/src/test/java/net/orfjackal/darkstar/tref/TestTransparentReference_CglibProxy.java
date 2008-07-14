@@ -15,16 +15,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.orfjackal.sgs;
+package net.orfjackal.darkstar.tref;
 
 /**
  * @author Esko Luontola
  * @since 27.1.2008
  */
-public class TestTransparentReference_JdkProxy extends TestTransparentReference {
+public class TestTransparentReference_CglibProxy extends TestTransparentReference {
 
     private static TransparentReferenceFactory newFactory() {
-        return new TransparentReferenceJdkProxyFactory();
+        return new TransparentReferenceCglibProxyFactory();
     }
 
     public static class WhenCreatingATransparentReference

@@ -15,20 +15,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.orfjackal.sgs;
+package net.orfjackal.darkstar.tref;
+
+import com.sun.sgs.app.ManagedObject;
+
+import java.io.Serializable;
 
 /**
  * @author Esko Luontola
- * @since 1.2.2008
+ * @since 25.1.2008
  */
-public class TestManagedIdentity_JdkProxy extends TestManagedIdentity {
+public class DummyManagedObject implements Serializable, ManagedObject, DummyInterface {
 
-    public static class ManagedIdentityContracts_JdkProxy
-            extends TestManagedIdentity.ManagedIdentityContracts {
+    public int lastValue = 0;
 
-        protected void setUp() throws Exception {
-            factory = new TransparentReferenceJdkProxyFactory();
-            super.setUp();
-        }
+    public int dummyMethod() {
+        return ++lastValue;
+    }
+
+    @SuppressWarnings({"EqualsWhichDoesntCheckParameterClass"})
+    public boolean equals(Object obj) {
+        return ManagedIdentity.equals(this, obj);
+    }
+
+    public int hashCode() {
+        return ManagedIdentity.hashCode(this);
     }
 }

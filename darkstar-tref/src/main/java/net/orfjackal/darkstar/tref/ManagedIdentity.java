@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.orfjackal.sgs;
+package net.orfjackal.darkstar.tref;
 
 import com.sun.sgs.app.AppContext;
 import com.sun.sgs.app.ManagedObject;

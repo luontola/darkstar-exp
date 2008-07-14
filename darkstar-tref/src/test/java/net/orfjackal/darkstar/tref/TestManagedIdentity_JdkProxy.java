@@ -15,13 +15,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.orfjackal.sgs;
+package net.orfjackal.darkstar.tref;
 
 /**
  * @author Esko Luontola
- * @since 25.1.2008
+ * @since 1.2.2008
  */
-public interface DummyInterface {
+public class TestManagedIdentity_JdkProxy extends TestManagedIdentity {
 
-    int dummyMethod();
+    public static class ManagedIdentityContracts_JdkProxy
+            extends TestManagedIdentity.ManagedIdentityContracts {
+
+        protected void setUp() throws Exception {
+            factory = new TransparentReferenceJdkProxyFactory();
+            super.setUp();
+        }
+    }
 }
