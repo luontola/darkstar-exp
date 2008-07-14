@@ -18,6 +18,7 @@
 
 package net.orfjackal.darkstar.exp.hooks;
 
+import jdave.Block;
 import jdave.Group;
 import jdave.Specification;
 import jdave.junit4.JDaveRunner;
@@ -92,5 +93,42 @@ public class HookInstallerSpec extends Specification<Object> {
             specify(manager.get(AnotherHook.class).getClass(),
                     should.equal(CustomAnotherHook.class));
         }
+    }
+
+    public class InvalidConfigurationsAre {
+
+        public Object create() {
+            return null;
+        }
+
+        public void aNonHookClass() {
+            props.setProperty(HookInstaller.HOOKS_KEY, String.class.getName());
+            specify(new Block() {
+                public void run() throws Throwable {
+                    HookInstaller.installHooksFromProperties(props, manager);
+                }
+            }, should.raise(IllegalArgumentException.class));
+        }
+
+        public void aClassWhichDoesNotExist() {
+            props.setProperty(HookInstaller.HOOKS_KEY, "foo.bar.GhostClass");
+            specify(new Block() {
+                public void run() throws Throwable {
+                    HookInstaller.installHooksFromProperties(props, manager);
+                }
+            }, should.raise(IllegalArgumentException.class));
+        }
+
+        public void aClassWhichDoesNotHaveAnAccessibleDefaultConstructor() {
+            props.setProperty(HookInstaller.HOOKS_KEY, InaccessibleHook.class.getName());
+            specify(new Block() {
+                public void run() throws Throwable {
+                    HookInstaller.installHooksFromProperties(props, manager);
+                }
+            }, should.raise(IllegalArgumentException.class));
+        }
+    }
+
+    private static class InaccessibleHook implements Hook {
     }
 }
