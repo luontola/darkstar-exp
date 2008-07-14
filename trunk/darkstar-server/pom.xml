@@ -30,6 +30,11 @@
 
         <dependency>
             <groupId>net.orfjackal.darkstar-exp</groupId>
+            <artifactId>darkstar-exp-hooks</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>net.orfjackal.darkstar-exp</groupId>
             <artifactId>darkstar-shared</artifactId>
         </dependency>
 
@@ -110,8 +115,8 @@
                         <configuration>
                             <tasks>
                                 <!-- Prepare temp dir for running tests -->
-                                <delete dir="${basedir}/target/temp" />
-                                <mkdir dir="${basedir}/target/temp" />
+                                <delete dir="${basedir}/target/temp"/>
+                                <mkdir dir="${basedir}/target/temp"/>
                             </tasks>
                         </configuration>
                         <goals>

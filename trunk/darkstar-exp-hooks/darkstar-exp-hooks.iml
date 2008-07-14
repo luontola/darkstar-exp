@@ -7,8 +7,6 @@
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
-      <excludeFolder url="file://$MODULE_DIR$/target/classes" />
-      <excludeFolder url="file://$MODULE_DIR$/target/maven-archiver" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -103,7 +101,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library" exported="">
+    <orderEntry type="module-library">
       <library name="cglib:cglib-nodep:2.1_3">
         <CLASSES>
           <root url="jar://$M2_REPO$/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3.jar!/" />
@@ -142,88 +140,6 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="darkstar-server" exported="" />
-    <orderEntry type="module" module-name="darkstar-exp-hooks" exported="" />
-    <orderEntry type="module" module-name="darkstar-shared" exported="" />
-    <orderEntry type="module-library" exported="">
-      <library name="org.apache.mina:mina-core:1.1.0">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/org/apache/mina/mina-core/1.1.0/mina-core-1.1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/org/apache/mina/mina-core/1.1.0/mina-core-1.1.0-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/org/apache/mina/mina-core/1.1.0/mina-core-1.1.0-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="org.slf4j:slf4j-api:1.4.0">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/org/slf4j/slf4j-api/1.4.0/slf4j-api-1.4.0.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/org/slf4j/slf4j-api/1.4.0/slf4j-api-1.4.0-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/org/slf4j/slf4j-api/1.4.0/slf4j-api-1.4.0-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="org.slf4j:slf4j-jdk14:1.4.0">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/org/slf4j/slf4j-jdk14/1.4.0/slf4j-jdk14-1.4.0.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/org/slf4j/slf4j-jdk14/1.4.0/slf4j-jdk14-1.4.0-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/org/slf4j/slf4j-jdk14/1.4.0/slf4j-jdk14-1.4.0-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="berkeleydb:bdb:4.5.20">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/berkeleydb/bdb/4.5.20/bdb-4.5.20.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/berkeleydb/bdb/4.5.20/bdb-4.5.20-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/berkeleydb/bdb/4.5.20/bdb-4.5.20-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="berkeleydb:bdb-natives:4.5.20">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/berkeleydb/bdb-natives/4.5.20/bdb-natives-4.5.20.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/berkeleydb/bdb-natives/4.5.20/bdb-natives-4.5.20-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/berkeleydb/bdb-natives/4.5.20/bdb-natives-4.5.20-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="berkeleydb:je:3.2.44">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/berkeleydb/je/3.2.44/je-3.2.44.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/berkeleydb/je/3.2.44/je-3.2.44-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/berkeleydb/je/3.2.44/je-3.2.44-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module" module-name="darkstar-exp-mocks" />
     <orderEntryProperties />
   </component>
   <component name="copyright">

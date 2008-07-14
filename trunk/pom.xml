@@ -66,6 +66,7 @@
         <module>darkstar-client</module>
         <module>darkstar-client-tutorial</module>
         <module>darkstar-exp-client-dist</module>
+        <module>darkstar-exp-hooks</module>
         <module>darkstar-exp-mocks</module>
         <module>darkstar-exp-mods</module>
         <module>darkstar-exp-server-dist</module>
@@ -123,6 +124,12 @@
             <dependency>
                 <groupId>net.orfjackal.darkstar-exp</groupId>
                 <artifactId>darkstar-shared</artifactId>
+                <version>${version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>net.orfjackal.darkstar-exp</groupId>
+                <artifactId>darkstar-exp-hooks</artifactId>
                 <version>${version}</version>
             </dependency>
 
