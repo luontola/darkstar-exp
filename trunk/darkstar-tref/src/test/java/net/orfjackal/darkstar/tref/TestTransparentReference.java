@@ -156,7 +156,7 @@ public abstract class TestTransparentReference {
         }
 
         public void testItShouldBePossibleToGetTheManagedReferenceFromTheProxy() {
-            ManagedReference reference = ((TransparentReference) proxy).getManagedReference();
+            ManagedReference<?> reference = ((TransparentReference) proxy).getManagedReference();
             assertSame(object, reference.get());
         }
     }
@@ -204,6 +204,7 @@ public abstract class TestTransparentReference {
         }
 
         private static class SerializationTestObject implements Serializable {
+            private static final long serialVersionUID = 1L;
 
             private DummyInterface aField;
             private DummyInterface manField;
@@ -217,6 +218,8 @@ public abstract class TestTransparentReference {
         }
 
         private static class DummyNormalObject implements DummyInterface, Serializable {
+            private static final long serialVersionUID = 1L;
+
             public int dummyMethod() {
                 return 0;
             }

@@ -159,11 +159,11 @@ public class BenchmarkTransparentReference {
     }
 
     private static long callRefMethod(int iterations) {
-        ManagedReference reference = AppContext.getDataManager().createReference(new DummyManagedObject());
+        ManagedReference<DummyManagedObject> reference = AppContext.getDataManager().createReference(new DummyManagedObject());
 
         long start = System.currentTimeMillis();
         for (int i = 0; i < iterations; i++) {
-            DummyInterface object = (DummyInterface) reference.get();
+            DummyInterface object = reference.get();
             junk += object.dummyMethod();
         }
         long end = System.currentTimeMillis();

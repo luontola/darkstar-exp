@@ -27,7 +27,6 @@ import java.io.Serializable;
  * @since 31.1.2008
  */
 public final class TransparentReferenceImpl implements TransparentReference, Serializable {
-
     private static final long serialVersionUID = 1L;
 
     private static TransparentReferenceFactory factory = new TransparentReferenceCglibProxyFactory();
@@ -40,10 +39,10 @@ public final class TransparentReferenceImpl implements TransparentReference, Ser
         return factory;
     }
 
-    private final ManagedReference reference;
+    private final ManagedReference<?> reference;
     private final Class<?> type;
 
-    public TransparentReferenceImpl(Class<?> type, ManagedReference reference) {
+    public TransparentReferenceImpl(Class<?> type, ManagedReference<?> reference) {
         this.type = type;
         this.reference = reference;
     }
@@ -52,7 +51,7 @@ public final class TransparentReferenceImpl implements TransparentReference, Ser
         return (ManagedObject) reference.get();
     }
 
-    public ManagedReference getManagedReference() {
+    public ManagedReference<?> getManagedReference() {
         return reference;
     }
 

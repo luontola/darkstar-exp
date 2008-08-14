@@ -34,7 +34,7 @@ public class TransparentReferenceJdkProxyFactory implements TransparentReference
 
     public TransparentReference createTransparentReference(ManagedObject object) {
         Class<?> type = object.getClass();
-        ManagedReference reference = AppContext.getDataManager().createReference(object);
+        ManagedReference<?> reference = AppContext.getDataManager().createReference(object);
         return newProxy(new TransparentReferenceImpl(type, reference));
     }
 

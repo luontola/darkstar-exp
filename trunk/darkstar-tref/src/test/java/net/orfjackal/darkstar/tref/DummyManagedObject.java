@@ -26,6 +26,7 @@ import java.io.Serializable;
  * @since 25.1.2008
  */
 public class DummyManagedObject implements Serializable, ManagedObject, DummyInterface {
+    private static final long serialVersionUID = 1L;
 
     public int lastValue = 0;
 
