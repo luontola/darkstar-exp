@@ -20,6 +20,8 @@
 package com.sun.sgs.impl.service.data;
 
 import com.sun.sgs.app.ManagedObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -29,6 +31,7 @@ import java.util.Map.Entry;
  * This class is logically part of the ManagedReferenceImpl class.
  */
 final class ReferenceTable {
+    private static final Logger logger = LoggerFactory.getLogger(ReferenceTable.class);
 
     private enum State {
         ACTIVE, FLUSHING, CLOSED
@@ -59,7 +62,7 @@ final class ReferenceTable {
      */
     ManagedReferenceImpl<?> find(Object object) {
 	assert object != null : "Object is null";
-	return objects.get(object);
+	return objects.get((ManagedObject) object);
     }
 
     /**
@@ -106,8 +109,12 @@ final class ReferenceTable {
      * object.
      */
     void unregisterObject(ManagedObject object) {
-	assert objects.containsKey(object) : "Object was not found";
-	objects.remove(object);
+        assert objects.containsKey(object) : "Object was not found";
+        if (state == State.FLUSHING) {
+            unregisterAfterFlush.add(object);
+        } else {
+            objects.remove(object);
+        }
     }
 
     /** Removes a managed reference from this table. */
@@ -149,8 +156,10 @@ final class ReferenceTable {
         if (state == State.CLOSED) {
             return flushed;
         }
+        int sizeBefore = -1;
         try {
             beginFlush();
+            sizeBefore = flushQueue.size();
             FlushInfo flushInfo = null;
             // ref.flush() may add more elements to flushQueue, so we must use indexing
             // instead of foreach (uses Iterator) to avoid ConcurrentModificationException
@@ -166,6 +175,10 @@ final class ReferenceTable {
             }
             flushed = flushInfo;
             return flushInfo;
+        } catch (RuntimeException e) {
+            logger.warn("Failure in flushing objects, flush queue size is " + flushQueue.size()
+                    + " (" + sizeBefore + " existing and " + (flushQueue.size() - sizeBefore) + " new objects)", e);
+            throw e;
         } finally {
             endFlush();
         }
