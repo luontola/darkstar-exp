@@ -50,10 +50,13 @@ public class TransparentReferencesSpec extends Specification<Object> {
 
     public void create() throws TimeoutException {
         tempDirectory = new TempDirectory();
+        tempDirectory.create();
+
         server = new DarkstarServer(tempDirectory.getDirectory());
         server.setAppName("TransparentReferencesTestApp");
         server.setAppListener(TransparentReferencesTestApp.class);
         server.setProperty(DarkstarExp.HOOKS, "");
+        server.start();
         server.waitForApplicationReady(TIMEOUT);
     }
 
