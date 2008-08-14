@@ -112,6 +112,8 @@
     <dependencyManagement>
         <dependencies>
 
+            <!-- Project Darkstar -->
+
             <dependency>
                 <groupId>net.orfjackal.darkstar-exp</groupId>
                 <artifactId>darkstar-client</artifactId>
@@ -142,6 +144,8 @@
                 <version>${version}</version>
             </dependency>
 
+            <!-- Darkstar EXP -->
+
             <dependency>
                 <groupId>net.orfjackal.darkstar-exp</groupId>
                 <artifactId>darkstar-exp-hooks</artifactId>
@@ -159,6 +163,14 @@
                 <artifactId>darkstar-exp-mods</artifactId>
                 <version>${version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>net.orfjackal.darkstar-exp</groupId>
+                <artifactId>darkstar-tref</artifactId>
+                <version>${version}</version>
+            </dependency>
+
+            <!-- Other dependencies -->
 
             <dependency>
                 <groupId>berkeleydb</groupId>

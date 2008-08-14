@@ -132,7 +132,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="cglib:cglib-nodep:2.1_3">
         <CLASSES>
           <root url="jar://$M2_REPO$/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3.jar!/" />
@@ -226,6 +226,7 @@
         </SOURCES>
       </library>
     </orderEntry>
+    <orderEntry type="module" module-name="darkstar-tref" exported="" />
     <orderEntry type="module-library">
       <library name="net.orfjackal.darkstar-contrib:darkstar-integration-test:1.0">
         <CLASSES>

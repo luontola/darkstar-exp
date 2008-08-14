@@ -37,6 +37,11 @@
         </dependency>
 
         <dependency>
+            <groupId>net.orfjackal.darkstar-exp</groupId>
+            <artifactId>darkstar-tref</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>net.orfjackal.darkstar-contrib</groupId>
             <artifactId>darkstar-integration-test</artifactId>
             <version>1.0</version>
