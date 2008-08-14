@@ -91,12 +91,16 @@ public class TransparentReferencesSpec extends Specification<Object> {
         }
     }
 
+    private void execOnServer(byte command) throws IOException {
+        client.send((ByteBuffer) ByteBuffer
+                .allocate(1).put(command).flip());
+    }
+
 
     public class WhenAManagedObjectIsReferredDirectly {
 
         public Object create() throws IOException {
-            client.send((ByteBuffer) ByteBuffer
-                    .allocate(1).put(CREATE_MANAGED_OBJECT).flip());
+            execOnServer(CREATE_MANAGED_OBJECT);
             return null;
         }
 
@@ -107,7 +111,7 @@ public class TransparentReferencesSpec extends Specification<Object> {
         }
 
         public void duringTheNextTaskItIsReferredThroughATransparentReference() throws Exception {
-            client.send((ByteBuffer) ByteBuffer.allocate(1).put(NOOP).flip());
+            execOnServer(NOOP);
             server.waitUntilSystemOutContains("2: is null: false", TIMEOUT);
             server.waitUntilSystemOutContains("2: is managed: false", TIMEOUT);
             server.waitUntilSystemOutContains("2: foo() returns: FOO", TIMEOUT);
