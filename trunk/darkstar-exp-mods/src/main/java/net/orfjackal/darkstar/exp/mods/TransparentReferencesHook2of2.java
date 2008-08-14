@@ -25,7 +25,7 @@ import net.orfjackal.darkstar.exp.hooks.hooktypes.BeforeTransactionIsDeactivated
  * @author Esko Luontola
  * @since 14.8.2008
  */
-public class TransparentReferencesHook2 extends BeforeTransactionIsDeactivatedHook {
+public class TransparentReferencesHook2of2 extends BeforeTransactionIsDeactivatedHook {
 
     public void beforeTransactionIsDeactivated() {
         TransparentReferencesHookHelper.flushModifiedObjects();
