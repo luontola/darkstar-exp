@@ -47,7 +47,7 @@ import java.util.concurrent.TimeoutException;
 public class TransparentReferencesSpec extends Specification<Object> {
 
     private static final int TIMEOUT = 5000;
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
     private DarkstarServer server;
     private DebugClient client;
