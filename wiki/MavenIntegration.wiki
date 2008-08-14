@@ -25,12 +25,12 @@ Contains experimental features which are not included in the vanilla version. Al
         <dependency>
             <groupId>net.orfjackal.darkstar-exp</groupId>
             <artifactId>darkstar-server</artifactId>
-            <version>0.9.6_1</version>
+            <version>0.9.6_2</version>
         </dependency>
         <dependency>
             <groupId>net.orfjackal.darkstar-exp</groupId>
             <artifactId>darkstar-client</artifactId>
-            <version>0.9.6_1</version>
+            <version>0.9.6_2</version>
         </dependency>
 }}}
 
