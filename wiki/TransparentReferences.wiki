@@ -1,4 +1,4 @@
-#summary How to avoid the burden of using ManagedReferences direcly
+#summary How to avoid the burden of managing ManagedReferences manually
 
 
 = Introduction =
