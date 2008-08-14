@@ -27,11 +27,15 @@ import jdave.Specification;
 import jdave.junit4.JDaveRunner;
 import net.orfjackal.darkstar.exp.hooks.DarkstarExp;
 import net.orfjackal.darkstar.integration.DarkstarServer;
+import net.orfjackal.darkstar.integration.DebugClient;
 import net.orfjackal.darkstar.integration.util.TempDirectory;
+import net.orfjackal.darkstar.integration.util.TimedInterrupt;
 import net.orfjackal.darkstar.tref.ManagedIdentity;
 import org.junit.runner.RunWith;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.nio.ByteBuffer;
 import java.util.Properties;
 import java.util.concurrent.TimeoutException;
 
@@ -44,59 +48,118 @@ import java.util.concurrent.TimeoutException;
 public class TransparentReferencesSpec extends Specification<Object> {
 
     private static final int TIMEOUT = 5000;
+    private static final boolean DEBUG = true;
 
     private DarkstarServer server;
-    private TempDirectory tempDirectory;
+    private DebugClient client;
 
-    public void create() throws TimeoutException {
+    private TempDirectory tempDirectory;
+    private Thread testTimeout;
+
+    public void create() throws TimeoutException, InterruptedException {
         tempDirectory = new TempDirectory();
         tempDirectory.create();
 
         server = new DarkstarServer(tempDirectory.getDirectory());
-        server.setAppName("TransparentReferencesTestApp");
-        server.setAppListener(TransparentReferencesTestApp.class);
+        server.setAppName("MyAppListener");
+        server.setAppListener(MyAppListener.class);
         server.setProperty(DarkstarExp.HOOKS, "");
         server.start();
+
         server.waitForApplicationReady(TIMEOUT);
+        testTimeout = TimedInterrupt.startOnCurrentThread(TIMEOUT);
+
+        client = new DebugClient("localhost", server.getPort());
+        client.login();
+        String event = client.events.take();
+        specify(event, event.startsWith(DebugClient.LOGGED_IN));
     }
 
     public void destroy() {
         try {
+            if (DEBUG) {
+                System.out.println("Server Out:");
+                System.out.println(server.getSystemOut());
+                System.err.println("Server Log:");
+                System.err.println(server.getSystemErr());
+            }
+            client.logout(true);
+            testTimeout.interrupt();
             server.shutdown();
         } finally {
             tempDirectory.dispose();
         }
     }
 
-    public class WithTransparentReferences {
 
-        public Object create() {
+    public class WhenAManagedObjectIsReferredDirectly {
+
+        public Object create() throws IOException {
+            client.send((ByteBuffer) ByteBuffer
+                    .allocate(1).put(CREATE_MANAGED_OBJECT).flip());
             return null;
         }
 
-        public void todo() {
-            // TODO
+        public void duringTheFirstTaskItIsReferredDirectly() throws TimeoutException {
+            server.waitUntilSystemOutContains("1: is null: false", TIMEOUT);
+            server.waitUntilSystemOutContains("1: is managed: true", TIMEOUT);
+            server.waitUntilSystemOutContains("1: foo() returns: FOO", TIMEOUT);
         }
     }
 
+    // Test Application
 
-    public static class TransparentReferencesTestApp implements AppListener, Serializable {
+    private static final byte CREATE_MANAGED_OBJECT = 1;
+
+    public static class MyAppListener implements AppListener, Serializable {
         private static final long serialVersionUID = 1L;
 
         public void initialize(Properties props) {
         }
 
         public ClientSessionListener loggedIn(ClientSession session) {
-            return null;
+            return new MyClientSessionListener();
         }
     }
 
-    public interface Foo {
+    private static class MyClientSessionListener implements ClientSessionListener, Serializable {
+        private static final long serialVersionUID = 1L;
+
+        private int step = 0;
+        private Foo field;
+
+        public void receivedMessage(ByteBuffer message) {
+            step++;
+            exec(message.get());
+            printStatus();
+        }
+
+        private void exec(int command) {
+            if (command == CREATE_MANAGED_OBJECT) {
+                field = new FooImpl();
+            }
+        }
+
+        private void printStatus() {
+            System.out.println(step + ": is null: " + (field == null));
+            System.out.println(step + ": is managed: " + (field instanceof ManagedObject));
+            if (field != null) {
+                System.out.println(step + ": foo() returns: " + field.foo());
+            }
+        }
+
+        public void disconnected(boolean graceful) {
+        }
+    }
+
+    // Test Interfaces
+
+    private interface Foo {
         String foo();
     }
 
-    public static class FooImpl implements Foo, ManagedObject, Serializable {
-        private static final long serialVersionUID = 1202794677805487620L;
+    private static class FooImpl implements Foo, ManagedObject, Serializable {
+        private static final long serialVersionUID = 1L;
 
         public String foo() {
             return "FOO";
