@@ -5,7 +5,7 @@
     <parent>
         <groupId>net.orfjackal.darkstar-exp</groupId>
         <artifactId>darkstar-exp</artifactId>
-        <version>0.9.6_2-SNAPSHOT</version>
+        <version>0.9.6_2</version>
     </parent>
 
     <artifactId>darkstar-server</artifactId>
@@ -115,8 +115,8 @@
                         <configuration>
                             <tasks>
                                 <!-- Prepare temp dir for running tests -->
-                                <delete dir="${basedir}/target/temp"/>
-                                <mkdir dir="${basedir}/target/temp"/>
+                                <delete dir="${basedir}/target/temp" />
+                                <mkdir dir="${basedir}/target/temp" />
                             </tasks>
                         </configuration>
                         <goals>
