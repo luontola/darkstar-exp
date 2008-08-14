@@ -18,14 +18,13 @@
 
 package net.orfjackal.darkstar.exp;
 
-import com.sun.sgs.app.AppListener;
-import com.sun.sgs.app.ClientSession;
-import com.sun.sgs.app.ClientSessionListener;
-import com.sun.sgs.app.ManagedObject;
+import com.sun.sgs.app.*;
 import jdave.Group;
 import jdave.Specification;
 import jdave.junit4.JDaveRunner;
 import net.orfjackal.darkstar.exp.hooks.DarkstarExp;
+import net.orfjackal.darkstar.exp.mods.TransparentReferencesHook1;
+import net.orfjackal.darkstar.exp.mods.TransparentReferencesHook2;
 import net.orfjackal.darkstar.integration.DarkstarServer;
 import net.orfjackal.darkstar.integration.DebugClient;
 import net.orfjackal.darkstar.integration.util.TempDirectory;
@@ -63,7 +62,9 @@ public class TransparentReferencesSpec extends Specification<Object> {
         server = new DarkstarServer(tempDirectory.getDirectory());
         server.setAppName("MyAppListener");
         server.setAppListener(MyAppListener.class);
-        server.setProperty(DarkstarExp.HOOKS, "");
+        server.setProperty(DarkstarExp.HOOKS, "" +
+                TransparentReferencesHook1.class.getName() + "\n" +
+                TransparentReferencesHook2.class.getName());
         server.start();
 
         server.waitForApplicationReady(TIMEOUT);
@@ -97,10 +98,10 @@ public class TransparentReferencesSpec extends Specification<Object> {
     }
 
 
-    public class WhenAManagedObjectIsReferredDirectly {
+    public class ReferringAManagedObjectKnownByTheDataManager {
 
         public Object create() throws IOException {
-            execOnServer(CREATE_MANAGED_OBJECT);
+            execOnServer(REFER_KNOWN_MANAGED_OBJECT);
             return null;
         }
 
@@ -121,7 +122,7 @@ public class TransparentReferencesSpec extends Specification<Object> {
     // Test Application
 
     private static final byte NOOP = 0;
-    private static final byte CREATE_MANAGED_OBJECT = 1;
+    private static final byte REFER_KNOWN_MANAGED_OBJECT = 1;
 
     public static class MyAppListener implements AppListener, Serializable {
         private static final long serialVersionUID = 1L;
@@ -147,8 +148,9 @@ public class TransparentReferencesSpec extends Specification<Object> {
         }
 
         private void exec(int command) {
-            if (command == CREATE_MANAGED_OBJECT) {
+            if (command == REFER_KNOWN_MANAGED_OBJECT) {
                 field = new FooImpl();
+                AppContext.getDataManager().createReference(field);
             }
         }
 
