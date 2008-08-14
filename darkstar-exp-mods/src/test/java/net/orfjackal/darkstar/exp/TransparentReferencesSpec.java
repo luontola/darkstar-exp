@@ -23,8 +23,8 @@ import jdave.Group;
 import jdave.Specification;
 import jdave.junit4.JDaveRunner;
 import net.orfjackal.darkstar.exp.hooks.DarkstarExp;
-import net.orfjackal.darkstar.exp.mods.TransparentReferencesHook1;
-import net.orfjackal.darkstar.exp.mods.TransparentReferencesHook2;
+import net.orfjackal.darkstar.exp.mods.TransparentReferencesHook1of2;
+import net.orfjackal.darkstar.exp.mods.TransparentReferencesHook2of2;
 import net.orfjackal.darkstar.integration.DarkstarServer;
 import net.orfjackal.darkstar.integration.DebugClient;
 import net.orfjackal.darkstar.integration.util.TempDirectory;
@@ -63,8 +63,8 @@ public class TransparentReferencesSpec extends Specification<Object> {
         server.setAppName("MyAppListener");
         server.setAppListener(MyAppListener.class);
         server.setProperty(DarkstarExp.HOOKS, "" +
-                TransparentReferencesHook1.class.getName() + "\n" +
-                TransparentReferencesHook2.class.getName());
+                TransparentReferencesHook1of2.class.getName() + "\n" +
+                TransparentReferencesHook2of2.class.getName());
         server.start();
 
         server.waitForApplicationReady(TIMEOUT);

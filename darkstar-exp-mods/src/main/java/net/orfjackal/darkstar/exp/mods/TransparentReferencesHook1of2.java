@@ -28,7 +28,7 @@ import net.orfjackal.darkstar.tref.TransparentReferenceUtil;
  * @author Esko Luontola
  * @since 14.8.2008
  */
-public class TransparentReferencesHook1 extends ReplaceObjectOnSerializationHook {
+public class TransparentReferencesHook1of2 extends ReplaceObjectOnSerializationHook {
 
     public Object replaceObject(Object object, Object topLevelObject) {
         if (object != topLevelObject && object instanceof ManagedObject) {
