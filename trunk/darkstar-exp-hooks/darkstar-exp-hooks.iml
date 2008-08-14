@@ -14,6 +14,32 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module-library" exported="">
+      <library name="org.slf4j:slf4j-api:1.4.0">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/org/slf4j/slf4j-api/1.4.0/slf4j-api-1.4.0.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/org/slf4j/slf4j-api/1.4.0/slf4j-api-1.4.0-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/org/slf4j/slf4j-api/1.4.0/slf4j-api-1.4.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.slf4j:slf4j-jdk14:1.4.0">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/org/slf4j/slf4j-jdk14/1.4.0/slf4j-jdk14-1.4.0.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/org/slf4j/slf4j-jdk14/1.4.0/slf4j-jdk14-1.4.0-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/org/slf4j/slf4j-jdk14/1.4.0/slf4j-jdk14-1.4.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
     <orderEntry type="module-library">
       <library name="junit:junit:4.4">
         <CLASSES>
