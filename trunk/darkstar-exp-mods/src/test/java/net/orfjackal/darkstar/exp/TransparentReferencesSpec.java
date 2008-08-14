@@ -105,10 +105,18 @@ public class TransparentReferencesSpec extends Specification<Object> {
             server.waitUntilSystemOutContains("1: is managed: true", TIMEOUT);
             server.waitUntilSystemOutContains("1: foo() returns: FOO", TIMEOUT);
         }
+
+        public void duringTheNextTaskItIsReferredThroughATransparentReference() throws Exception {
+            client.send((ByteBuffer) ByteBuffer.allocate(1).put(NOOP).flip());
+            server.waitUntilSystemOutContains("2: is null: false", TIMEOUT);
+            server.waitUntilSystemOutContains("2: is managed: false", TIMEOUT);
+            server.waitUntilSystemOutContains("2: foo() returns: FOO", TIMEOUT);
+        }
     }
 
     // Test Application
 
+    private static final byte NOOP = 0;
     private static final byte CREATE_MANAGED_OBJECT = 1;
 
     public static class MyAppListener implements AppListener, Serializable {
