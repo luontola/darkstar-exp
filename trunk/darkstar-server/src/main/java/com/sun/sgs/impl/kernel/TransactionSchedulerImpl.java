@@ -21,44 +21,28 @@ package com.sun.sgs.impl.kernel;
 
 import com.sun.sgs.app.ExceptionRetryStatus;
 import com.sun.sgs.app.TaskRejectedException;
-
 import com.sun.sgs.auth.Identity;
-
 import com.sun.sgs.impl.kernel.schedule.SchedulerQueue;
-
 import com.sun.sgs.impl.service.transaction.TransactionCoordinator;
 import com.sun.sgs.impl.service.transaction.TransactionHandle;
-
 import com.sun.sgs.impl.sharedutil.LoggerWrapper;
-
-import com.sun.sgs.kernel.KernelRunnable;
-import com.sun.sgs.kernel.Priority;
-import com.sun.sgs.kernel.PriorityScheduler;
-import com.sun.sgs.kernel.RecurringTaskHandle;
-import com.sun.sgs.kernel.TaskQueue;
-import com.sun.sgs.kernel.TaskReservation;
-import com.sun.sgs.kernel.TransactionScheduler;
-
+import com.sun.sgs.kernel.*;
 import com.sun.sgs.profile.ProfileCollector;
 import com.sun.sgs.profile.ProfileListener;
 import com.sun.sgs.profile.ProfileReport;
-
 import com.sun.sgs.service.Transaction;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
+import net.orfjackal.darkstar.exp.hooks.Hooks;
+import net.orfjackal.darkstar.exp.hooks.hooktypes.BeforeTransactionIsDeactivatedHook;
 
 import java.beans.PropertyChangeEvent;
-
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
 import java.util.Properties;
 import java.util.Queue;
-
-import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
-
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -542,6 +526,7 @@ final class TransactionSchedulerImpl
                     try {
                         // run the task in the new transactional context
                         task.getTask().run();
+                        Hooks.get(BeforeTransactionIsDeactivatedHook.class).beforeTransactionIsDeactivated();
                     } finally {
                         // regardless of the outcome, always clear the current
                         // transaction state before proceeding...

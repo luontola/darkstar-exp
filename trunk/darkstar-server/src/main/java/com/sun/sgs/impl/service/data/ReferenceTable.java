@@ -20,6 +20,7 @@
 package com.sun.sgs.impl.service.data;
 
 import com.sun.sgs.app.ManagedObject;
+
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -42,6 +43,13 @@ final class ReferenceTable {
      */
     private final Map<ManagedObject, ManagedReferenceImpl<?>> objects =
 	new IdentityHashMap<ManagedObject, ManagedReferenceImpl<?>>();
+
+    private enum State {
+        ACTIVE, FLUSHING, CLOSED
+    }
+
+    private State state = State.ACTIVE;
+    private FlushInfo flushed;
 
     /** Creates an instance of this class. */
     ReferenceTable() { }
@@ -134,17 +142,22 @@ final class ReferenceTable {
      * be modified, or null if none were modified.
      */
     FlushInfo flushModifiedObjects() {
-	FlushInfo flushInfo = null;
-	for (ManagedReferenceImpl<?> ref : oids.values()) {
-	    byte[] data = ref.flush();
-	    if (data != null) {
-		if (flushInfo == null) {
-		    flushInfo = new FlushInfo();
-		}
-		flushInfo.add(ref.oid, data);
-	    }
-	}
-	return flushInfo;
+        if (state == State.CLOSED) {
+            return flushed;
+        }
+        FlushInfo flushInfo = null;
+        for (ManagedReferenceImpl<?> ref : oids.values()) {
+            byte[] data = ref.flush();
+            if (data != null) {
+                if (flushInfo == null) {
+                    flushInfo = new FlushInfo();
+                }
+                flushInfo.add(ref.oid, data);
+            }
+        }
+        flushed = flushInfo;
+        state = State.CLOSED;
+        return flushInfo;
     }
 
     /**
