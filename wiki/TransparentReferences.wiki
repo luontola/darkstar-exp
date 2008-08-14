@@ -1,4 +1,5 @@
-#summary Details of the TransparentReferences feature
+#summary How to avoid the burden of using ManagedReferences direcly
+
 
 = Introduction =
 
