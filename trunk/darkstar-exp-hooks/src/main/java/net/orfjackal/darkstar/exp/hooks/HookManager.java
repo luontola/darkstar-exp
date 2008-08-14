@@ -18,6 +18,9 @@
 
 package net.orfjackal.darkstar.exp.hooks;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -26,6 +29,7 @@ import java.util.concurrent.ConcurrentMap;
  * @since 14.7.2008
  */
 public class HookManager {
+    private static final Logger logger = LoggerFactory.getLogger(HookManager.class.getName());
 
     private final ConcurrentMap<Class<?>, Object> hooks = new ConcurrentHashMap<Class<?>, Object>();
 
@@ -42,6 +46,7 @@ public class HookManager {
 
     public void installHook(Hook hook) {
         for (Class<?> type = hook.getClass(); Hook.class.isAssignableFrom(type); type = type.getSuperclass()) {
+            logger.info("Installing hook \"{}\" of type \"{}\"", hook, type.getName());
             Object previous = hooks.putIfAbsent(type, hook);
             if (previous != null) {
                 throw new IllegalArgumentException("A hook of type " + type + " already installed: " + previous);
