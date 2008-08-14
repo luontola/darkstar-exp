@@ -140,11 +140,34 @@ public class TransparentReferencesSpec extends Specification<Object> {
         }
     }
 
+    public class CyclicReference {
+
+        public Object create() throws IOException {
+            execOnServer(CRETE_CYCLIC_REFERENCE);
+            return null;
+        }
+
+        public void duringTheFirstTaskTheIdentitiesAreNotDuplicated() throws TimeoutException {
+            server.waitUntilSystemOutContains("1: cycle identity ok: true", TIMEOUT);
+        }
+
+        /**
+         * This test will cause an indefinite loop in flushing objects unless
+         * com.sun.sgs.impl.service.data.ReferenceTable#unregisterObject
+         * is modified to unregister the objects only after flushing is finished.
+         */
+        public void duringTheNextTaskTheIdentitiesAreNotDuplicated() throws Exception {
+            execOnServer(NOOP);
+            server.waitUntilSystemOutContains("2: cycle identity ok: true", TIMEOUT);
+        }
+    }
+
     // Test Application
 
     private static final byte NOOP = 0;
     private static final byte REFER_KNOWN_MANAGED_OBJECT = 1;
     private static final byte REFER_NEW_MANAGED_OBJECT = 2;
+    private static final byte CRETE_CYCLIC_REFERENCE = 3;
 
     public static class MyAppListener implements AppListener, Serializable {
         private static final long serialVersionUID = 1L;
@@ -177,14 +200,34 @@ public class TransparentReferencesSpec extends Specification<Object> {
             if (command == REFER_NEW_MANAGED_OBJECT) {
                 field = new FooImpl();
             }
+            if (command == CRETE_CYCLIC_REFERENCE) {
+                field = new FooImpl();
+                Foo other = new FooImpl();
+                field.setOther(other);
+                other.setOther(field);
+            }
         }
 
         private void printStatus() {
-            System.out.println(step + ": is null: " + (field == null));
-            System.out.println(step + ": is managed: " + (field instanceof ManagedObject));
+            System.out.println("-");
+            println("is null", field == null);
+            println("is managed", field instanceof ManagedObject);
             if (field != null) {
-                System.out.println(step + ": foo() returns: " + field.foo());
+                println("foo() returns", field.foo());
+
+                if (field.getOther() != null) {
+                    boolean ok = field.equals(field.getOther().getOther())
+                            && !field.equals(field.getOther());
+                    println("cycle identity ok", ok);
+                    println("field hashCode", field.hashCode());
+                    println("other hashCode", field.getOther().hashCode());
+                    println("cycle hashCode", field.getOther().getOther().hashCode());
+                }
             }
+        }
+
+        private void println(String label, Object value) {
+            System.out.println(step + ": " + label + ": " + value);
         }
 
         public void disconnected(boolean graceful) {
@@ -194,14 +237,29 @@ public class TransparentReferencesSpec extends Specification<Object> {
     // Test Interfaces
 
     private interface Foo {
+
         String foo();
+
+        Foo getOther();
+
+        void setOther(Foo other);
     }
 
     private static class FooImpl implements Foo, ManagedObject, Serializable {
         private static final long serialVersionUID = 1L;
 
+        private Foo other;
+
         public String foo() {
             return "FOO";
+        }
+
+        public Foo getOther() {
+            return other;
+        }
+
+        public void setOther(Foo other) {
+            this.other = other;
         }
 
         @SuppressWarnings({"EqualsWhichDoesntCheckParameterClass"})
