@@ -1,7 +1,7 @@
 #summary What is included in each Darkstar EXP release
 
 *Darkstar EXP 0.9.6_2* (2008-08-14)
-  * NEW: TransparentReferences
+  * NEW: TransparentReferences for avoiding the manual management of !ManagedReferences
   * NEW: Hook system for enabling and disabling individual server features
 
 *Darkstar EXP 0.9.6_1* (2008-07-13)
