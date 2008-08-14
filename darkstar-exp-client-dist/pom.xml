@@ -32,6 +32,13 @@
             <artifactId>darkstar-client-tutorial</artifactId>
         </dependency>
 
+        <!-- Logging implementation -->
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
