@@ -83,8 +83,8 @@ ManagedObject, there is a convenience method for marking objects for update:
 
     TransparentReferenceUtil.markForUpdate(Object);
 
-This will use getForUpdate if the ManagedObject has not yet been loaded from the 
-data store.
+This will use ManagedReference.getForUpdate if the ManagedObject has not yet 
+been loaded from the data store. Otherwise DataManager.markForUpdate is used.
 
 
     CONVERTING AN APPLICATION TO USE TRANSPARENT REFERENCES
@@ -117,8 +117,10 @@ a wrong type. Changing the type of the field to an interface or java.lang.Object
 should solve the issue.
 
 
-    INTEGRATING TRANSPARENT REFERENCES TO DARKSTAR
+    ENABLING AND DISABLING TRANSPARENT REFERENCES
 
-Use the /docs/DarkstarIntegration-v3.diff patch to modify Darkstar Server's 
-sources. Add the TransparentReference related classes to Darkstar and build the 
-server JAR.
+In darkstar-exp.properties, add the following values to darkstar.exp.hooks in 
+order to enable the TransparentReferences extension. Omit them to disable it.
+
+  net.orfjackal.darkstar.exp.mods.TransparentReferencesHook1of2
+  net.orfjackal.darkstar.exp.mods.TransparentReferencesHook2of2
