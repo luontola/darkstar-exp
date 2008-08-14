@@ -28,7 +28,7 @@ public interface TransparentReference {
 
     ManagedObject getManagedObject();
 
-    ManagedReference getManagedReference();
+    ManagedReference<?> getManagedReference();
 
     Class<?> getType();
 

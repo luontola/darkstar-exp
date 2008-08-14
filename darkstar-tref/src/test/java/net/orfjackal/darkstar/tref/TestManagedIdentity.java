@@ -136,6 +136,8 @@ public abstract class TestManagedIdentity {
         }
 
         private class FailingManagedObject extends DummyManagedObject {
+            private static final long serialVersionUID = 1L;
+
             @SuppressWarnings({"EqualsWhichDoesntCheckParameterClass"})
             public boolean equals(Object obj) {
                 fail();

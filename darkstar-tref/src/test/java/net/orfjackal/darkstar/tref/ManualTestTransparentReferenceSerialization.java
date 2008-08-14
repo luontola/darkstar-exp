@@ -70,8 +70,10 @@ public class ManualTestTransparentReferenceSerialization {
             System.out.println("o.getClass() = " + o.getClass());
             System.out.println("isTransparentReference     = " + (o instanceof TransparentReference)
                     + "\t(expected: true)");
-            System.out.println("managedObjectFromProxy     = " + ((TransparentReference) o).getManagedObject()
-                    + "\t(expected: null when SGS is mocked)");
+            if (o instanceof TransparentReference) {
+                System.out.println("managedObjectFromProxy     = " + ((TransparentReference) o).getManagedObject()
+                        + "\t(expected: null when SGS is mocked)");
+            }
             System.out.println("instanceof DummyInterface  = " + (o instanceof DummyInterface)
                     + "\t(expected: " + DummyInterface.class.isAssignableFrom(DummyManagedObject2.class) + ")");
             System.out.println("instanceof DummyInterface2 = " + (o instanceof DummyInterface2)
@@ -92,7 +94,6 @@ public class ManualTestTransparentReferenceSerialization {
             DummyInterface,
 //            DummyInterface2,
             Serializable, ManagedObject {
-
         private static final long serialVersionUID = 1L;
 
         public int dummyMethod() {
