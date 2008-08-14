@@ -29,6 +29,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Esko Luontola
@@ -44,6 +46,11 @@ public class HookInstallerSpec extends Specification<Object> {
     public void create() throws Exception {
         props = new Properties();
         manager = new HookManager();
+        Logger.getLogger(HookManager.class.getName()).setLevel(Level.WARNING);
+    }
+
+    public void destroy() throws Exception {
+        Logger.getLogger(HookManager.class.getName()).setLevel(null);
     }
 
 

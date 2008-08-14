@@ -25,6 +25,9 @@ import jdave.junit4.JDaveRunner;
 import static net.orfjackal.darkstar.exp.hooks.DummyHooks.*;
 import org.junit.runner.RunWith;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * @author Esko Luontola
  * @since 14.7.2008
@@ -38,9 +41,11 @@ public class HooksSpec extends Specification<Object> {
     public void create() throws Exception {
         hookManager = new HookManager();
         Hooks.setHookManager(hookManager);
+        Logger.getLogger(HookManager.class.getName()).setLevel(Level.WARNING);
     }
 
     public void destroy() throws Exception {
+        Logger.getLogger(HookManager.class.getName()).setLevel(null);
         Hooks.setHookManager(null);
     }
 
