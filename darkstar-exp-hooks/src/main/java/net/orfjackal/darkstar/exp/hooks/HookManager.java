@@ -45,8 +45,11 @@ public class HookManager {
     }
 
     public void installHook(Hook hook) {
+        logger.info("Installing hook \"{}\"", hook);
         for (Class<?> type = hook.getClass(); Hook.class.isAssignableFrom(type); type = type.getSuperclass()) {
-            logger.info("Installing hook \"{}\" of type \"{}\"", hook, type.getName());
+            if (!type.equals(hook.getClass())) {
+                logger.info("The hooktype \"{}\" recieved a custom implementation \"{}\"", type.getName(), hook);
+            }
             Object previous = hooks.putIfAbsent(type, hook);
             if (previous != null) {
                 throw new IllegalArgumentException("A hook of type " + type + " already installed: " + previous);
