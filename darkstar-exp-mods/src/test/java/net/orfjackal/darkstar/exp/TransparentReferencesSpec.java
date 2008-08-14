@@ -119,10 +119,32 @@ public class TransparentReferencesSpec extends Specification<Object> {
         }
     }
 
+    public class ReferringANewlyCreatedManagedObject {
+
+        public Object create() throws IOException {
+            execOnServer(REFER_NEW_MANAGED_OBJECT);
+            return null;
+        }
+
+        public void duringTheFirstTaskItIsReferredDirectly() throws TimeoutException {
+            server.waitUntilSystemOutContains("1: is null: false", TIMEOUT);
+            server.waitUntilSystemOutContains("1: is managed: true", TIMEOUT);
+            server.waitUntilSystemOutContains("1: foo() returns: FOO", TIMEOUT);
+        }
+
+        public void duringTheNextTaskItIsReferredThroughATransparentReference() throws Exception {
+            execOnServer(NOOP);
+            server.waitUntilSystemOutContains("2: is null: false", TIMEOUT);
+            server.waitUntilSystemOutContains("2: is managed: false", TIMEOUT);
+            server.waitUntilSystemOutContains("2: foo() returns: FOO", TIMEOUT);
+        }
+    }
+
     // Test Application
 
     private static final byte NOOP = 0;
     private static final byte REFER_KNOWN_MANAGED_OBJECT = 1;
+    private static final byte REFER_NEW_MANAGED_OBJECT = 2;
 
     public static class MyAppListener implements AppListener, Serializable {
         private static final long serialVersionUID = 1L;
@@ -151,6 +173,9 @@ public class TransparentReferencesSpec extends Specification<Object> {
             if (command == REFER_KNOWN_MANAGED_OBJECT) {
                 field = new FooImpl();
                 AppContext.getDataManager().createReference(field);
+            }
+            if (command == REFER_NEW_MANAGED_OBJECT) {
+                field = new FooImpl();
             }
         }
 

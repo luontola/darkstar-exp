@@ -21,17 +21,18 @@ package com.sun.sgs.impl.service.data;
 
 import com.sun.sgs.app.ManagedObject;
 
-import java.util.IdentityHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 /**
  * Stores information about managed references within a particular transaction.
  * This class is logically part of the ManagedReferenceImpl class.
  */
 final class ReferenceTable {
+
+    private enum State {
+        ACTIVE, FLUSHING, CLOSED
+    }
 
     /** Maps object IDs to managed references. */
     private final SortedMap<Long, ManagedReferenceImpl<?>> oids =
@@ -44,11 +45,9 @@ final class ReferenceTable {
     private final Map<ManagedObject, ManagedReferenceImpl<?>> objects =
 	new IdentityHashMap<ManagedObject, ManagedReferenceImpl<?>>();
 
-    private enum State {
-        ACTIVE, FLUSHING, CLOSED
-    }
-
     private State state = State.ACTIVE;
+    private final List<ManagedReferenceImpl<?>> flushQueue = new ArrayList<ManagedReferenceImpl<?>>();
+    private final Collection<ManagedObject> unregisterAfterFlush = new ArrayList<ManagedObject>();
     private FlushInfo flushed;
 
     /** Creates an instance of this class. */
@@ -74,6 +73,10 @@ final class ReferenceTable {
 
     /** Adds a new managed reference to this table. */
     void add(ManagedReferenceImpl<?> ref) {
+        assert state != State.CLOSED;
+        if (state == State.FLUSHING) {
+            flushQueue.add(ref);
+        }
 	assert !oids.containsKey(ref.oid)
 	    : "Found existing reference for oid:" + ref.oid;
 	oids.put(ref.oid, ref);
@@ -141,23 +144,49 @@ final class ReferenceTable {
      * Flushes all references.  Returns information about any objects found to
      * be modified, or null if none were modified.
      */
+    @SuppressWarnings({"ForLoopReplaceableByForEach"})
     FlushInfo flushModifiedObjects() {
         if (state == State.CLOSED) {
             return flushed;
         }
-        FlushInfo flushInfo = null;
-        for (ManagedReferenceImpl<?> ref : oids.values()) {
-            byte[] data = ref.flush();
-            if (data != null) {
-                if (flushInfo == null) {
-                    flushInfo = new FlushInfo();
+        try {
+            beginFlush();
+            FlushInfo flushInfo = null;
+            // ref.flush() may add more elements to flushQueue, so we must use indexing
+            // instead of foreach (uses Iterator) to avoid ConcurrentModificationException
+            for (int i = 0; i < flushQueue.size(); i++) {
+                ManagedReferenceImpl<?> ref = flushQueue.get(i);
+                byte[] data = ref.flush();
+                if (data != null) {
+                    if (flushInfo == null) {
+                        flushInfo = new FlushInfo();
+                    }
+                    flushInfo.add(ref.oid, data);
                 }
-                flushInfo.add(ref.oid, data);
             }
+            flushed = flushInfo;
+            return flushInfo;
+        } finally {
+            endFlush();
         }
-        flushed = flushInfo;
+    }
+
+    private void beginFlush() {
+        assert state == State.ACTIVE;
+        assert flushQueue.isEmpty();
+        assert unregisterAfterFlush.isEmpty();
+        state = State.FLUSHING;
+        flushQueue.addAll(oids.values());
+    }
+
+    private void endFlush() {
+        assert state == State.FLUSHING;
         state = State.CLOSED;
-        return flushInfo;
+        flushQueue.clear();
+        for (ManagedObject object : unregisterAfterFlush) {
+            unregisterObject(object);
+        }
+        unregisterAfterFlush.clear();
     }
 
     /**
