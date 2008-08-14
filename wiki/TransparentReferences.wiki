@@ -52,7 +52,7 @@ But by relying on !TransparentReferences the above code can be written as
 There are some requirements which must be met for the !TransparentReferences to 
 work correctly:
 
-  # All instance fields must refer to !ManagedObjects through an interface instead of the implementation class. Otherwise it won't be possible to assign the TransparentReference proxy to the field. Failure to do so will result in an exception being thrown during deserialization.
+  # All instance fields must refer to !ManagedObjects through an interface instead of the implementation class. Otherwise it won't be possible to assign the !TransparentReference proxy to the field. Failure to do so will result in an exception being thrown during deserialization.
 
   # All !ManagedObjects must implement the `equals(Object)` and `hashCode()` methods as follows:
 
