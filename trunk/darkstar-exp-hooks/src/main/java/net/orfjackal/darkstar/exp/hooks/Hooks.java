@@ -27,7 +27,7 @@ public final class Hooks {
     private Hooks() {
     }
 
-    private static HookManager hookManager;
+    private static HookManager hookManager = new HookManager();
 
     public static void setHookManager(HookManager hookManager) {
         Hooks.hookManager = hookManager;
