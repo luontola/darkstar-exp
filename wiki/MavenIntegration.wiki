@@ -22,7 +22,7 @@ The dependency to the latest Darkstar EXP server release is:
 </dependency>
 }}}
 
-See ChangeLog and VersionNumbersExplained for details on available versions. For the server libraries it might be best to use the "provided" scope, if you start Darkstar Server using the default startup scripts.
+See ChangeLog and VersionNumbersExplained for details on available versions. For the server libraries it might be best to use the "provided" scope, if you start the server using the default startup scripts.
 
 For the client libraries, you may use the official release which resides in the [http://download.java.net/maven/2/ java.net repository].
 
