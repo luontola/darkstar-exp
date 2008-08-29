@@ -3,7 +3,7 @@
 
 = Maven Dependencies =
 
-To use Darkstar EXP within a [http://maven.apache.org/ Maven] project, first add the following declaration to the <repositories> element in your POM file:
+To use Darkstar EXP within a [http://maven.apache.org/ Maven] project, first add the following declaration to the `<repositories>` element in your POM file:
 
 {{{
 <repository>
