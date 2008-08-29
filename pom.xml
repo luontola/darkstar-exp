@@ -4,7 +4,7 @@
 
     <groupId>net.orfjackal.darkstar-exp</groupId>
     <artifactId>darkstar-exp</artifactId>
-    <version>0.9.6_3-SNAPSHOT</version>
+    <version>0.9.7_0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Darkstar EXP</name>
