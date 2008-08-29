@@ -17,11 +17,18 @@
 
 package net.orfjackal.darkstar.tref;
 
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
 /**
  * @author Esko Luontola
  * @since 27.1.2008
  */
 public class TestTransparentReference_JdkProxy extends TestTransparentReference {
+
+    public static Test suite() {
+        return new TestSuite(TestTransparentReference_JdkProxy.class.getDeclaredClasses());
+    }
 
     private static TransparentReferenceFactory newFactory() {
         return new TransparentReferenceJdkProxyFactory();
