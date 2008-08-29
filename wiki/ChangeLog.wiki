@@ -1,5 +1,9 @@
 #summary What is included in each Darkstar EXP release
 
+*Darkstar EXP 0.9.7_1* (2008-08-29)
+  * Based on Darkstar 0.9.7
+  * Removed client distribution, because it contains no modifications. Use the official Darkstar client instead
+
 *Darkstar EXP 0.9.6_2* (2008-08-14)
   * NEW: TransparentReferences for avoiding the manual management of !ManagedReferences
   * NEW: Hook system for enabling and disabling individual server features
