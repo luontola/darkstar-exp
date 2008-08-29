@@ -27,11 +27,13 @@ import jdave.junit4.JDaveRunner;
 import net.orfjackal.darkstar.exp.hooks.DarkstarExp;
 import net.orfjackal.darkstar.exp.mods.AppRootAsRelativeToAppPropertiesFileHook;
 import net.orfjackal.darkstar.integration.DarkstarServer;
-import net.orfjackal.darkstar.integration.util.StreamWaiter;
 import net.orfjackal.darkstar.integration.util.TempDirectory;
 import org.junit.runner.RunWith;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.Properties;
 import java.util.concurrent.TimeoutException;
 
@@ -46,13 +48,10 @@ public class AppRootAsRelativeToAppPropertiesFileSpec extends Specification<Obje
     private static final int TIMEOUT = 5000;
 
     private DarkstarServer server;
-    private StreamWaiter waiter;
     private Properties appProps;
 
     public void create() {
         server = new DarkstarServer(new File("."));
-        waiter = new StreamWaiter(new ByteArrayOutputStream());
-
         appProps = new Properties();
         appProps.setProperty(DarkstarServer.APP_NAME, "HellWorld");
         appProps.setProperty(DarkstarServer.APP_LISTENER, HelloWorld.class.getName());
@@ -60,16 +59,18 @@ public class AppRootAsRelativeToAppPropertiesFileSpec extends Specification<Obje
         appProps.setProperty(DarkstarExp.HOOKS, AppRootAsRelativeToAppPropertiesFileHook.class.getName());
     }
 
-    public void destroy() {
-        waiter.dispose();
-    }
-
     private void startsUpAndUsesDataDir(File dataDir, File configFile) throws TimeoutException {
         specify(dataDir.listFiles().length == 0);
         try {
             server.start(configFile);
-            waiter.setStream(server.getSystemOut());
-            waiter.waitForBytes(HelloWorld.STARTUP_MSG.getBytes(), TIMEOUT);
+            server.waitForKernelReady(TIMEOUT);
+            server.waitUntilSystemOutContains(HelloWorld.STARTUP_MSG, TIMEOUT);
+        } catch (TimeoutException e) {
+            System.out.println("SystemOut:");
+            System.out.println(server.getSystemOut());
+            System.out.println("SystemErr:");
+            System.out.println(server.getSystemErr());
+            throw e;
         } finally {
             server.shutdown();
         }
