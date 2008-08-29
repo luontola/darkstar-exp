@@ -24,14 +24,10 @@ import com.sun.sgs.app.ManagedReference;
 import com.sun.sgs.app.ObjectIOException;
 import com.sun.sgs.impl.sharedutil.LoggerWrapper;
 import com.sun.sgs.impl.sharedutil.Objects;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.ObjectStreamClass;
-import java.io.OutputStream;
+import net.orfjackal.darkstar.exp.hooks.Hooks;
+import net.orfjackal.darkstar.exp.hooks.hooktypes.ReplaceObjectOnSerializationHook;
+
+import java.io.*;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -291,6 +287,7 @@ final class SerialUtil {
 
 	/** Check for references to managed objects. */
 	protected Object replaceObject(Object object) throws IOException {
+            object = Hooks.get(ReplaceObjectOnSerializationHook.class).replaceObject(object, topLevelObject);
 	    if (object != topLevelObject && object instanceof ManagedObject) {
 		throw new ObjectIOException(
 		    "ManagedObject was not referenced through a " +
