@@ -45,7 +45,7 @@ import java.util.concurrent.TimeoutException;
 @Group({"slow", "integration"})
 public class AppRootAsRelativeToAppPropertiesFileSpec extends Specification<Object> {
 
-    private static final int TIMEOUT = 5000;
+    private static final int TIMEOUT = 10000;
 
     private DarkstarServer server;
     private Properties appProps;
@@ -63,7 +63,6 @@ public class AppRootAsRelativeToAppPropertiesFileSpec extends Specification<Obje
         specify(dataDir.listFiles().length == 0);
         try {
             server.start(configFile);
-            server.waitForKernelReady(TIMEOUT);
             server.waitUntilSystemOutContains(HelloWorld.STARTUP_MSG, TIMEOUT);
         } catch (TimeoutException e) {
             System.out.println("SystemOut:");
