@@ -75,6 +75,10 @@
         <module>darkstar-tref</module>
     </modules>
 
+    <properties>
+        <sgs.version>0.9.7</sgs.version>
+    </properties>
+
     <dependencies>
 
         <!-- Logging -->
@@ -111,33 +115,6 @@
     <dependencyManagement>
         <dependencies>
 
-            <!-- Project Darkstar -->
-
-            <dependency>
-                <groupId>net.orfjackal.darkstar-exp</groupId>
-                <artifactId>darkstar-server</artifactId>
-                <version>${version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>net.orfjackal.darkstar-exp</groupId>
-                <artifactId>darkstar-shared</artifactId>
-                <version>${version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.projectdarkstar.server</groupId>
-                <artifactId>sgs-tutorial-server-dist</artifactId>
-                <type>zip</type>
-                <version>0.9.7</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>com.projectdarkstar.server</groupId>
-                        <artifactId>sgs-tutorial-server</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
             <!-- Darkstar EXP -->
 
             <dependency>
@@ -162,6 +139,47 @@
                 <groupId>net.orfjackal.darkstar-exp</groupId>
                 <artifactId>darkstar-tref</artifactId>
                 <version>${version}</version>
+            </dependency>
+
+            <!-- Project Darkstar -->
+
+            <dependency>
+                <groupId>net.orfjackal.darkstar-exp</groupId>
+                <artifactId>darkstar-server</artifactId>
+                <version>${version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>net.orfjackal.darkstar-exp</groupId>
+                <artifactId>darkstar-shared</artifactId>
+                <version>${version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.projectdarkstar.client</groupId>
+                <artifactId>sgs-client</artifactId>
+                <version>${sgs.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.projectdarkstar.server</groupId>
+                <artifactId>sgs-tutorial-server-dist</artifactId>
+                <type>zip</type>
+                <version>${sgs.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.projectdarkstar.server</groupId>
+                        <artifactId>sgs-tutorial-server</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!-- Testing -->
+
+            <dependency>
+                <groupId>net.orfjackal.darkstar-contrib</groupId>
+                <artifactId>darkstar-integration-test</artifactId>
+                <version>1.0</version>
             </dependency>
 
             <!-- Other dependencies -->
