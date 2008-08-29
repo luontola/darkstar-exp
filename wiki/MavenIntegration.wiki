@@ -1,7 +1,7 @@
 #summary How to use Darkstar EXP in a Maven project
 #labels Featured
 
-= Using Maven =
+= Maven Dependencies =
 
 To use Darkstar EXP within a [http://maven.apache.org/ Maven] project, first add the following declaration to the <repositories> element in your POM file:
 
