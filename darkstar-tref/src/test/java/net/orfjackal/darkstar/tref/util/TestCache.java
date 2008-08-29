@@ -17,13 +17,19 @@
 
 package net.orfjackal.darkstar.tref.util;
 
+import junit.framework.Test;
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 /**
  * @author Esko Luontola
  * @since 7.5.2008
  */
 public class TestCache {
+
+    public static Test suite() {
+        return new TestSuite(TestCache.class.getDeclaredClasses());
+    }
 
     public static class WhenAKeyIsUsedTheFirstTime extends TestCase {
 

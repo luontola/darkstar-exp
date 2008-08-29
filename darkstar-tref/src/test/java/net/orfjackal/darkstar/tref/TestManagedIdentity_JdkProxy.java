@@ -17,11 +17,18 @@
 
 package net.orfjackal.darkstar.tref;
 
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
 /**
  * @author Esko Luontola
  * @since 1.2.2008
  */
 public class TestManagedIdentity_JdkProxy extends TestManagedIdentity {
+
+    public static Test suite() {
+        return new TestSuite(TestManagedIdentity_JdkProxy.class.getDeclaredClasses());
+    }
 
     public static class ManagedIdentityContracts_JdkProxy
             extends TestManagedIdentity.ManagedIdentityContracts {
