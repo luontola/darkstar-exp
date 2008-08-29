@@ -44,7 +44,12 @@
         <dependency>
             <groupId>net.orfjackal.darkstar-contrib</groupId>
             <artifactId>darkstar-integration-test</artifactId>
-            <version>1.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.projectdarkstar.client</groupId>
+            <artifactId>sgs-client</artifactId>
             <scope>test</scope>
         </dependency>
 

@@ -240,6 +240,19 @@
         </SOURCES>
       </library>
     </orderEntry>
+    <orderEntry type="module-library">
+      <library name="com.projectdarkstar.client:sgs-client:0.9.7">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/com/projectdarkstar/client/sgs-client/0.9.7/sgs-client-0.9.7.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/com/projectdarkstar/client/sgs-client/0.9.7/sgs-client-0.9.7-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/com/projectdarkstar/client/sgs-client/0.9.7/sgs-client-0.9.7-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
     <orderEntryProperties />
   </component>
   <component name="copyright">

@@ -159,6 +159,12 @@
                 <groupId>com.projectdarkstar.client</groupId>
                 <artifactId>sgs-client</artifactId>
                 <version>${sgs.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.projectdarkstar.server</groupId>
+                        <artifactId>sgs-shared</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
