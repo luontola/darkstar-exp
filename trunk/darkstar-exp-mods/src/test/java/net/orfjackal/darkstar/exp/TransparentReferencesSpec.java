@@ -46,7 +46,7 @@ import java.util.concurrent.TimeoutException;
 @Group({"fast"})
 public class TransparentReferencesSpec extends Specification<Object> {
 
-    private static final int TIMEOUT = 5000;
+    private static final int TIMEOUT = 10000;
     private static final boolean DEBUG = false;
 
     private DarkstarServer server;
@@ -81,8 +81,8 @@ public class TransparentReferencesSpec extends Specification<Object> {
             if (DEBUG) {
                 System.out.println("Server Out:");
                 System.out.println(server.getSystemOut());
-                System.err.println("Server Log:");
-                System.err.println(server.getSystemErr());
+                System.out.println("Server Log:");
+                System.out.println(server.getSystemErr());
             }
             client.logout(true);
             testTimeout.interrupt();
