@@ -226,7 +226,6 @@
     </orderEntry>
     <orderEntry type="module" module-name="darkstar-exp-mods" exported="" />
     <orderEntry type="module" module-name="darkstar-tref" exported="" />
-    <orderEntry type="module" module-name="darkstar-server-tutorial" exported="" />
     <orderEntryProperties />
   </component>
   <component name="copyright">

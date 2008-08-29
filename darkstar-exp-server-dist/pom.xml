@@ -33,8 +33,9 @@
         </dependency>
 
         <dependency>
-            <groupId>net.orfjackal.darkstar-exp</groupId>
-            <artifactId>darkstar-server-tutorial</artifactId>
+            <groupId>com.projectdarkstar.server</groupId>
+            <artifactId>sgs-tutorial-server-dist</artifactId>
+            <type>zip</type>
         </dependency>
 
         <dependency>
