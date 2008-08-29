@@ -1,65 +1,40 @@
-#summary How to use Darkstar in a Maven project
+#summary How to use Darkstar EXP in a Maven project
 #labels Featured
 
 = Using Maven =
 
-To use Darkstar EXP or the vanilla version of Project Darkstar within a [http://maven.apache.org/ Maven] project, first add the following repository declaration to your POM file:
+To use Darkstar EXP within a [http://maven.apache.org/ Maven] project, first add the following declaration to the <repositories> element in your POM file:
 
 {{{
-    <repositories>
-        <repository>
-            <id>orfjackal</id>
-            <url>http://repo.orfjackal.net/maven2</url>
-        </repository>
-    </repositories>
+<repository>
+    <id>orfjackal</id>
+    <url>http://repo.orfjackal.net/maven2</url>
+</repository>
 }}}
 
-Then add the Darkstar Client or Server dependencies of your choice from those listed below. For the server libraries it might be best to use the "provided" scope, if you start Darkstar Server using the default startup scripts.
-
-
-== Darkstar EXP ==
-
-Contains experimental features which are not included in the vanilla version. Also see ChangeLog and VersionNumbersExplained.
+The dependency to the latest Darkstar EXP server release is:
 
 {{{
-        <dependency>
-            <groupId>net.orfjackal.darkstar-exp</groupId>
-            <artifactId>darkstar-server</artifactId>
-            <version>0.9.6_2</version>
-        </dependency>
-        <dependency>
-            <groupId>net.orfjackal.darkstar-exp</groupId>
-            <artifactId>darkstar-client</artifactId>
-            <version>0.9.6_2</version>
-        </dependency>
+<dependency>
+    <groupId>net.orfjackal.darkstar-exp</groupId>
+    <artifactId>darkstar-server</artifactId>
+    <version>0.9.7_1</version>
+</dependency>
 }}}
 
+See ChangeLog and VersionNumbersExplained for details on available versions. For the server libraries it might be best to use the "provided" scope, if you start Darkstar Server using the default startup scripts.
 
-== Vanilla Darkstar ==
-
-The original unmodified version of Darkstar. This is the same as can be downloaded from [http://www.projectdarkstar.com/downloads/ official site], except that it has been converted to Maven format and recompiled.
+For the client libraries, you may use the official release which resides in the [http://download.java.net/maven/2/] repository.
 
 {{{
-        <dependency>
-            <groupId>com.projectdarkstar</groupId>
-            <artifactId>darkstar-server</artifactId>
-            <version>0.9.6</version>
-        </dependency>
-        <dependency>
-            <groupId>com.projectdarkstar</groupId>
-            <artifactId>darkstar-client</artifactId>
-            <version>0.9.6</version>
-        </dependency>
-}}}
-{{{
-        <dependency>
-            <groupId>com.projectdarkstar</groupId>
-            <artifactId>darkstar-server</artifactId>
-            <version>0.9.5.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.projectdarkstar</groupId>
-            <artifactId>darkstar-client</artifactId>
-            <version>0.9.5.1</version>
-        </dependency>
+<repository>
+    <id>java.net</id>
+    <url>http://download.java.net/maven/2/</url>
+</repository>
+
+<dependency>
+    <groupId>com.projectdarkstar.client</groupId>
+    <artifactId>sgs-client</artifactId>
+    <version>0.9.7</version>
+</dependency>
 }}}
