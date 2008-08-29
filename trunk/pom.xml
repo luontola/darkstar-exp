@@ -62,16 +62,11 @@
     </repositories>
 
     <modules>
-        <module>darkstar-analysis</module>
-        <module>darkstar-client</module>
-        <module>darkstar-client-tutorial</module>
-        <module>darkstar-exp-client-dist</module>
         <module>darkstar-exp-hooks</module>
         <module>darkstar-exp-mocks</module>
         <module>darkstar-exp-mods</module>
         <module>darkstar-exp-server-dist</module>
         <module>darkstar-server</module>
-        <module>darkstar-server-tutorial</module>
         <module>darkstar-shared</module>
         <module>darkstar-tref</module>
     </modules>
@@ -116,25 +111,7 @@
 
             <dependency>
                 <groupId>net.orfjackal.darkstar-exp</groupId>
-                <artifactId>darkstar-client</artifactId>
-                <version>${version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>net.orfjackal.darkstar-exp</groupId>
-                <artifactId>darkstar-client-tutorial</artifactId>
-                <version>${version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>net.orfjackal.darkstar-exp</groupId>
                 <artifactId>darkstar-server</artifactId>
-                <version>${version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>net.orfjackal.darkstar-exp</groupId>
-                <artifactId>darkstar-server-tutorial</artifactId>
                 <version>${version}</version>
             </dependency>
 
@@ -288,21 +265,5 @@
 
         </plugins>
     </build>
-
-    <reporting>
-        <plugins>
-
-            <!-- TODO: fine tune javadocs, split to client and server, http://maven.apache.org/plugins/maven-javadoc-plugin/index.html -->
-            <!-- TODO: use \darkstar-server\src\main\java\com\sun\sgs\app\doc-files\config-properties.html -->
-            <!-- TODO: use \darkstar-client\src\main\java\overview.html and \darkstar-server\src\main\java\overview.html-->
-            <plugin>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <aggregate>true</aggregate>
-                </configuration>
-            </plugin>
-
-        </plugins>
-    </reporting>
 
 </project>
