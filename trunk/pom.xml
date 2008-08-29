@@ -4,7 +4,7 @@
 
     <groupId>net.orfjackal.darkstar-exp</groupId>
     <artifactId>darkstar-exp</artifactId>
-    <version>0.9.7_1</version>
+    <version>0.9.7_2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Darkstar EXP</name>
@@ -42,9 +42,9 @@
     </developers>
 
     <scm>
-        <connection>scm:svn:http://darkstar-exp.googlecode.com/svn/tags/darkstar-exp-0.9.7_1</connection>
-        <developerConnection>scm:svn:https://darkstar-exp.googlecode.com/svn/tags/darkstar-exp-0.9.7_1</developerConnection>
-        <url>http://code.google.com/p/darkstar-exp/source/browse/tags/darkstar-exp-0.9.7_1</url>
+        <connection>scm:svn:http://darkstar-exp.googlecode.com/svn/trunk</connection>
+        <developerConnection>scm:svn:https://darkstar-exp.googlecode.com/svn/trunk</developerConnection>
+        <url>http://code.google.com/p/darkstar-exp/source/browse/trunk</url>
     </scm>
 
     <distributionManagement>
