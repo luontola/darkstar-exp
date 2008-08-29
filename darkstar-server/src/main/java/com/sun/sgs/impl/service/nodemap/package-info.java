@@ -17,22 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.sun.sgs.profile;
-
-
 /**
- * A collection of common properties used by {@link
- * com.sun.sgs.profile.ProfileListener} implementations.
+ * Provides an implementation of
+ * {@link com.sun.sgs.service.NodeMappingService}.
  */
-public interface ProfileProperties {
-
-    /**
-     * The property for defining the number task to summarize for
-     * windowed {@code com.sun.sgs.profile.ProfileListener}
-     * implementations.  The value assigned to the property must be an
-     * integer.
-     */
-    public static final String WINDOW_SIZE =
-	"com.sun.sgs.profile.listener.window.size";
-
-}
+package com.sun.sgs.impl.service.nodemap;

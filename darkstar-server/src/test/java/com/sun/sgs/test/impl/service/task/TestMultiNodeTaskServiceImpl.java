@@ -299,7 +299,7 @@ public class TestMultiNodeTaskServiceImpl extends TestCase {
         Thread.sleep(200);
         assertEquals(DummyNodeMappingService.getActiveCount(id), 2);
 
-        Thread.sleep(500);
+        Thread.sleep(800);
         assertEquals(DummyNodeMappingService.getActiveCount(id), 1);
 
         txnSchedulerZero.runTask(
@@ -314,7 +314,7 @@ public class TestMultiNodeTaskServiceImpl extends TestCase {
         Thread.sleep(200);
         assertEquals(DummyNodeMappingService.getActiveCount(id), 2);
 
-        Thread.sleep(500);
+        Thread.sleep(2000);
         assertEquals(DummyNodeMappingService.getActiveCount(id), 1);
     }
 
@@ -327,7 +327,7 @@ public class TestMultiNodeTaskServiceImpl extends TestCase {
     private Properties createProps(boolean server, String appName,
                                    String dbDirectory) throws Exception {
         String isServer = String.valueOf(server);
-        int port = server ? 0 :
+        int port = server ? SgsTestNode.getNextUniquePort() :
             SgsTestNode.getDataServerPort((DataServiceImpl)
 					  (serverNode.getDataService()));
         String portStr = String.valueOf(port);

@@ -127,7 +127,7 @@ public final class NodeMappingServerImpl
     static final String SERVER_PORT_PROPERTY = PKG_NAME + ".server.port";
 
     /** The default value of the server port. */
-    // TODO:  does the exporter allow all servers to use the same port?
+    // XXX:  does the exporter allow all servers to use the same port?
     static final int DEFAULT_SERVER_PORT = 44535;
     
     /** The name we export ourselves under. */
@@ -167,7 +167,7 @@ public final class NodeMappingServerImpl
     private final NodeAssignPolicy assignPolicy;
 
     /** The thread that removes inactive identities */
-    // TODO:  should this be a TaskScheduler.scheduleRecurringTask?
+    // XXX:  should this be a TaskScheduler.scheduleRecurringTask?
     private final Thread removeThread;
     
      /** Our watchdog node listener. */
@@ -216,7 +216,8 @@ public final class NodeMappingServerImpl
         super(properties, systemRegistry, txnProxy, logger);
 
         logger.log(Level.CONFIG, 
-                   "Creating NodeMappingServerImpl properties:{0}", properties); 
+                   "Creating NodeMappingServerImpl properties:{0}", 
+                   properties); 
         
         watchdogService = txnProxy.getService(WatchdogService.class);
        
@@ -244,7 +245,8 @@ public final class NodeMappingServerImpl
                         NodeMapUtil.VERSION_KEY, 
                         NodeMapUtil.MAJOR_VERSION, 
                         NodeMapUtil.MINOR_VERSION);
-                }},  taskOwner);
+                }
+        },  taskOwner);
         
         // Create and start the remove thread, which removes unused identities
         // from the map.
@@ -294,7 +296,9 @@ public final class NodeMappingServerImpl
         exporter.unexport();
         try {
             if (removeThread != null) {
-                removeThread.interrupt();
+		synchronized (removeThread) {
+		    removeThread.notifyAll();
+		}
                 removeThread.join();
             }
         } catch (InterruptedException e) {
@@ -307,15 +311,16 @@ public final class NodeMappingServerImpl
      *
      * @return	a string representation of this instance
      */
-    @Override
-    public String toString() {
+    @Override public String toString() {
 	return fullName;
     }
 
     /* -- Implement NodeMappingServer -- */
 
     /** {@inheritDoc} */
-    public void assignNode(Class service, Identity identity) throws IOException 
+    public void assignNode(Class service, Identity identity, 
+                           long requestingNode)
+        throws IOException 
     {
         callStarted();    
         try {
@@ -346,7 +351,8 @@ public final class NodeMappingServerImpl
             }
 
             try {
-                long newNodeId = mapToNewNode(identity, serviceName, node);
+                long newNodeId = 
+                    mapToNewNode(identity, serviceName, node, requestingNode);
                 logger.log(Level.FINEST, 
                            "assignNode id:{0} to {1}", identity, newNodeId);
             } catch (NoNodesAvailableException ex) {
@@ -440,12 +446,6 @@ public final class NodeMappingServerImpl
      * during our waiting time, marking the identity as active, during the
      * waiting time.  If it is still appropriate to remove the identity,
      * all traces of it are removed from the data store.
-     * <p>
-     * NOTE: this thread is still not correct in the face of interrupts:
-     * the logging code is known to swallow the interrupted exception
-     * sometimes.  InterruptedException clears the interrupt status,
-     * so checking isInterrupted() doesn't tell us if the thread has 
-     * <b>ever</b> been interrupted.
      */
     private class RemoveThread extends Thread {
         private final long expireTime;   // milliseconds
@@ -456,18 +456,22 @@ public final class NodeMappingServerImpl
         }
         
         public void run() {
-            while (!isInterrupted()) {
-                try {
-                    sleep(expireTime);
-                } catch (InterruptedException ex) {
-                    logger.log(Level.FINE, "Remove thread interrupted");
-                    break;
-                }
-                
+            while (true) {
+		synchronized (this) {
+		    if (shuttingDown()) {
+			break;
+		    }
+		    try {
+			wait(expireTime);
+		    } catch (InterruptedException ex) {
+			logger.log(Level.FINE, "Remove thread interrupted");
+			break;
+		    }
+		}
                 Long time = System.currentTimeMillis() - expireTime;
                 
                 boolean workToDo = true;
-                while (workToDo && !isInterrupted()) {
+                while (workToDo && !shuttingDown()) {
                     RemoveInfo info = removeQueue.peek();
                     if (info != null && info.getTimeInserted() < time) {
                         // Always remove the item from the list, even if we
@@ -671,23 +675,25 @@ public final class NodeMappingServerImpl
      * @param serviceName the name of the requesting service's class, or null
      * @param old the last node the identity was mapped to, or null if there
      *        was no prior mapping
+     * @param requestingNode the node making the mapping request
      *
      * @throws NoNodesAvailableException if there are no live nodes to map to
      */
-    long mapToNewNode(Identity id, String serviceName, Node old) 
+    long mapToNewNode(Identity id, String serviceName, Node old, 
+                      long requestingNode) 
         throws NoNodesAvailableException
     {
-        assert(id != null);
+        assert (id != null);
         
         // Choose the node.  This needs to occur outside of a transaction,
         // as it could take a while.  
         final Node oldNode = old;
         final long newNodeId;
         try {
-            newNodeId = assignPolicy.chooseNode(id);
+            newNodeId = assignPolicy.chooseNode(id, requestingNode);
         } catch (NoNodesAvailableException ex) {
-            logger.logThrow(Level.FINEST, ex, "mapToNewNode: id {0} from {1}"
-                    + " failed because no live nodes are available", 
+            logger.logThrow(Level.FINEST, ex, "mapToNewNode: id {0} from {1}" +
+                    " failed because no live nodes are available", 
                     id, oldNode);
             throw ex;
         }
@@ -776,7 +782,7 @@ public final class NodeMappingServerImpl
                         }
                     }
                     
-                }});
+                } });
                 
             GetNodeTask atask = new GetNodeTask(newNodeId);
             runTransactionally(atask);
@@ -787,7 +793,7 @@ public final class NodeMappingServerImpl
             // We can get an IllegalStateException if this server shuts
             // down while we're moving identities from failed nodes.
             // TODO - check that those identities are properly removed.
-            // Hmmm.  we've probably left some cruft in the data store.
+            // Hmmm.  we've probably left some garbage in the data store.
             // The most likely problem is one in our own code.
             logger.logThrow(Level.FINE, e, 
                             "Move {0} mappings from {1} to {2} failed", 
@@ -831,13 +837,13 @@ public final class NodeMappingServerImpl
         }
         
         /** {@inheritDoc} */
-        public void nodeStarted(Node node){
+        public void nodeStarted(Node node) {
             // Do nothing.  We find out about nodes being available when
             // our client services register with us.     
         }
         
         /** {@inheritDoc} */
-        public void nodeFailed(Node node){
+        public void nodeFailed(Node node) {
             long nodeId = node.getId();          
             try {
                 // Remove the service node listener for the node and tell
@@ -868,7 +874,8 @@ public final class NodeMappingServerImpl
                     if (!done) {
                         Identity id = task.getId().getIdentity();
                         try {
-                            mapToNewNode(id, null, node);
+                            mapToNewNode(id, null, node, 
+                                         NodeAssignPolicy.SERVER_NODE);
                         } catch (NoNodesAvailableException e) {
                             // This can be thrown from mapToNewNode if there are
                             // no live nodes.  Stop our loop.
@@ -925,12 +932,14 @@ public final class NodeMappingServerImpl
                     idmo = (IdentityMO) dataService.getServiceBinding(key);
                 }
             } catch (Exception e) {
-                // TODO: this kind of check may need to be applied to more
+                // XXX: this kind of check may need to be applied to more
                 // of the exceptions in the class, so all exception handling
                 // should be reviewed
                 if ((e instanceof ExceptionRetryStatus) &&
-                    (((ExceptionRetryStatus)e).shouldRetry()))
+                    (((ExceptionRetryStatus) e).shouldRetry())) 
+                {
                     return;
+                }
                 done = true;
                 logger.logThrow(Level.WARNING, e, 
                         "Failed to get key or binding for {0}", nodekey);
@@ -965,7 +974,7 @@ public final class NodeMappingServerImpl
      * Add a node.  This is useful for server testing, when we
      * haven't instantiated a service.
      * <p>
-     * TODO:  remove this, using a NodeAssignPolicy instead?
+     * XXX:  remove this, using a NodeAssignPolicy instead?
      *
      * @param nodeId the node id of the fake node
      */
