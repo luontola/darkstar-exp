@@ -46,7 +46,7 @@ class ProfileReportImpl implements ProfileReport {
      * An empty map for returning when no profile counters have been
      * updated.
      */
-    private static final Map<String,Long> EMPTY_COUNTER_MAP = 
+    private static final Map<String, Long> EMPTY_COUNTER_MAP = 
 	Collections.emptyMap();
 
     /**
@@ -54,8 +54,8 @@ class ProfileReportImpl implements ProfileReport {
      * updated.  We need this map as well because typing issues
      * prevent us from using {@link Collections#emptyMap()}.
     */
-    private static final Map<String,List<Long>> EMPTY_SAMPLE_MAP = 
-	Collections.unmodifiableMap(new HashMap<String,List<Long>>());
+    private static final Map<String, List<Long>> EMPTY_SAMPLE_MAP = 
+	Collections.unmodifiableMap(new HashMap<String, List<Long>>());
 
     // the final fields, set by the constructor
     final KernelRunnable task;
@@ -71,16 +71,20 @@ class ProfileReportImpl implements ProfileReport {
     int tryCount = 0;
     Throwable throwable = null;
 
-    List<ProfileOperation> ops = new ArrayList<ProfileOperation>();
-    Set<ProfileParticipantDetail> participants =
-        new HashSet<ProfileParticipantDetail>();
+
+    Set<ProfileParticipantDetail> participants;
 
     // counters that are updated through methods on this class
-    Map<String,Long> aggCounters = null;
-    Map<String,Long> taskCounters = null;
+    Map<String, Long> aggCounters;
+    Map<String, Long> taskCounters;
 
-    Map<String,List<Long>> localSamples;
-    Map<String,List<Long>> lifetimeSamples;
+    // a list of operations performed, which is updated through
+    // methods on this class
+    List<ProfileOperation> ops;
+
+    // samples that are aggregated through methods on this class
+    Map<String, List<Long>> localSamples;
+    Map<String, List<Long>> aggregateSamples;
 
     /**
      * Creates an instance of <code>ProfileReportImpl</code> with the
@@ -93,15 +97,20 @@ class ProfileReportImpl implements ProfileReport {
      *                   that are associated with the same context as the task
      */
     ProfileReportImpl(KernelRunnable task, Identity owner,
-                      long scheduledStartTime, int readyCount) {
+                      long scheduledStartTime, int readyCount)
+    {
         this.task = task;
         this.owner = owner;
         this.scheduledStartTime = scheduledStartTime;
         this.readyCount = readyCount;
         this.actualStartTime = System.currentTimeMillis();
-	
+
+	ops = new ArrayList<ProfileOperation>();
+	participants = new HashSet<ProfileParticipantDetail>();
+	aggCounters = null;
+	taskCounters = null;
 	localSamples = null;
-	lifetimeSamples = null;
+	aggregateSamples = null;
     }
 
     /**
@@ -112,8 +121,9 @@ class ProfileReportImpl implements ProfileReport {
      * @param value the new value of this counter
      */
     void updateAggregateCounter(String counter, long value) {
-        if (aggCounters == null)
-            aggCounters = new HashMap<String,Long>();
+        if (aggCounters == null) {
+            aggCounters = new HashMap<String, Long>();
+        }
         aggCounters.put(counter, value);
     }
 
@@ -129,10 +139,11 @@ class ProfileReportImpl implements ProfileReport {
     void incrementTaskCounter(String counter, long value) {
         long currentValue = 0;
         if (taskCounters == null) {
-            taskCounters = new HashMap<String,Long>();
+            taskCounters = new HashMap<String, Long>();
         } else {
-            if (taskCounters.containsKey(counter))
+            if (taskCounters.containsKey(counter)) {
                 currentValue = taskCounters.get(counter);
+            }
         }
         taskCounters.put(counter, currentValue + value);
     }
@@ -148,13 +159,13 @@ class ProfileReportImpl implements ProfileReport {
     void addLocalSample(String sampleName, long value) {
 	List<Long> samples;
         if (localSamples == null) {
-            localSamples = new HashMap<String,List<Long>>();
+            localSamples = new HashMap<String, List<Long>>();
 	    samples = new LinkedList<Long>();
 	    localSamples.put(sampleName, samples);
         } else {
-            if (localSamples.containsKey(sampleName))
+            if (localSamples.containsKey(sampleName)) {
 		samples = localSamples.get(sampleName);
-	    else {
+            } else {
 		samples = new LinkedList<Long>();
 		localSamples.put(sampleName, samples);		
 	    }
@@ -170,19 +181,18 @@ class ProfileReportImpl implements ProfileReport {
      * @param sampleName the name of the sample
      * @param samples the list of all samples for this name
      */
-    void registerAggregateSamples(String sampleName, 
-				 List<Long> samples) {
+    void registerAggregateSamples(String sampleName, List<Long> samples) {
 	// NOTE: we make the list unmodifiable so that the user cannot
 	// alter any of the samples.  This is important since the same
 	// list is used for the lifetime of the application.
-        if (lifetimeSamples == null) {
-            lifetimeSamples = new HashMap<String,List<Long>>();
-	    lifetimeSamples.put(sampleName, 
+        if (aggregateSamples == null) {
+            aggregateSamples = new HashMap<String, List<Long>>();
+	    aggregateSamples.put(sampleName, 
 				Collections.unmodifiableList(samples));
-        } 
-	else if (!lifetimeSamples.containsKey(sampleName))
-	    lifetimeSamples.put(sampleName, 
-				Collections.unmodifiableList(samples));
+        } else if (!aggregateSamples.containsKey(sampleName)) {
+	    aggregateSamples.put(sampleName, 
+				 Collections.unmodifiableList(samples));
+        }
     }
 
     /**
@@ -258,28 +268,28 @@ class ProfileReportImpl implements ProfileReport {
     /**
      * {@inheritDoc}
      */
-    public Map<String,Long> getUpdatedAggregateCounters() {
+    public Map<String, Long> getUpdatedAggregateCounters() {
         return (aggCounters == null) ? EMPTY_COUNTER_MAP : aggCounters;
     }
 
     /**
      * {@inheritDoc}
      */
-    public Map<String,Long> getUpdatedTaskCounters() {
+    public Map<String, Long> getUpdatedTaskCounters() {
         return (taskCounters == null) ? EMPTY_COUNTER_MAP : taskCounters;
     }
 
     /**
      * {@inheritDoc}
      */
-    public Map<String,List<Long>> getUpdatedAggregateSamples() {
-	return (lifetimeSamples == null) ? EMPTY_SAMPLE_MAP : lifetimeSamples;
+    public Map<String, List<Long>> getUpdatedAggregateSamples() {
+	return (aggregateSamples == null) ? EMPTY_SAMPLE_MAP : aggregateSamples;
     }
 
     /**
      * {@inheritDoc}
      */
-    public Map<String,List<Long>> getUpdatedTaskSamples() {
+    public Map<String, List<Long>> getUpdatedTaskSamples() {
 	return (localSamples == null) ? EMPTY_SAMPLE_MAP : localSamples;
     }
 
@@ -303,8 +313,69 @@ class ProfileReportImpl implements ProfileReport {
      * completes and needs to share its data with its parent.
      */
     void merge(ProfileReportImpl report) {
-        // FIXME: implement merging for all counts, samples, and ops
-        // before the final commit of this code
+	
+	// for each of the child task counters and samples, we first
+	// check whether the task recorded any data.  If so, then we
+	// copy the data to this report.      
+
+	if (report.taskCounters != null) {
+	    if (taskCounters == null) {
+		taskCounters = new HashMap<String, Long>(report.taskCounters);
+	    } else {
+		for (Map.Entry<String, Long> e : 
+                    report.taskCounters.entrySet()) 
+                {
+		    Long curCount = taskCounters.get(e.getKey());
+		    taskCounters.put(e.getKey(),
+				     (curCount == null) 
+				     ? e.getValue()
+				     : curCount + e.getValue());
+		}
+	    }
+	}
+
+	if (report.localSamples != null) {
+	    if (localSamples == null) {
+		localSamples = new HashMap<String, List<Long>>();
+		for (Map.Entry<String, List<Long>> e : 
+			 report.localSamples.entrySet()) 
+                {
+		    // make a copy of the child task's samples
+		    List<Long> samples = new LinkedList<Long>(e.getValue());
+		    localSamples.put(e.getKey(), samples);
+		}
+	    } else {
+		for (Map.Entry<String, List<Long>> e : 
+			 report.localSamples.entrySet()) 
+                {
+		    List<Long> samples = localSamples.get(e.getKey());
+		    if (samples == null) {
+			// make a copy of the child task's samples
+			localSamples.put(e.getKey(),
+					 new LinkedList<Long>(e.getValue()));
+                    } else {
+			samples.addAll(e.getValue());
+                    }
+		}
+	    }
+	}
+
+	if (report.ops != null) {
+	    if (ops == null) {
+		ops = new LinkedList<ProfileOperation>(report.ops);
+	    } else {
+		ops.addAll(report.ops);
+	    }
+	}
+
+	// NOTE: we do not need to update the aggregateSamples and
+	//       aggregateCounters, as this is being collected across
+	//       all tasks, and so by updating we would really be
+	//       double counting the data
+
+	// NOTE: we do not include the the participants information
+	//       since this is specific to a task and not to its
+	//       children.
     }
 
 }

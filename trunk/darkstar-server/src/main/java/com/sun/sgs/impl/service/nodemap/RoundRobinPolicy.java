@@ -88,7 +88,7 @@ class RoundRobinPolicy implements NodeAssignPolicy {
     }
     
     /** {@inheritDoc} */
-    public synchronized long chooseNode(Identity id) 
+    public synchronized long chooseNode(Identity id, long requestingNode) 
         throws NoNodesAvailableException 
     {
         if (liveNodes.size() < 1) {
@@ -156,7 +156,8 @@ class RoundRobinPolicy implements NodeAssignPolicy {
                         Node node = task.getNode();
                         try {
                             long newnode =
-                                server.mapToNewNode(idToMove, null, node);
+                                server.mapToNewNode(idToMove, null, node, 
+                                                 NodeAssignPolicy.SERVER_NODE);
                             
                             // mapToNewNode will call this method again. We
                             // want to make sure to reset where the next id
@@ -171,8 +172,8 @@ class RoundRobinPolicy implements NodeAssignPolicy {
                             
                             nextNode.getAndDecrement();
                             
-                            logger.log(Level.FINEST, "Move Identity attempt: "
-                                    + "chose {0} for id {1} on old node {2}",
+                            logger.log(Level.FINEST, "Move Identity attempt: " +
+                                    "chose {0} for id {1} on old node {2}",
                                     newnode, idToMove, node);
                             done = newnode != nodeId;
                         } catch (NoNodesAvailableException e) {
@@ -183,8 +184,8 @@ class RoundRobinPolicy implements NodeAssignPolicy {
                     
                 } catch (Exception ex) {
                     logger.logThrow(Level.WARNING, ex, 
-                            "Unexpected exception while attempting to choose "
-                          + "an identity to move from node id {0}" + nodeId);
+                          "Unexpected exception while attempting to choose " +
+                          "an identity to move from node id {0}" + nodeId);
                 }
             } 
         }

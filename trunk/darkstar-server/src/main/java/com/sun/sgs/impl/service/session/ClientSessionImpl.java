@@ -23,6 +23,7 @@ import com.sun.sgs.app.ClientSession;
 import com.sun.sgs.app.ClientSessionListener;
 import com.sun.sgs.app.Delivery;
 import com.sun.sgs.app.ManagedObject;
+import com.sun.sgs.app.ManagedObjectRemoval;
 import com.sun.sgs.app.ManagedReference;
 import com.sun.sgs.app.MessageRejectedException;
 import com.sun.sgs.app.NameNotBoundException;
@@ -34,6 +35,7 @@ import com.sun.sgs.auth.Identity;
 import com.sun.sgs.impl.sharedutil.HexDumper;
 import com.sun.sgs.impl.sharedutil.LoggerWrapper;
 import com.sun.sgs.impl.util.AbstractKernelRunnable;
+import com.sun.sgs.impl.util.IoRunnable;
 import static com.sun.sgs.impl.util.AbstractService.isRetryableException;
 import com.sun.sgs.impl.util.ManagedQueue;
 import com.sun.sgs.protocol.simple.SimpleSgsProtocol;
@@ -85,7 +87,7 @@ public class ClientSessionImpl
      * TODO: this should be a transient field.
      */
     private final byte[] idBytes;
-    
+
     /** The wrapped client session instance. */
     private final ManagedReference<ClientSessionWrapper> wrappedSessionRef;
 
@@ -153,7 +155,7 @@ public class ClientSessionImpl
 
     /** {@inheritDoc} */
     public String getName() {
-	if (! isConnected()) {
+	if (!isConnected()) {
 	    throw new IllegalStateException("client session is not connected");
 	}
         String name = identity.getName();
@@ -191,7 +193,7 @@ public class ClientSessionImpl
                .flip();
 	    addEvent(new SendEvent(buf.array()));
 
-	    return this;
+	    return getWrappedClientSession();
 
 	} catch (RuntimeException e) {
 	    if (logger.isLoggable(Level.FINEST)) {
@@ -222,7 +224,7 @@ public class ClientSessionImpl
     public long getNodeId() {
 	return nodeId;
     }
-    
+
     /* -- Implement Object -- */
 
     /** {@inheritDoc} */
@@ -253,7 +255,7 @@ public class ClientSessionImpl
 	    return obj1.equals(obj2);
 	}
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public int hashCode() {
@@ -266,7 +268,7 @@ public class ClientSessionImpl
 	return getClass().getName() + "[" + getName() + "]@[id:0x" +
 	    id.toString(16) + ",node:" + nodeId + "]";
     }
-    
+
     /* -- Serialization methods -- */
 
     private void readObject(ObjectInputStream in)
@@ -287,7 +289,7 @@ public class ClientSessionImpl
     BigInteger getId() {
         return id;
     }
-    
+
     /**
      * Returns the {@code ClientSession} instance for the given {@code
      * id}, retrieved from the specified {@code dataService}, or
@@ -317,8 +319,9 @@ public class ClientSessionImpl
 
     /**
      * Returns the wrapped client session for this instance.
+     * @return the wrapped client session
      */
-    ClientSessionWrapper getWrappedClientSession() {
+    public ClientSessionWrapper getWrappedClientSession() {
 	return wrappedSessionRef.get();
     }
 
@@ -365,7 +368,7 @@ public class ClientSessionImpl
 	    } else {
 		listener = (ClientSessionListener) obj;
 	    }
-	    
+
 	} catch (NameNotBoundException e) {
 	    logger.logThrow(
 		Level.FINE, e,
@@ -400,7 +403,7 @@ public class ClientSessionImpl
 	    try {
 		listener.disconnected(graceful);
 	    } catch (RuntimeException e) {
-		if (! isRetryableException(e)) {
+		if (!isRetryableException(e)) {
 		    logger.logThrow(
 			Level.WARNING, e,
 			"invoking disconnected callback on listener:{0} " +
@@ -409,12 +412,13 @@ public class ClientSessionImpl
 		    sessionService.scheduleTask(
 			new AbstractKernelRunnable() {
 			    public void run() {
-				ClientSessionImpl sessionImpl = 
-				    ClientSessionImpl.getSession(dataService, id);
+				ClientSessionImpl sessionImpl =
+				    ClientSessionImpl.getSession(
+					dataService, id);
 				sessionImpl.notifyListenerAndRemoveSession(
 				    dataService, graceful, false);
-			    }},
-			identity);
+			    }
+			}, identity);
 		}
 		throw e;
 	    }
@@ -449,7 +453,7 @@ public class ClientSessionImpl
     private ClientSessionServer getClientSessionServer() {
 	return sessionService.getClientSessionServer(nodeId);
     }
-    
+
     /**
      * Returns the key to access this instance from the data service.
      *
@@ -480,7 +484,7 @@ public class ClientSessionImpl
     private static String getEventQueueKey(byte[] sessionId) {
 	return PKG_NAME + QUEUE_COMPONENT + HexDumper.toHexString(sessionId);
     }
-	
+
     /**
      * Returns the key to access this session's event queue.
      */
@@ -555,8 +559,8 @@ public class ClientSessionImpl
     private static class ListenerWrapper
 	implements ManagedObject, Serializable
     {
-	private final static long serialVersionUID = 1L;
-	
+	private static final long serialVersionUID = 1L;
+
 	private ClientSessionListener listener;
 
 	ListenerWrapper(ClientSessionListener listener) {
@@ -583,7 +587,7 @@ public class ClientSessionImpl
 	    return null;
 	}
     }
-	
+
     /**
      * Returns this client session's event queue, or null if the event
      * queue is not bound in the data service.
@@ -618,14 +622,14 @@ public class ClientSessionImpl
 	 */
 	if (isLocalSession && eventQueue.isEmpty()) {
 	    event.serviceEvent(eventQueue);
-	    
-	} else if (! eventQueue.offer(event)) {
+
+	} else if (!eventQueue.offer(event)) {
 	    throw new ResourceUnavailableException(
 	   	"not enough resources to add client session event");
-	    
+
 	} else if (isLocalSession) {
 	    eventQueue.serviceEvent();
-	    
+
 	} else {
 
 	    final ClientSessionServer sessionServer = getClientSessionServer();
@@ -642,21 +646,14 @@ public class ClientSessionImpl
 	    sessionService.scheduleNonTransactionalTask(
 	        new AbstractKernelRunnable() {
 		    public void run() {
-			try {
-			    sessionServer.serviceEventQueue(idBytes);
-			} catch (IOException e) {
-			    /*
-			     * It is likely that the session's node failed.
-			     */
-			    if (logger.isLoggable(Level.FINEST)) {
-				logger.logThrow(
-				    Level.FINEST, e,
-				    "serviceEventQueue session:{0} node:{1} " +
-				    "throws", HexDumper.toHexString(idBytes),
-				    nodeId);
-			    }
-			}
-		    }}, identity);
+			sessionService.runIoTask(
+			    new IoRunnable() {
+				public void run() throws IOException {
+				    sessionServer.serviceEventQueue(idBytes);
+				}},
+			    nodeId);
+		    }
+		}, identity);
 	}
     }
 
@@ -670,10 +667,10 @@ public class ClientSessionImpl
 	    eventQueue.serviceEvent();
 	}
     }
-    
+
     /**
      * Returns the write buffer capacity for this session.
-     * 
+     *
      * @return the write buffer capacity
      */
     int getWriteBufferCapacity() {
@@ -683,12 +680,12 @@ public class ClientSessionImpl
     /**
      * Represents an event for a client session.
      */
-    private static abstract class SessionEvent
+    private abstract static class SessionEvent
 	implements ManagedObject, Serializable
     {
 
 	/** The serialVersionUID for this class. */
-	private final static long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Services this event, taken from the head of the given {@code
@@ -700,7 +697,7 @@ public class ClientSessionImpl
 	 * Returns the cost of this event, which the {@code EventQueue}
 	 * may use to reject events when the total cost is too large.
 	 * The default implementation returns a cost of zero.
-	 * 
+	 *
 	 * @return the cost of this event
 	 */
 	int getCost() {
@@ -710,10 +707,10 @@ public class ClientSessionImpl
 
     private static class SendEvent extends SessionEvent {
 	/** The serialVersionUID for this class. */
-	private final static long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
 	private final byte[] message;
-	
+
 	/**
 	 * Constructs a send event with the given {@code message}.
 	 */
@@ -743,11 +740,9 @@ public class ClientSessionImpl
 
     private static class DisconnectEvent extends SessionEvent {
 	/** The serialVersionUID for this class. */
-	private final static long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-	/**
-	 * Constructs a disconnect event.
-	 */
+	/** Constructs a disconnect event. */
 	DisconnectEvent() {}
 
 	/** {@inheritDoc} */
@@ -762,14 +757,16 @@ public class ClientSessionImpl
 	    return getClass().getName();
 	}
     }
-    
+
     /**
      * The session's event queue.
      */
-    private static class EventQueue implements ManagedObject, Serializable {
+    private static class EventQueue
+	implements ManagedObjectRemoval, Serializable
+    {
 
 	/** The serialVersionUID for this class. */
-	private final static long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
 	/** The managed reference to the queue's session. */
 	private final ManagedReference<ClientSessionImpl> sessionRef;
@@ -832,7 +829,7 @@ public class ClientSessionImpl
 	BigInteger getSessionRefId() {
 	    return sessionRef.getId();
 	}
-	
+
 	/**
 	 * Returns the managed queue object.
 	 */
@@ -860,7 +857,7 @@ public class ClientSessionImpl
 	 */
 	void serviceEvent() {
 	    checkState();
-	    
+
 	    ClientSessionServiceImpl sessionService =
 		ClientSessionServiceImpl.getInstance();
 	    ManagedQueue<SessionEvent> eventQueue = getQueue();
@@ -891,8 +888,21 @@ public class ClientSessionImpl
 		event.serviceEvent(this);
 	    }
 	}
+
+	/* -- Implement ManagedObjectRemoval -- */
+
+	/** {@inheritDoc} */
+	public void removingObject() {
+	    try {
+		DataService dataService =
+		    ClientSessionServiceImpl.getDataService();
+		dataService.removeObject(queueRef.get());
+	    } catch (ObjectNotFoundException e) {
+		// already removed.
+	    }
+	}
     }
-    
+
     /**
      * A persistent task to schedule tasks to notify (in succession) the
      * client session listener of each disconnected session on a given
@@ -906,7 +916,7 @@ public class ClientSessionImpl
 	implements Task, Serializable
     {
 	/** The serialVersionUID for this class. */
-	private final static long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
 	/** The prefix for client sessions on the failed node. */
 	private final String nodePrefix;
@@ -948,7 +958,7 @@ public class ClientSessionImpl
 	implements Task, Serializable
     {
 	/** The serialVersionUID for this class. */
-	private final static long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
 	/** The key for the client session. */
 	private final String key;

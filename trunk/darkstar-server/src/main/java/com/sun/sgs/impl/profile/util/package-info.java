@@ -17,19 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.sun.sgs.app;
-
 /**
- * @author Esko Luontola
- * @since 17.6.2008
+ * Provides utilities useful for profiling implementations.
  */
-public interface AppContextResolver {
-
-    ChannelManager getChannelManager();
-
-    DataManager getDataManager();
-
-    TaskManager getTaskManager();
-
-    <T> T getManager(Class<T> type);
-}
+package com.sun.sgs.impl.profile.util;
