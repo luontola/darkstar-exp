@@ -244,6 +244,7 @@
                             <value>target/jdave</value>
                         </property>
                     </systemProperties>
+                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
                 </configuration>
             </plugin>
 

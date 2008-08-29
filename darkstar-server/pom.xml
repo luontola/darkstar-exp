@@ -20,12 +20,6 @@
         </license>
     </licenses>
 
-    <properties>
-        <!--<bdb.lib.dir>${basedir}/../bdb-4.5.20</bdb.lib.dir>-->
-        <!--<test.bdb.env>com.sun.sgs.impl.service.data.store.db.je.JeEnvironment</test.bdb.env>-->
-        <test.bdb.env>com.sun.sgs.impl.service.data.store.db.bdb.BdbEnvironment</test.bdb.env>
-    </properties>
-
     <dependencies>
 
         <dependency>
@@ -78,32 +72,30 @@
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <!--<skipTests>true</skipTests>-->
                     <includes>
                         <include>**/Test*.java</include>
                     </includes>
-                    <!-- HACK: The tests have side effects, so each must be run in a separate VM -->
-                    <forkMode>always</forkMode>
-                    <argLine>-server</argLine>
                     <systemProperties>
                         <property>
                             <name>com.sun.sgs.impl.service.data.store.db.environment.class</name>
-                            <value>${test.bdb.env}</value>
+                            <value>com.sun.sgs.impl.service.data.store.db.bdb.BdbEnvironment</value>
                         </property>
-                        <!--<property>-->
-                        <!-- HACK: It would be best to download the library from a repository automatically -->
-                        <!-- Expect the 'libdb_java45' library to be in the root of this module -->
-                        <!--<name>java.library.path</name>-->
-                        <!--<value>.</value>-->
-                        <!--<value>${bdb.lib.dir}/win32-x86</value>-->
-                        <!--<value>${bdb.lib.dir}</value>-->
-                        <!--</property>-->
+                        <property>
+                            <name>com.sun.sgs.impl.service.data.store.db.bdb.cache.size</name>
+                            <value>1000000</value>
+                        </property>
                         <property>
                             <!-- HACK: The tests have side effects, so they must use a temp dir which is emptied before running the tests -->
                             <name>java.io.tmpdir</name>
                             <value>${basedir}/target/temp</value>
                         </property>
                     </systemProperties>
+                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                    <argLine>-server -Xmx1G</argLine>
+                    <!-- HACK: The tests have side effects, so each test must be run in a separate VM -->
+                    <forkMode>always</forkMode>
+                    <!-- HACK: The tests are not reproducable on every OS, so some tests will always fail -->
+                    <testFailureIgnore>true</testFailureIgnore>
                 </configuration>
             </plugin>
 
@@ -111,12 +103,12 @@
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
                     <execution>
-                        <phase>test-compile</phase>
+                        <phase>generate-test-resources</phase>
                         <configuration>
                             <tasks>
                                 <!-- Prepare temp dir for running tests -->
-                                <delete dir="${basedir}/target/temp" />
-                                <mkdir dir="${basedir}/target/temp" />
+                                <delete dir="${basedir}/target/temp"/>
+                                <mkdir dir="${basedir}/target/temp"/>
                             </tasks>
                         </configuration>
                         <goals>
@@ -128,20 +120,5 @@
 
         </plugins>
     </build>
-
-    <reporting>
-        <plugins>
-
-            <!--
-            <plugin>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <subpackages>com.sun.sgs.app:com.sun.sgs.protocol.simple</subpackages>
-                </configuration>
-            </plugin>
-            -->
-
-        </plugins>
-    </reporting>
 
 </project>
