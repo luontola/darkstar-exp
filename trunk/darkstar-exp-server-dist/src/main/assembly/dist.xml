@@ -14,7 +14,7 @@
         <dependencySet>
             <excludes>
                 <exclude>berkeleydb:bdb-natives</exclude>
-                <exclude>net.orfjackal.darkstar-exp:darkstar-server-tutorial</exclude>
+                <exclude>com.projectdarkstar.server:sgs-tutorial-server-dist</exclude>
             </excludes>
             <outputDirectory>lib</outputDirectory>
         </dependencySet>
@@ -25,16 +25,15 @@
                 <include>berkeleydb:bdb-natives</include>
             </includes>
             <outputDirectory>lib</outputDirectory>
-            <!--<outputFileNameMapping>bdb</outputFileNameMapping>-->
             <unpack>true</unpack>
         </dependencySet>
 
         <!-- Tutorials -->
         <dependencySet>
             <includes>
-                <include>net.orfjackal.darkstar-exp:darkstar-server-tutorial</include>
+                <include>com.projectdarkstar.server:sgs-tutorial-server-dist</include>
             </includes>
-            <outputDirectory>tutorial</outputDirectory>
+            <unpack>true</unpack>
         </dependencySet>
 
     </dependencySets>
@@ -70,29 +69,6 @@
             <directory>../darkstar-server</directory>
             <includes>
                 <include>*.txt</include>
-            </includes>
-        </fileSet>
-        <!-- TODO: not yet working
-        <fileSet>
-            <outputDirectory>doc/darkstar-server-api</outputDirectory>
-            <directory>../darkstar-server/target/site/apidocs</directory>
-        </fileSet>
-        -->
-
-        <!-- Tutorials -->
-        <fileSet>
-            <outputDirectory>tutorial/src</outputDirectory>
-            <directory>../darkstar-server-tutorial/src/main/java</directory>
-        </fileSet>
-        <fileSet>
-            <outputDirectory>tutorial</outputDirectory>
-            <directory>../darkstar-server-tutorial/src/main/config</directory>
-        </fileSet>
-        <fileSet>
-            <outputDirectory>tutorial</outputDirectory>
-            <directory>../darkstar-server-tutorial/src/main/docs</directory>
-            <includes>
-                <include>*.pdf</include>
             </includes>
         </fileSet>
 
