@@ -46,7 +46,7 @@ import java.util.concurrent.TimeoutException;
 @Group({"fast"})
 public class TransparentReferencesSpec extends Specification<Object> {
 
-    private static final int TIMEOUT = 10000;
+    private static final int TIMEOUT = 5000;
     private static final boolean DEBUG = false;
 
     private DarkstarServer server;

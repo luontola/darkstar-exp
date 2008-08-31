@@ -45,7 +45,7 @@ import java.util.concurrent.TimeoutException;
 @Group({"slow", "integration"})
 public class AppRootAsRelativeToAppPropertiesFileSpec extends Specification<Object> {
 
-    private static final int TIMEOUT = 10000;
+    private static final int TIMEOUT = 5000;
 
     private DarkstarServer server;
     private Properties appProps;
