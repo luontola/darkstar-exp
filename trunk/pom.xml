@@ -34,10 +34,6 @@
             <id>esko.luontola</id>
             <name>Esko Luontola</name>
             <url>http://www.orfjackal.net/</url>
-            <roles>
-                <role>Darkstar EXP project owner</role>
-                <role>Maven project descriptors</role>
-            </roles>
         </developer>
     </developers>
 
@@ -61,7 +57,7 @@
         </repository>
         <repository>
             <id>java.net</id>
-            <url>http://download.java.net/maven/2/</url>
+            <url>http://download.java.net/maven/2</url>
         </repository>
     </repositories>
 
