@@ -56,6 +56,11 @@
       <groupId>com.sleepycat</groupId>
       <artifactId>je</artifactId>
     </dependency>
+
+      <dependency>
+          <groupId>net.orfjackal.dimdwarf</groupId>
+          <artifactId>dimdwarf-core</artifactId>
+      </dependency>
   </dependencies>
 
   <build>

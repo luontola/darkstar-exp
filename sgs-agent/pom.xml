@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.projectdarkstar.server</groupId>
+        <artifactId>sgs-server-parent</artifactId>
+        <version>0.9.8_exp1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>sgs-agent</artifactId>
+    <packaging>jar</packaging>
+
+    <name>sgs-agent</name>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>net.orfjackal.dimdwarf</groupId>
+            <artifactId>dimdwarf-aop</artifactId>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                        </manifest>
+                        <manifestEntries>
+                            <Premain-Class>com.sun.sgs.agent.AopAgent</Premain-Class>
+                            <!--<Agent-Class>com.sun.sgs.agent.AopAgent</Agent-Class>-->
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>
