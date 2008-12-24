@@ -44,6 +44,16 @@
       <artifactId>sgs-tutorial-server-dist</artifactId>
       <type>zip</type>
     </dependency>
+
+      <dependency>
+          <groupId>com.projectdarkstar.server</groupId>
+          <artifactId>sgs-agent</artifactId>
+      </dependency>
+      <dependency>
+          <!-- Dimdwarf uses slf4j -->
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-jdk14</artifactId>
+      </dependency>
   </dependencies>
 
 
