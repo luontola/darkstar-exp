@@ -44,6 +44,6 @@ public class DarkstarAopApi extends DimdwarfAopApi {
     }
 
     public String getEntityHelperClass() {
-        return "net/orfjackal/dimdwarf/entities/tref/EntityHelper"; // TODO: needs to be replaced with another class
+        return "com/sun/sgs/impl/service/data/EntityHelper";
     }
 }
