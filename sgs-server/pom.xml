@@ -60,6 +60,13 @@
       <dependency>
           <groupId>net.orfjackal.dimdwarf</groupId>
           <artifactId>dimdwarf-core</artifactId>
+          <exclusions>
+              <exclusion>
+                  <!-- These classes have been copied to this project and modified for Darkstar compatibility -->
+                  <groupId>net.orfjackal.dimdwarf</groupId>
+                  <artifactId>dimdwarf-api-internal</artifactId>
+              </exclusion>
+          </exclusions>
       </dependency>
   </dependencies>
 
