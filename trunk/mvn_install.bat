@@ -1,2 +1,2 @@
 @echo off
-mvn -Dmaven.test.skip=true clean install
+mvn -Dmaven.test.skip=true clean install && pause
