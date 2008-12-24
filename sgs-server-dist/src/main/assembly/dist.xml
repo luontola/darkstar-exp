@@ -1,4 +1,6 @@
-<assembly>
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/assembly-1.1.0-SNAPSHOT.xsd">
   <formats>
     <format>zip</format>
   </formats>
@@ -18,6 +20,18 @@
 
     <!-- Include the sgs-server jar files required in the lib directory -->
     <dependencySet>
+        <!-- To get all also all the dependencies, it's the easiest to include everything and exclude unwanted artifacts -->
+        <excludes>
+            <exclude>com.projectdarkstar.server:sgs-agent</exclude>
+            <exclude>com.projectdarkstar.server:sgs-boot</exclude>
+            <exclude>com.projectdarkstar.server:sgs-stop</exclude>
+            <exclude>com.projectdarkstar.server:sgs-tutorial-server</exclude>
+            <exclude>com.projectdarkstar.server:sgs-tutorial-server-dist</exclude>
+            <exclude>com.projectdarkstar.server:sgs-server-javadoc</exclude>
+            <exclude>com.projectdarkstar.ext.berkeleydb:db-binaries</exclude>
+            <exclude>*:sources</exclude>
+        </excludes>
+<!--
       <includes>
 	<include>com.projectdarkstar.server:sgs-server:jar</include>
 	<include>com.projectdarkstar.server:sgs-shared:jar</include>
@@ -25,9 +39,19 @@
 	<include>com.projectdarkstar.ext.berkeleydb:db:jar</include>
 	<include>com.sleepycat:je:jar</include>
       </includes>
+-->
       <outputDirectory>lib</outputDirectory>
       <useProjectArtifact>false</useProjectArtifact>
     </dependencySet>
+
+      <!-- sgs-agent requires a fixed file name, so that sgs-boot will know where to find it -->
+      <dependencySet>
+          <includes>
+              <include>com.projectdarkstar.server:sgs-agent</include>
+          </includes>
+          <outputDirectory>lib</outputDirectory>
+          <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+      </dependencySet>
 
     <!-- Include the sgs-server source files -->
     <dependencySet>
