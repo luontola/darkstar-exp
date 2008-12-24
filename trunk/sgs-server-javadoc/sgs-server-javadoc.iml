@@ -15,6 +15,14 @@
     <orderEntry type="library" exported="" name="Maven: com.projectdarkstar.server:sgs-shared:1.3" level="project" />
     <orderEntry type="library" exported="" name="Maven: com.projectdarkstar.ext.berkeleydb:db:4.5.20" level="project" />
     <orderEntry type="library" exported="" name="Maven: com.sleepycat:je:3.2.76" level="project" />
+    <orderEntry type="library" exported="" name="Maven: net.orfjackal.dimdwarf:dimdwarf-core:0.1.0-SNAPSHOT" level="project" />
+    <orderEntry type="library" exported="" name="Maven: net.orfjackal.dimdwarf:dimdwarf-api:0.1.0-SNAPSHOT" level="project" />
+    <orderEntry type="library" exported="" name="Maven: com.google.code.guice:guice:1.0" level="project" />
+    <orderEntry type="library" exported="" name="Maven: cglib:cglib:2.2" level="project" />
+    <orderEntry type="library" exported="" name="Maven: asm:asm:3.1" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.slf4j:slf4j-api:1.4.0" level="project" />
+    <orderEntry type="library" exported="" name="Maven: com.intellij:annotations:7.0.3" level="project" />
+    <orderEntry type="library" exported="" name="Maven: net.orfjackal.ext.javax.annotations:jsr305:20080825" level="project" />
     <orderEntry type="module" module-name="sgs-server-api" exported="" />
   </component>
 </module>
