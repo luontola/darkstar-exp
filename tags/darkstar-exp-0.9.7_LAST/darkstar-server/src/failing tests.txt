@@ -1,0 +1,19 @@
+
+	On Windows
+
+Running com.sun.sgs.test.impl.service.transaction.TestTransactionCoordinatorImpl
+Tests run: 66, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.953 sec <<< FAILURE!
+Running com.sun.sgs.test.impl.service.watchdog.TestWatchdogServiceImpl
+Tests run: 46, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 114.813 sec <<< FAILURE!
+Running com.sun.sgs.test.impl.kernel.TestKernelSimpleAppRestart
+Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.875 sec <<< FAILURE!
+Running com.sun.sgs.test.impl.kernel.TestKernelNoAppStartup
+Tests run: 4, Failures: 0, Errors: 4, Skipped: 0, Time elapsed: 0.5 sec <<< FAILURE!
+Running com.sun.sgs.test.impl.kernel.TestKernelSimpleApp
+Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.11 sec <<< FAILURE!
+Running com.sun.sgs.test.impl.kernel.TestTaskSchedulerImpl
+Tests run: 42, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 78.453 sec <<< FAILURE!
+Running com.sun.sgs.test.impl.service.channel.TestChannelServiceImpl
+Tests run: 65, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 218.968 sec <<< FAILURE!
+
+Tests run: 1590, Failures: 4, Errors: 6, Skipped: 0
