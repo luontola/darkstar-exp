@@ -19,28 +19,16 @@
 
 package com.sun.sgs.impl.service.data;
 
-import com.sun.sgs.app.ManagedObject;
-import com.sun.sgs.app.ManagedReference;
-import com.sun.sgs.app.ObjectIOException;
-import com.sun.sgs.impl.sharedutil.LoggerWrapper;
-import com.sun.sgs.impl.sharedutil.Objects;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.ObjectStreamClass;
-import java.io.OutputStream;
-import java.lang.reflect.Array;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.util.IdentityHashMap;
-import java.util.Stack;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import com.sun.sgs.app.*;
+import com.sun.sgs.impl.sharedutil.*;
+import net.orfjackal.dimdwarf.entities.tref.ReplaceEntitiesWithTransparentReferences;
+import net.orfjackal.dimdwarf.serial.SerializationReplacer;
+
+import java.io.*;
+import java.lang.reflect.*;
+import java.security.*;
+import java.util.*;
+import java.util.logging.*;
 
 /** Defines serialization utilities.  This class cannot be instantiated. */
 final class SerialUtil {
@@ -86,7 +74,7 @@ final class SerialUtil {
 	ObjectInputStream in = null;
 	try {
 	    in = new CustomClassDescriptorObjectInputStream(
-		new CompressByteArrayInputStream(data), classSerial);
+		new CompressByteArrayInputStream(data), classSerial, getSerializationReplacers());
 	    return in.readObject();
 	} catch (ClassNotFoundException e) {
 	    throw new ObjectIOException(
@@ -114,18 +102,30 @@ final class SerialUtil {
 	extends ObjectInputStream
     {
 	private final ClassSerialization classSerial;
+        private final SerializationReplacer[] replacers;
+
 	CustomClassDescriptorObjectInputStream(InputStream in,
-					       ClassSerialization classSerial)
+                                               ClassSerialization classSerial,
+                                               SerializationReplacer[] replacers)
 	    throws IOException
 	{
 	    super(in);
 	    this.classSerial = classSerial;
-	}
+            this.replacers = replacers;
+            enableResolveObject(true);
+        }
 	protected ObjectStreamClass readClassDescriptor()
 	    throws ClassNotFoundException, IOException
 	{
 	    return classSerial.readClassDescriptor(this);
 	}
+
+        protected Object resolveObject(Object obj) throws IOException {
+            for (SerializationReplacer replacer : replacers) {
+                obj = replacer.resolveDeserialized(obj, null);
+            }
+            return obj;
+        }
     }
 
     /**
@@ -173,11 +173,11 @@ final class SerialUtil {
     static byte[] serialize(ManagedObject object,
 			    ClassSerialization classSerial)
     {
-	ObjectOutputStream out = null;
+        ObjectOutputStream out = null;
 	try {
 	    ByteArrayOutputStream baos = new CompressByteArrayOutputStream();
-	    out = new CheckReferencesObjectOutputStream(
-		baos, object, classSerial);
+            out = new CheckReferencesObjectOutputStream(
+		baos, object, classSerial, getSerializationReplacers());
 	    out.writeObject(object);
 	    out.flush();
 	    return baos.toByteArray();
@@ -195,6 +195,12 @@ final class SerialUtil {
 		}
 	    }
 	}
+    }
+
+    private static SerializationReplacer[] getSerializationReplacers() {
+        return new SerializationReplacer[]{
+                new ReplaceEntitiesWithTransparentReferences(TransparentReferenceFactorySingleton.getInstance())
+        };
     }
 
     /**
@@ -268,19 +274,22 @@ final class SerialUtil {
     {
 	/** The top level managed object being serialized. */
 	private final ManagedObject topLevelObject;
+        private final SerializationReplacer[] replacers;
 
 	/**
 	 * Creates an instance that writes to a stream for a managed object
 	 * being serialized.
 	 */
 	CheckReferencesObjectOutputStream(OutputStream out,
-					  ManagedObject topLevelObject,
-					  ClassSerialization classSerial)
+                                          ManagedObject topLevelObject,
+                                          ClassSerialization classSerial,
+                                          SerializationReplacer[] replacers)
 	    throws IOException
 	{
 	    super(out, classSerial);
 	    this.topLevelObject = topLevelObject;
-	    AccessController.doPrivileged(
+            this.replacers = replacers;
+            AccessController.doPrivileged(
 		new PrivilegedAction<Void>() {
 		    public Void run() {
 			enableReplaceObject(true);
@@ -291,6 +300,9 @@ final class SerialUtil {
 
 	/** Check for references to managed objects. */
 	protected Object replaceObject(Object object) throws IOException {
+            for (SerializationReplacer replacer : replacers) {
+                object = replacer.replaceSerialized(topLevelObject, object, null);
+            }
 	    if (object != topLevelObject && object instanceof ManagedObject) {
 		throw new ObjectIOException(
 		    "ManagedObject was not referenced through a " +
