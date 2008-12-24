@@ -19,48 +19,24 @@
 
 package com.sun.sgs.impl.kernel;
 
-import com.sun.sgs.app.ExceptionRetryStatus;
-import com.sun.sgs.app.TaskRejectedException;
-
+import com.sun.sgs.app.*;
 import com.sun.sgs.auth.Identity;
-
 import com.sun.sgs.impl.kernel.schedule.SchedulerQueue;
-
 import com.sun.sgs.impl.profile.ProfileCollectorHandle;
-import com.sun.sgs.impl.service.transaction.TransactionCoordinator;
-import com.sun.sgs.impl.service.transaction.TransactionHandle;
-
+import com.sun.sgs.impl.service.data.TransparentReferencesHelper;
+import com.sun.sgs.impl.service.transaction.*;
 import com.sun.sgs.impl.sharedutil.LoggerWrapper;
-
-import com.sun.sgs.kernel.KernelRunnable;
-import com.sun.sgs.kernel.Priority;
-import com.sun.sgs.kernel.PriorityScheduler;
-import com.sun.sgs.kernel.RecurringTaskHandle;
+import com.sun.sgs.kernel.*;
 import com.sun.sgs.kernel.TaskQueue;
-import com.sun.sgs.kernel.TaskReservation;
-import com.sun.sgs.kernel.TransactionScheduler;
-
-import com.sun.sgs.profile.ProfileListener;
-import com.sun.sgs.profile.ProfileReport;
-
+import com.sun.sgs.profile.*;
 import com.sun.sgs.service.Transaction;
 
 import java.beans.PropertyChangeEvent;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-
-import java.util.LinkedList;
-import java.util.Properties;
-import java.util.Queue;
-
-import java.util.concurrent.Executors;
-import java.util.concurrent.ExecutorService;
-
+import java.lang.reflect.*;
+import java.util.*;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
 
 /**
@@ -577,6 +553,7 @@ final class TransactionSchedulerImpl
 
                         // run the task in the new transactional context
                         task.getTask().run();
+                        TransparentReferencesHelper.flushModifiedObjects();
                     } finally {
                         // regardless of the outcome, always clear the current
                         // transaction state before proceeding...
