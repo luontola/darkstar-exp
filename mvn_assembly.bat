@@ -1,2 +1,2 @@
 @echo off
-mvn -Dmaven.test.skip=true clean package
+mvn -Dmaven.test.skip=true clean package && pause

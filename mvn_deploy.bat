@@ -1,2 +1,2 @@
 @echo off
-mvn -Dmaven.test.skip=true clean deploy
+mvn -Dmaven.test.skip=true clean deploy && pause
