@@ -19,48 +19,26 @@
 
 package com.sun.sgs.impl.service.data;
 
-import com.sun.sgs.app.DataManager;
-import com.sun.sgs.app.ManagedObject;
-import com.sun.sgs.app.ManagedObjectRemoval;
-import com.sun.sgs.app.ManagedReference;
-import com.sun.sgs.app.NameNotBoundException;
-import com.sun.sgs.app.TransactionAbortedException;
+import com.sun.sgs.app.*;
 import com.sun.sgs.auth.Identity;
 import com.sun.sgs.impl.kernel.StandardProperties;
 import com.sun.sgs.impl.profile.ProfileCollectorImpl;
-import com.sun.sgs.impl.service.data.store.DataStore;
-import com.sun.sgs.impl.service.data.store.DataStoreImpl;
-import com.sun.sgs.impl.service.data.store.DataStoreProfileProducer;
-import com.sun.sgs.impl.service.data.store.Scheduler;
-import com.sun.sgs.impl.service.data.store.TaskHandle;
+import com.sun.sgs.impl.service.data.store.*;
 import com.sun.sgs.impl.service.data.store.net.DataStoreClient;
-import com.sun.sgs.impl.sharedutil.LoggerWrapper;
-import com.sun.sgs.impl.sharedutil.PropertiesWrapper;
-import com.sun.sgs.impl.util.AbstractKernelRunnable;
-import com.sun.sgs.impl.util.TransactionContextFactory;
-import com.sun.sgs.impl.util.TransactionContextMap;
-import com.sun.sgs.kernel.AccessCoordinator;
-import com.sun.sgs.kernel.AccessReporter;
+import com.sun.sgs.impl.sharedutil.*;
+import com.sun.sgs.impl.util.*;
+import com.sun.sgs.kernel.*;
 import com.sun.sgs.kernel.AccessReporter.AccessType;
-import com.sun.sgs.kernel.ComponentRegistry;
-import com.sun.sgs.kernel.KernelRunnable;
-import com.sun.sgs.kernel.RecurringTaskHandle;
-import com.sun.sgs.kernel.TaskScheduler;
-import com.sun.sgs.kernel.TransactionScheduler;
-import com.sun.sgs.profile.ProfileCollector;
+import com.sun.sgs.profile.*;
 import com.sun.sgs.profile.ProfileCollector.ProfileLevel;
-import com.sun.sgs.profile.ProfileConsumer;
 import com.sun.sgs.profile.ProfileConsumer.ProfileDataType;
-import com.sun.sgs.profile.ProfileOperation;
-import com.sun.sgs.service.DataService;
-import com.sun.sgs.service.Transaction;
-import com.sun.sgs.service.TransactionParticipant;
-import com.sun.sgs.service.TransactionProxy;
+import com.sun.sgs.service.*;
+import net.orfjackal.dimdwarf.api.internal.Entities;
+
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
 /**
  * Provides an implementation of <code>DataService</code> based on {@link
@@ -524,6 +502,7 @@ public final class DataServiceImpl implements DataService {
 
     /** {@inheritDoc} */
      public void setBinding(String name, Object object) {
+        object = Entities.unwrapTransparentReference(object);
 	 setBindingInternal(name, object, false);
     }
 
@@ -539,6 +518,7 @@ public final class DataServiceImpl implements DataService {
 
     /** {@inheritDoc} */
     public void removeObject(Object object) {
+        object = Entities.unwrapTransparentReference(object);
 	Context context = null;
 	ManagedReferenceImpl<?> ref = null;
 	try {
@@ -582,6 +562,7 @@ public final class DataServiceImpl implements DataService {
 
     /** {@inheritDoc} */
     public void markForUpdate(Object object) {
+        object = Entities.unwrapTransparentReference(object);
 	Context context = null;
 	ManagedReferenceImpl<?> ref = null;
 	try {
@@ -617,6 +598,7 @@ public final class DataServiceImpl implements DataService {
 
     /** {@inheritDoc} */
     public <T> ManagedReference<T> createReference(T object) {
+        object = Entities.unwrapTransparentReference(object);
         createReferenceOp.report();
 	Context context = null;
 	try {
