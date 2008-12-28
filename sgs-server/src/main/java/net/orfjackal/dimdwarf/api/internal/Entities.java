@@ -53,4 +53,14 @@ public class Entities {
     public static Class<?> getEntityClass() {
         return ManagedObject.class;
     }
+
+    public static <T> T unwrapTransparentReference(T entityOrProxy) {
+        if (isTransparentReference(entityOrProxy)) {
+            TransparentReference tref = (TransparentReference) entityOrProxy;
+            return (T) tref.getEntity();
+        } else {
+            assert isEntity(entityOrProxy);
+            return entityOrProxy;
+        }
+    }
 }
