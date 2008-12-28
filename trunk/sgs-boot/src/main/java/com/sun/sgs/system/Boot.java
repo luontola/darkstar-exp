@@ -94,6 +94,7 @@ public final class Boot {
         executeCmd.add(javaCmd);
         executeCmd.add("-classpath");
         executeCmd.add(bootClassPath(properties));
+        executeCmd.add("-javaagent:" + fileInLibDir("sgs-agent.jar", properties));
         executeCmd.add("-Djava.library.path=" + bootNativePath(properties));
         executeCmd.add("-Djava.util.logging.config.file=" + 
                        properties.getProperty(BootEnvironment.SGS_LOGGING));
@@ -165,7 +166,13 @@ public final class Boot {
             shutdownHandler.close();
         }
     }
-    
+
+    private static String fileInLibDir(String filename, Properties env) {
+        String sgsHome = env.getProperty(BootEnvironment.SGS_HOME);
+        File file = new File(sgsHome + File.separator + "lib" + File.separator + filename);
+        return file.getAbsolutePath();
+    }
+
     /**
      * Constructs a classpath to be used when running the Project Darkstar
      * kernel.  The classpath consists of any jar files that live directly
@@ -416,5 +423,5 @@ public final class Boot {
 
         return appPropsFound;
     }
-    
+
 }
