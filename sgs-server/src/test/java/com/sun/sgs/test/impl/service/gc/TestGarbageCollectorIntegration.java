@@ -21,8 +21,7 @@ package com.sun.sgs.test.impl.service.gc;
 
 import com.sun.sgs.app.*;
 import com.sun.sgs.auth.Identity;
-import com.sun.sgs.impl.kernel.StandardProperties;
-import com.sun.sgs.impl.service.gc.GarbageCollectorServiceImpl;
+import com.sun.sgs.impl.service.data.DataServiceImpl;
 import com.sun.sgs.kernel.TransactionScheduler;
 import com.sun.sgs.service.*;
 import com.sun.sgs.test.util.*;
@@ -30,7 +29,6 @@ import junit.framework.TestCase;
 
 import java.io.Serializable;
 import java.math.BigInteger;
-import java.util.Properties;
 
 /**
  * @author Esko Luontola
@@ -43,7 +41,7 @@ public class TestGarbageCollectorIntegration extends TestCase {
     private DataService dataService;
     private Identity taskOwner;
 
-    private GarbageCollectorService gcService;
+    private GarbageCollector gc;
 
     private BigInteger liveRootId;
     private BigInteger liveRefId;
@@ -53,16 +51,12 @@ public class TestGarbageCollectorIntegration extends TestCase {
     private BigInteger garbageCycle2Id;
 
     protected void setUp() throws Exception {
-        Properties p = SgsTestNode.getDefaultProperties("TestGarbageCollectorIntegration", null, null);
-        p.setProperty(StandardProperties.SERVICES, GarbageCollectorServiceImpl.class.getName());
-        p.setProperty(StandardProperties.MANAGERS, "");
-
-        serverNode = new SgsTestNode("TestGarbageCollectorIntegration", null, p);
+        serverNode = new SgsTestNode("TestGarbageCollectorIntegration", null, null);
         txnScheduler = serverNode.getSystemRegistry().getComponent(TransactionScheduler.class);
         dataService = serverNode.getDataService();
         taskOwner = serverNode.getProxy().getCurrentOwner();
 
-        gcService = serverNode.getProxy().getService(GarbageCollectorService.class);
+        gc = ((DataServiceImpl) dataService).gc;
         initGraphNoGarbage();
         createGarbage();
     }
@@ -104,7 +98,7 @@ public class TestGarbageCollectorIntegration extends TestCase {
     }
 
     private void runGarbageCollector() throws Exception {
-        gcService.runGarbageCollector();
+        gc.runGarbageCollector();
     }
 
     private BigInteger getId(Object obj) {

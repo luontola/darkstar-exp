@@ -25,6 +25,7 @@ import com.sun.sgs.impl.kernel.StandardProperties;
 import com.sun.sgs.impl.profile.ProfileCollectorImpl;
 import com.sun.sgs.impl.service.data.store.*;
 import com.sun.sgs.impl.service.data.store.net.DataStoreClient;
+import com.sun.sgs.impl.service.gc.GarbageCollectorImpl;
 import com.sun.sgs.impl.sharedutil.*;
 import com.sun.sgs.impl.util.*;
 import com.sun.sgs.kernel.*;
@@ -210,6 +211,8 @@ public final class DataServiceImpl implements DataService {
      * debugCheckInterval, or detectModifications fields.
      */
     private final Object stateLock = new Object();
+    
+    public final GarbageCollector gc;
 
     /** The possible states of this instance. */
     enum State {
@@ -468,7 +471,11 @@ public final class DataServiceImpl implements DataService {
 		    },
 		taskOwner);
 	    storeToShutdown = null;
-	} catch (RuntimeException e) {
+
+            TransactionScheduler txnScheduler = systemRegistry.getComponent(TransactionScheduler.class);
+            gc = new GarbageCollectorImpl(txnScheduler, this, txnProxy.getCurrentOwner());
+            
+        } catch (RuntimeException e) {
 	    getExceptionLogger(e).logThrow(
 		Level.SEVERE, e, "DataService initialization failed");
 	    throw e;

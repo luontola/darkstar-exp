@@ -19,11 +19,16 @@
 
 package com.sun.sgs.service;
 
+import java.math.BigInteger;
+import java.util.Set;
+
 /**
  * @author Esko Luontola
  * @since 1.1.2009
  */
-public interface GarbageCollectorService extends Service {
+public interface GarbageCollector {
 
     void runGarbageCollector() throws Exception;
+
+    void fireObjectModified(BigInteger source, Set<BigInteger> targets);
 }
