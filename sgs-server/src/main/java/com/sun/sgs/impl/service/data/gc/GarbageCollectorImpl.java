@@ -17,14 +17,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.sun.sgs.impl.service.gc;
+package com.sun.sgs.impl.service.data.gc;
 
 import com.sun.sgs.app.*;
 import com.sun.sgs.auth.Identity;
 import com.sun.sgs.impl.service.data.DataServiceImpl;
 import com.sun.sgs.impl.util.AbstractKernelRunnable;
 import com.sun.sgs.kernel.TransactionScheduler;
-import com.sun.sgs.service.GarbageCollector;
 
 import java.math.BigInteger;
 import java.util.*;

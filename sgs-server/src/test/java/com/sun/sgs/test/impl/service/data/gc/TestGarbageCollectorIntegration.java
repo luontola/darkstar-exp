@@ -17,13 +17,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.sun.sgs.test.impl.service.gc;
+package com.sun.sgs.test.impl.service.data.gc;
 
 import com.sun.sgs.app.*;
 import com.sun.sgs.auth.Identity;
 import com.sun.sgs.impl.service.data.DataServiceImpl;
+import com.sun.sgs.impl.service.data.gc.GarbageCollector;
 import com.sun.sgs.kernel.TransactionScheduler;
-import com.sun.sgs.service.*;
+import com.sun.sgs.service.DataService;
 import com.sun.sgs.test.util.*;
 import junit.framework.TestCase;
 
