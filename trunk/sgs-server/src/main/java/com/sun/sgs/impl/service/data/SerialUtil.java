@@ -26,6 +26,7 @@ import net.orfjackal.dimdwarf.serial.SerializationReplacer;
 
 import java.io.*;
 import java.lang.reflect.*;
+import java.math.BigInteger;
 import java.security.*;
 import java.util.*;
 import java.util.logging.*;
@@ -71,10 +72,14 @@ final class SerialUtil {
      * @throws	ObjectIOException if a problem occurs deserializing the object
      */
     static Object deserialize(byte[] data, ClassSerialization classSerial) {
+        return deserialize(data, classSerial, null);
+    }
+
+    static Object deserialize(byte[] data, ClassSerialization classSerial, Set<BigInteger> referencedObjectIds) {
 	ObjectInputStream in = null;
 	try {
 	    in = new CustomClassDescriptorObjectInputStream(
-		new CompressByteArrayInputStream(data), classSerial, getSerializationReplacers());
+		new CompressByteArrayInputStream(data), classSerial, getSerializationReplacers(), referencedObjectIds);
 	    return in.readObject();
 	} catch (ClassNotFoundException e) {
 	    throw new ObjectIOException(
@@ -103,15 +108,18 @@ final class SerialUtil {
     {
 	private final ClassSerialization classSerial;
         private final SerializationReplacer[] replacers;
+        private final Set<BigInteger> referencedObjectIds;
 
-	CustomClassDescriptorObjectInputStream(InputStream in,
+        CustomClassDescriptorObjectInputStream(InputStream in,
                                                ClassSerialization classSerial,
-                                               SerializationReplacer[] replacers)
+                                               SerializationReplacer[] replacers,
+                                               Set<BigInteger> referencedObjectIds)
 	    throws IOException
 	{
 	    super(in);
 	    this.classSerial = classSerial;
             this.replacers = replacers;
+            this.referencedObjectIds = referencedObjectIds;
             enableResolveObject(true);
         }
 	protected ObjectStreamClass readClassDescriptor()
@@ -121,6 +129,10 @@ final class SerialUtil {
 	}
 
         protected Object resolveObject(Object obj) throws IOException {
+            if (referencedObjectIds != null && obj instanceof ManagedReference) {
+                ManagedReference<?> ref = (ManagedReference<?>) obj;
+                referencedObjectIds.add(ref.getId());
+            }
             for (SerializationReplacer replacer : replacers) {
                 obj = replacer.resolveDeserialized(obj, null);
             }
@@ -260,7 +272,7 @@ final class SerialUtil {
 	{
 	    classSerial.writeClassDescriptor(desc, this);
 	}
-    }	
+    }
 
     /**
      * Define an ObjectOutputStream that checks for references to
