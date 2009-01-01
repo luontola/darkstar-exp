@@ -23,8 +23,8 @@ import com.sun.sgs.app.*;
 import com.sun.sgs.auth.Identity;
 import com.sun.sgs.impl.service.data.DataServiceImpl;
 import com.sun.sgs.impl.util.AbstractKernelRunnable;
-import com.sun.sgs.kernel.*;
-import com.sun.sgs.service.*;
+import com.sun.sgs.kernel.TransactionScheduler;
+import com.sun.sgs.service.GarbageCollector;
 
 import java.math.BigInteger;
 import java.util.*;
@@ -35,7 +35,7 @@ import java.util.concurrent.locks.*;
  * @author Esko Luontola
  * @since 1.1.2009
  */
-public class GarbageCollectorServiceImpl implements GarbageCollectorService {
+public class GarbageCollectorImpl implements GarbageCollector {
 
     private final ConcurrentMap<BigInteger, Color> nodeColors = new ConcurrentSkipListMap<BigInteger, Color>();
     private final Queue<BigInteger> grayNodes = new ConcurrentLinkedQueue<BigInteger>();
@@ -45,12 +45,12 @@ public class GarbageCollectorServiceImpl implements GarbageCollectorService {
     private final DataServiceImpl dataService;
     private final Identity owner;
 
-    public GarbageCollectorServiceImpl(Properties properties,
-                                       ComponentRegistry systemRegistry,
-                                       TransactionProxy txnProxy) {
-        txnScheduler = systemRegistry.getComponent(TransactionScheduler.class);
-        dataService = txnProxy.getService(DataServiceImpl.class);
-        owner = txnProxy.getCurrentOwner();
+    public GarbageCollectorImpl(TransactionScheduler txnScheduler,
+                                DataServiceImpl dataService,
+                                Identity owner) {
+        this.txnScheduler = txnScheduler;
+        this.dataService = dataService;
+        this.owner = owner;
     }
 
     public String getName() {
@@ -75,6 +75,9 @@ public class GarbageCollectorServiceImpl implements GarbageCollectorService {
             nodeColors.clear();
             gcInProgress.unlock();
         }
+    }
+
+    public void fireObjectModified(BigInteger source, Set<BigInteger> targets) {
     }
 
     private void markAllRootsGray() throws Exception {
