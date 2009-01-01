@@ -37,7 +37,7 @@ import net.orfjackal.dimdwarf.api.internal.Entities;
 
 import java.io.Serializable;
 import java.math.BigInteger;
-import java.util.Properties;
+import java.util.*;
 import java.util.logging.*;
 
 /**
@@ -137,7 +137,7 @@ import java.util.logging.*;
 public final class DataServiceImpl implements DataService {
 
     /** The name of this class. */
-    private static final String CLASSNAME = 
+    private static final String CLASSNAME =
             "com.sun.sgs.impl.service.data.DataServiceImpl";
 
     /**
@@ -237,7 +237,7 @@ public final class DataServiceImpl implements DataService {
 
     /** Our profiling operations. */
     private final ProfileOperation createReferenceOp;
-    
+
     /**
      * Defines the transaction context map for this class.  This class checks
      * the service state and the reference table whenever the context is
@@ -396,8 +396,8 @@ public final class DataServiceImpl implements DataService {
 	    // notify the AccessCoordinator that the DataService is a
 	    // source of contention for ManagedObjects and name
 	    // bindings.
-	    AccessCoordinator accessCoordinator = 
-		systemRegistry.getComponent(AccessCoordinator.class);	    
+	    AccessCoordinator accessCoordinator =
+		systemRegistry.getComponent(AccessCoordinator.class);
 	    oidAccesses = accessCoordinator.
 		registerAccessSource(CLASSNAME+":objects", BigInteger.class);
 	    boundNameAccesses = accessCoordinator.
@@ -429,7 +429,7 @@ public final class DataServiceImpl implements DataService {
 		baseStore = new DataStoreClient(properties);
 	    }
             storeToShutdown = baseStore;
-            ProfileCollector collector = 
+            ProfileCollector collector =
 		systemRegistry.getComponent(ProfileCollector.class);
 	    store = new DataStoreProfileProducer(baseStore, collector);
             ProfileConsumer consumer = collector.getConsumer(
@@ -452,7 +452,7 @@ public final class DataServiceImpl implements DataService {
 			public void run() {
 			    DataServiceHeader header;
 			    try {
-				header = (DataServiceHeader) 
+				header = (DataServiceHeader)
 				    getServiceBinding(CLASSNAME + ".header");
 				logger.log(Level.CONFIG,
 					   "Found existing header {0}",
@@ -725,35 +725,35 @@ public final class DataServiceImpl implements DataService {
                 String internalName = getInternalName(name, serviceBinding);
 		/* mark that this name has been read locked */
 		boundNameAccesses.
-		    reportObjectAccess(internalName, AccessType.READ);	    
+		    reportObjectAccess(internalName, AccessType.READ);
 		result = context.getBinding(internalName);
 		boundNameAccesses.setObjectDescription(internalName, result);
-	    } catch (NameNotBoundException e) {		
+	    } catch (NameNotBoundException e) {
 		/* NOTE: future implementations will need to account for
 		 * range-locking on bound names in the event of a probe miss.
 		 * For example, if the provided name was not bound, then we need
 		 * read lock the next bound name after this one for consistency
 		 * purposes.  Any future implementation will need to correctly
 		 * account for the service and applciation namespaces. */
-		
+
 		/*
 		 * Incomplete implementation left for future referece:
 		 *
 		 * Note that the following implementation does not account for
 		 * the difference between application and service namespaces
-		 *  		 
-		 * String nextBoundName = 
+		 *
+		 * String nextBoundName =
 		 *     nextBoundNameInternal(name, serviceBinding);
 		 * if (nextBoundName == null) {
 		 *     boundNameAccesses.
-		 *         reportObjectAccess(END_OF_NAMESPACE, 
+		 *         reportObjectAccess(END_OF_NAMESPACE,
 		 *                            AccessType.READ);
 		 *
 		 * }
 		 * else {
 		 *     // use the internal name for access reporting
 		 *     boundNameAccesses.reportObjectAccess(
-		 *         getInternalName(nextBoundName, serviceBinding), 
+		 *         getInternalName(nextBoundName, serviceBinding),
 		 *         AccessType.READ);
 		 * }
 		 */
@@ -805,7 +805,7 @@ public final class DataServiceImpl implements DataService {
 	     * ensure a consistent view of the name space for any readers.
 	     * However, this will have a severe impact on the concurrency of
 	     * writers */
-	    
+
 	    /*
 	     * Incomplete implementation left for future reference:
 	     *
@@ -815,10 +815,10 @@ public final class DataServiceImpl implements DataService {
 	     *         reportObjectAccess(END_OF_NAMESPACE, AccessType.WRITE);
 	     *  }
 	     *  else {
-	     *	    // use the internal name for access reporting 
+	     *	    // use the internal name for access reporting
 	     * 	    boundNameAccesses.reportObjectAccess(
 	     *           getInternalName(nextBoundName, serviceBinding),
-	     *           AccessType.WRITE);		    
+	     *           AccessType.WRITE);
 	     *  }
 	     */
             context.setBinding(internalName, object);
@@ -865,22 +865,22 @@ public final class DataServiceImpl implements DataService {
 		 * name, we ensure a consistent view of the name space for any
 		 * readers.  However, this will have a severe impact on the
 		 * concurrency of writers */
-	    
+
 		/*
 		 * Incomplete implementation left for future reference:
 		 *
-		 * String nextBoundName = 
+		 * String nextBoundName =
 		 *     nextBoundNameInternal(name, serviceBinding);
 		 * if (nextBoundName == null) {
 		 *     boundNameAccesses.
-		 *         reportObjectAccess(END_OF_NAMESPACE, 
+		 *         reportObjectAccess(END_OF_NAMESPACE,
 		 *                            AccessType.WRITE);
 		 *  }
 		 *  else {
-		 *	// use the internal name for access reporting 
+		 *	// use the internal name for access reporting
 		 * 	boundNameAccesses.reportObjectAccess(
 		 *          getInternalName(nextBoundName, serviceBinding),
-		 *          AccessType.WRITE);		    
+		 *          AccessType.WRITE);
 		 *  }
 		 */
 		context.removeBinding(internalName);
@@ -914,7 +914,7 @@ public final class DataServiceImpl implements DataService {
 	    String internalName = getInternalName(name, serviceBinding);
 	    if (name != null) {
 		boundNameAccesses.
-		    reportObjectAccess(internalName, AccessType.READ);	    
+		    reportObjectAccess(internalName, AccessType.READ);
 	    }
 	    String nextBoundName = context.nextBoundName(internalName);
 	    if (nextBoundName != null) {
@@ -931,7 +931,7 @@ public final class DataServiceImpl implements DataService {
 	     * this name, and therefore only one will proceed after conflict
 	     * resolution.  The future implementation should also account for
 	     * the difference in application and service namespaces. */
-	    
+
 	    /*
 	     * Incomplete implementation left for future reference:
 	     *
@@ -1000,7 +1000,7 @@ public final class DataServiceImpl implements DataService {
 
     /* -- Other methods -- */
 
-    /** 
+    /**
      * Attempts to shut down this service, returning a value indicating whether
      * the attempt was successful.  The call will throw {@link
      * IllegalStateException} if a call to this method has already completed
@@ -1162,7 +1162,7 @@ public final class DataServiceImpl implements DataService {
 	    (!serviceBinding && name.startsWith("s."))
 	    : "Name has wrong prefix";
 	return name.startsWith(prefix) ? name.substring(2) : null;
-    }	    
+    }
 
     /**
      * Converts a BigInteger object ID into a long, throwing an exception if
@@ -1231,5 +1231,13 @@ public final class DataServiceImpl implements DataService {
     static LoggerWrapper getExceptionLogger(RuntimeException exception) {
 	return exception instanceof TransactionAbortedException
 	    ? abortLogger : logger;
+    }
+
+    public Set<BigInteger> getReferencedObjectIds(BigInteger id) {
+        Context context = getContext();
+        byte[] object = context.store.getObject(context.txn, id.longValue(), false);
+        Set<BigInteger> ids = new HashSet<BigInteger>();
+        SerialUtil.deserialize(object, context.classSerial, ids);
+        return ids;
     }
 }
