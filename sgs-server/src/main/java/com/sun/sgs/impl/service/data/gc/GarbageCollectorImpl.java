@@ -53,9 +53,9 @@ public class GarbageCollectorImpl implements GarbageCollector {
     }
 
     public void runGarbageCollector() throws Exception {
-        assert nodeColors.isEmpty();
         gcInProgress.lock();
         try {
+            nodeColors.clear();
             markAllRootsGray();
             scanAllReachableNodesBlack();
             removeAllWhiteGarbageNodes();
