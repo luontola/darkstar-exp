@@ -19,20 +19,14 @@
 
 package com.sun.sgs.impl.service.data;
 
-import com.sun.sgs.app.ManagedObject;
-import com.sun.sgs.app.ManagedReference;
-import com.sun.sgs.app.ObjectIOException;
-import com.sun.sgs.app.ObjectNotFoundException;
-import com.sun.sgs.app.TransactionNotActiveException;
-import com.sun.sgs.impl.sharedutil.LoggerWrapper;
-import com.sun.sgs.impl.sharedutil.Objects;
+import com.sun.sgs.app.*;
+import com.sun.sgs.impl.sharedutil.*;
 import com.sun.sgs.kernel.AccessReporter.AccessType;
-import java.io.ObjectStreamException;
-import java.io.Serializable;
+
+import java.io.*;
 import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.*;
+import java.util.logging.*;
 
 /**
  * Provides an implementation of ManagedReference.  Instances of this class are
@@ -641,6 +635,7 @@ final class ManagedReferenceImpl<T>
      */
     @SuppressWarnings("fallthrough")
     byte[] flush() {
+        Set<BigInteger> referencedObjectIds = new HashSet<BigInteger>();
 	byte[] result = null;
 	switch (state) {
 	case EMPTY:
@@ -648,16 +643,17 @@ final class ManagedReferenceImpl<T>
 	    break;
 	case NEW:
 	case MODIFIED:
-	    result = SerialUtil.serialize(object, context.classSerial);
+            result = SerialUtil.serialize(object, context.classSerial, referencedObjectIds);
+            context.gc.fireObjectModified(getId(), referencedObjectIds);
 	    context.refs.unregisterObject(object);
 	    break;
 	case MAYBE_MODIFIED:
-	    byte[] modified =
-		SerialUtil.serialize(object, context.classSerial);
+            byte[] modified = SerialUtil.serialize(object, context.classSerial, referencedObjectIds);
+            context.gc.fireObjectModified(getId(), referencedObjectIds);
 	    if (!Arrays.equals(modified, unmodifiedBytes)) {
 		result = modified;
 		context.oidAccesses.
-		    reportObjectAccess(context.txn.originalTxn, 
+		    reportObjectAccess(context.txn.originalTxn,
 				       BigInteger.valueOf(oid),
 				       AccessType.WRITE,
 				       "object was not explicitly " +

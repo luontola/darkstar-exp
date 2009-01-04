@@ -19,19 +19,17 @@
 
 package com.sun.sgs.impl.service.data;
 
-import com.sun.sgs.app.ManagedObject;
-import com.sun.sgs.app.ManagedObjectRemoval;
+import com.sun.sgs.app.*;
+import com.sun.sgs.impl.service.data.gc.GarbageCollector;
 import com.sun.sgs.impl.service.data.store.DataStore;
 import com.sun.sgs.impl.sharedutil.LoggerWrapper;
-import com.sun.sgs.impl.util.MaybeRetryableTransactionNotActiveException;
-import com.sun.sgs.impl.util.TransactionContext;
+import com.sun.sgs.impl.util.*;
 import com.sun.sgs.kernel.AccessReporter;
-import com.sun.sgs.service.Transaction;
-import com.sun.sgs.service.TransactionParticipant;
+import com.sun.sgs.service.*;
+
 import java.math.BigInteger;
 import java.util.IdentityHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
 /** Stores information for a specific transaction. */
 final class Context extends TransactionContext {
@@ -46,6 +44,8 @@ final class Context extends TransactionContext {
     /** The data store. */
     final DataStore store;
 
+    final GarbageCollector gc;
+    
     /**
      * The wrapped transaction, to be passed to the data store.  The wrapping
      * allows the data service to manage the data store's transaction
@@ -97,18 +97,20 @@ final class Context extends TransactionContext {
 
     /** Creates an instance of this class. */
     Context(DataServiceImpl service,
-	    DataStore store,
-	    Transaction txn,
-	    int debugCheckInterval,
-	    boolean detectModifications,
-	    ClassesTable classesTable,
-	    AccessReporter<BigInteger> oidAccesses)
+            DataStore store,
+            GarbageCollector gc,
+            Transaction txn,
+            int debugCheckInterval,
+            boolean detectModifications,
+            ClassesTable classesTable,
+            AccessReporter<BigInteger> oidAccesses)
     {
 	super(txn);
 	assert service != null && store != null && txn != null &&
 	    classesTable != null && oidAccesses != null;
 	this.service = service;
 	this.store = store;
+        this.gc = gc;
 	this.txn = new TxnTrampoline(txn);
 	this.debugCheckInterval = debugCheckInterval;
 	this.detectModifications = detectModifications;

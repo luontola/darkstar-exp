@@ -28,7 +28,7 @@ import com.sun.sgs.kernel.TransactionScheduler;
 import java.math.BigInteger;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.concurrent.locks.*;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author Esko Luontola
@@ -38,7 +38,7 @@ public class GarbageCollectorImpl implements GarbageCollector {
 
     private final ConcurrentMap<BigInteger, Color> nodeColors = new ConcurrentSkipListMap<BigInteger, Color>();
     private final Queue<BigInteger> grayNodes = new ConcurrentLinkedQueue<BigInteger>();
-    private final Lock gcInProgress = new ReentrantLock();
+    private final ReentrantLock gcInProgress = new ReentrantLock();
 
     private final TransactionScheduler txnScheduler;
     private final DataServiceImpl dataService;
@@ -77,6 +77,10 @@ public class GarbageCollectorImpl implements GarbageCollector {
     }
 
     public void fireObjectModified(BigInteger source, Set<BigInteger> targets) {
+//        System.out.println("modified " + source + " -> " + targets);
+        if (gcInProgress.isLocked()) {
+            scanToBlack(source, targets);
+        }
     }
 
     private void markAllRootsGray() throws Exception {
