@@ -213,6 +213,7 @@ public final class DataServiceImpl implements DataService {
     private final Object stateLock = new Object();
     
     public final GarbageCollector gc;
+    private final PeriodicGcRunner gcRunner;
 
     /** The possible states of this instance. */
     enum State {
@@ -447,7 +448,12 @@ public final class DataServiceImpl implements DataService {
 		}
 	    }
             TransactionScheduler txnScheduler = systemRegistry.getComponent(TransactionScheduler.class);
+
             gc = new GarbageCollectorImpl(txnScheduler, this, txnProxy.getCurrentOwner());
+            int gcRunInterval = wrappedProps.getIntProperty(
+                    PeriodicGcRunner.GC_RUN_INTERVAL_PROPERTY, PeriodicGcRunner.DEFAULT_GC_RUN_INTERVAL);
+            gcRunner = new PeriodicGcRunner(gc, gcRunInterval);
+
 	    contextFactory = new ContextFactory(contextMap);
 	    synchronized (stateLock) {
 		state = State.RUNNING;
@@ -613,6 +619,7 @@ public final class DataServiceImpl implements DataService {
 	    // mark that this object has been read locked
 	    oidAccesses.reportObjectAccess(result.getId(), AccessType.READ,
 					   object);
+            checkObjectCreated(result);
 
 	    if (logger.isLoggable(Level.FINEST)) {
 		logger.log(
@@ -632,6 +639,12 @@ public final class DataServiceImpl implements DataService {
 	    }
 	    throw e;
 	}
+    }
+
+    private void checkObjectCreated(ManagedReference<?> ref) {
+        if (((ManagedReferenceImpl<?>) ref).isNew()) {
+            gcRunner.onObjectCreated();
+        }
     }
 
     /* -- Implement DataService -- */
