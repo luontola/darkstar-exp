@@ -52,17 +52,6 @@ public class GarbageCollectorImpl implements GarbageCollector {
         this.owner = owner;
     }
 
-    public String getName() {
-        return toString();
-    }
-
-    public void ready() throws Exception {
-    }
-
-    public boolean shutdown() {
-        return true;
-    }
-
     public void runGarbageCollector() throws Exception {
         assert nodeColors.isEmpty();
         gcInProgress.lock();
