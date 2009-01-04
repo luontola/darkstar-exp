@@ -649,9 +649,9 @@ final class ManagedReferenceImpl<T>
 	    break;
 	case MAYBE_MODIFIED:
             byte[] modified = SerialUtil.serialize(object, context.classSerial, referencedObjectIds);
-            context.gc.fireObjectModified(getId(), referencedObjectIds);
 	    if (!Arrays.equals(modified, unmodifiedBytes)) {
-		result = modified;
+                context.gc.fireObjectModified(getId(), referencedObjectIds);
+                result = modified;
 		context.oidAccesses.
 		    reportObjectAccess(context.txn.originalTxn,
 				       BigInteger.valueOf(oid),
