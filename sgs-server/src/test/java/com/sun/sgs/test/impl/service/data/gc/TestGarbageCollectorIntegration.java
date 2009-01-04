@@ -30,6 +30,7 @@ import junit.framework.TestCase;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.*;
 
 /**
  * @author Esko Luontola
@@ -106,6 +107,17 @@ public class TestGarbageCollectorIntegration extends TestCase {
         return dataService.createReference(obj).getId();
     }
 
+    private void assertNodesExist(final boolean expectedExists, final List<BigInteger> nodes) throws Exception {
+        txnScheduler.runTask(new TestAbstractKernelRunnable() {
+            public void run() throws Exception {
+                for (BigInteger id : nodes) {
+                    assertEquals("existence of node " + id + " of " + nodes,
+                            expectedExists, nodeExists(id));
+                }
+            }
+        }, taskOwner);
+    }
+
     private boolean nodeExists(BigInteger id) {
         try {
             ManagedReference<?> ref = dataService.createReferenceForId(id);
@@ -120,62 +132,79 @@ public class TestGarbageCollectorIntegration extends TestCase {
         serverNode.shutdown(true);
     }
 
-
     public void testBeforeGarbageCollectorIsRunAllNodesExist() throws Exception {
-        txnScheduler.runTask(new TestAbstractKernelRunnable() {
-            public void run() throws Exception {
-                assertTrue(nodeExists(liveRootId));
-                assertTrue(nodeExists(liveRefId));
-                assertTrue(nodeExists(garbageRootId));
-                assertTrue(nodeExists(garbageRefId));
-                assertTrue(nodeExists(garbageCycle1Id));
-                assertTrue(nodeExists(garbageCycle2Id));
-            }
-        }, taskOwner);
+        assertNodesExist(true, Arrays.asList(
+                liveRootId, liveRefId,
+                garbageRootId, garbageRefId, garbageCycle1Id, garbageCycle2Id));
     }
 
     public void testWhenGarbageCollectorIsRunTheLiveNodesExist() throws Exception {
         runGarbageCollector();
-        txnScheduler.runTask(new TestAbstractKernelRunnable() {
-            public void run() throws Exception {
-                assertTrue(nodeExists(liveRootId));
-                assertTrue(nodeExists(liveRefId));
-            }
-        }, taskOwner);
+        assertNodesExist(true, Arrays.asList(liveRootId, liveRefId));
     }
 
     public void testWhenGarbageCollectorIsRunTheGarbageRootsAreRemoved() throws Exception {
         runGarbageCollector();
-        txnScheduler.runTask(new TestAbstractKernelRunnable() {
-            public void run() throws Exception {
-                assertFalse(nodeExists(garbageRootId));
-            }
-        }, taskOwner);
+        assertNodesExist(false, Arrays.asList(garbageRootId));
     }
 
     public void testWhenGarbageCollectorIsRunTheGarbageNodesAreRemoved() throws Exception {
         runGarbageCollector();
-        txnScheduler.runTask(new TestAbstractKernelRunnable() {
-            public void run() throws Exception {
-                assertFalse(nodeExists(garbageRefId));
-            }
-        }, taskOwner);
+        assertNodesExist(false, Arrays.asList(garbageRefId));
     }
 
     public void testWhenGarbageCollectorIsRunTheGarbageCyclesAreRemoved() throws Exception {
         runGarbageCollector();
+        assertNodesExist(false, Arrays.asList(garbageCycle1Id, garbageCycle2Id));
+    }
+
+
+    public void testConcurrentMutatorsDuringGarbageCollection() throws Exception {
+        prepareListOfLiveNodes();
+        final List<BigInteger> liveNodesCreated = new ArrayList<BigInteger>();
+        Thread t = new Thread(new Runnable() {
+            public void run() {
+                for (int i = 0; i < 10; i++) {
+                    createNewLiveNode(liveNodesCreated);
+                    Thread.yield();
+                }
+            }
+        });
+        t.start();
+        runGarbageCollector();
+        t.join();
+        assertNodesExist(true, liveNodesCreated);
+    }
+
+    private void prepareListOfLiveNodes() throws Exception {
         txnScheduler.runTask(new TestAbstractKernelRunnable() {
             public void run() throws Exception {
-                assertFalse(nodeExists(garbageCycle1Id));
-                assertFalse(nodeExists(garbageCycle2Id));
+                dataService.setBinding("liveList", new ListNode());
             }
         }, taskOwner);
     }
 
-    // TODO: concurrent mutators
+    private void createNewLiveNode(final List<BigInteger> liveNodesCreated) {
+        try {
+            txnScheduler.runTask(new TestAbstractKernelRunnable() {
+                public void run() throws Exception {
+                    ManagedReference<DummyNode> created = dataService.createReference(new DummyNode());
+                    ListNode liveList = (ListNode) dataService.getBinding("liveList");
+                    liveList.refs.add(created);
+                    liveNodesCreated.add(created.getId());
+                }
+            }, taskOwner);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 
     private static class DummyNode implements ManagedObject, Serializable {
         public ManagedReference<DummyNode> ref;
+    }
+
+    private static class ListNode implements ManagedObject, Serializable {
+        public final List<ManagedReference<DummyNode>> refs = new ArrayList<ManagedReference<DummyNode>>();
     }
 }

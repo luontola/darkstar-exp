@@ -289,7 +289,7 @@ public final class DataServiceImpl implements DataService {
 		}
 	    }
 	    return new Context(
-		DataServiceImpl.this, store, txn, debugCheckInterval,
+		DataServiceImpl.this, store, gc, txn, debugCheckInterval,
 		detectModifications, classesTable, oidAccesses);
 	}
 	@Override protected TransactionParticipant createParticipant() {
@@ -446,6 +446,8 @@ public final class DataServiceImpl implements DataService {
 		    contextMap = new ContextMap(txnProxy);
 		}
 	    }
+            TransactionScheduler txnScheduler = systemRegistry.getComponent(TransactionScheduler.class);
+            gc = new GarbageCollectorImpl(txnScheduler, this, txnProxy.getCurrentOwner());
 	    contextFactory = new ContextFactory(contextMap);
 	    synchronized (stateLock) {
 		state = State.RUNNING;
@@ -471,10 +473,6 @@ public final class DataServiceImpl implements DataService {
 		    },
 		taskOwner);
 	    storeToShutdown = null;
-
-            TransactionScheduler txnScheduler = systemRegistry.getComponent(TransactionScheduler.class);
-            gc = new GarbageCollectorImpl(txnScheduler, this, txnProxy.getCurrentOwner());
-            
         } catch (RuntimeException e) {
 	    getExceptionLogger(e).logThrow(
 		Level.SEVERE, e, "DataService initialization failed");

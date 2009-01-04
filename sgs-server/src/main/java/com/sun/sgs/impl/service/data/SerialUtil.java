@@ -182,14 +182,16 @@ final class SerialUtil {
      *		and, in particular, if a <code>ManagedObject</code> is
      *		referenced without an intervening <code>ManagedReference</code>
      */
-    static byte[] serialize(ManagedObject object,
-			    ClassSerialization classSerial)
-    {
+    static byte[] serialize(ManagedObject object, ClassSerialization classSerial) {
+        return serialize(object, classSerial, null);
+    }
+
+    static byte[] serialize(ManagedObject object, ClassSerialization classSerial, Set<BigInteger> referencedObjectIds) {
         ObjectOutputStream out = null;
 	try {
 	    ByteArrayOutputStream baos = new CompressByteArrayOutputStream();
             out = new CheckReferencesObjectOutputStream(
-		baos, object, classSerial, getSerializationReplacers());
+		baos, object, classSerial, getSerializationReplacers(), referencedObjectIds);
 	    out.writeObject(object);
 	    out.flush();
 	    return baos.toByteArray();
@@ -287,20 +289,23 @@ final class SerialUtil {
 	/** The top level managed object being serialized. */
 	private final ManagedObject topLevelObject;
         private final SerializationReplacer[] replacers;
+        private final Set<BigInteger> referencedObjectIds;
 
-	/**
+        /**
 	 * Creates an instance that writes to a stream for a managed object
 	 * being serialized.
 	 */
 	CheckReferencesObjectOutputStream(OutputStream out,
                                           ManagedObject topLevelObject,
                                           ClassSerialization classSerial,
-                                          SerializationReplacer[] replacers)
+                                          SerializationReplacer[] replacers,
+                                          Set<BigInteger> referencedObjectIds)
 	    throws IOException
 	{
 	    super(out, classSerial);
 	    this.topLevelObject = topLevelObject;
             this.replacers = replacers;
+            this.referencedObjectIds = referencedObjectIds;
             AccessController.doPrivileged(
 		new PrivilegedAction<Void>() {
 		    public Void run() {
@@ -339,6 +344,10 @@ final class SerialUtil {
 		    }
 		}
 	    }
+            if (referencedObjectIds != null && object instanceof ManagedReference) {
+                ManagedReference<?> ref = (ManagedReference<?>) object;
+                referencedObjectIds.add(ref.getId());
+            }
 	    return object;
 	}
     }
