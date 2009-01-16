@@ -26,6 +26,11 @@
       <artifactId>sgs-server-api</artifactId>
       <scope>provided</scope>
     </dependency>
+      <dependency>
+          <groupId>net.orfjackal.dimdwarf</groupId>
+          <artifactId>dimdwarf-api</artifactId>
+          <scope>provided</scope>
+      </dependency>
   </dependencies>
 
   <build>

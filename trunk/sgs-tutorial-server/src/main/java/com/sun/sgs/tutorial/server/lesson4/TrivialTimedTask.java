@@ -19,18 +19,17 @@
 
 package com.sun.sgs.tutorial.server.lesson4;
 
-import com.sun.sgs.app.AppContext;
-import java.io.Serializable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import com.sun.sgs.app.*;
+import net.orfjackal.dimdwarf.api.*;
 
-import com.sun.sgs.app.ManagedObject;
-import com.sun.sgs.app.Task;
+import java.io.Serializable;
+import java.util.logging.*;
 
 /**
  * A simple repeating Task that tracks and prints the time since it was
  * last run.
  */
+@Entity(ProxyType.CLASS)
 public class TrivialTimedTask
     implements Serializable,  // for persistence, as required by ManagedObject.
                ManagedObject, // to let the SGS manage our persistence.
