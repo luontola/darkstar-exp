@@ -1252,10 +1252,14 @@ public final class DataServiceImpl implements DataService {
     }
 
     public Set<BigInteger> getReferencedObjectIds(BigInteger id) {
-        Context context = getContext();
-        byte[] object = context.store.getObject(context.txn, id.longValue(), false);
-        Set<BigInteger> ids = new HashSet<BigInteger>();
-        SerialUtil.deserialize(object, context.classSerial, ids);
-        return ids;
+        try {
+            Context context = getContext();
+            byte[] object = context.store.getObject(context.txn, id.longValue(), false);
+            Set<BigInteger> ids = new HashSet<BigInteger>();
+            SerialUtil.deserialize(object, context.classSerial, ids);
+            return ids;
+        } catch (ObjectNotFoundException e) {
+            return Collections.emptySet();
+        }
     }
 }

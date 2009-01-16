@@ -200,6 +200,55 @@ public class TestGarbageCollectorIntegration extends TestCase {
     }
 
 
+    public void testObjectsAreRemovedManuallyDuringGarbageCollection() throws Exception {
+        final List<BigInteger> nodesToBeRemoved = new ArrayList<BigInteger>();
+        txnScheduler.runTask(new TestAbstractKernelRunnable() {
+            public void run() throws Exception {
+                DummyNode parent = (DummyNode) dataService.createReferenceForId(liveRefId).get();
+                for (int i = 0; i < 10; i++) {
+                    DummyNode child = new DummyNode();
+                    parent.ref = dataService.createReference(child);
+                    nodesToBeRemoved.add(parent.ref.getId());
+                    parent = child;
+                }
+            }
+        }, taskOwner);
+
+        Thread t = new Thread(new Runnable() {
+            public void run() {
+                for (int i = 0; i < 10; i++) {
+                    removeOneChild(liveRefId);
+                    Thread.yield();
+                }
+            }
+        });
+        t.start();
+        runGarbageCollector();
+        t.join();
+
+        assertNodesExist(true, Arrays.asList(liveRefId));
+        assertNodesExist(false, Arrays.asList(garbageRootId));
+        assertNodesExist(false, nodesToBeRemoved);
+    }
+
+    private void removeOneChild(final BigInteger parentId) {
+        try {
+            txnScheduler.runTask(new TestAbstractKernelRunnable() {
+                public void run() throws Exception {
+                    DummyNode parent = (DummyNode) dataService.createReferenceForId(parentId).get();
+                    if (parent.ref != null) {
+                        DummyNode child = parent.ref.get();
+                        parent.ref = child.ref;
+                        dataService.removeObject(child);
+                    }
+                }
+            }, taskOwner);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
     private static class DummyNode implements ManagedObject, Serializable {
         public ManagedReference<DummyNode> ref;
     }
